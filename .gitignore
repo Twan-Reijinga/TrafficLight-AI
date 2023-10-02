@@ -7,6 +7,10 @@
 /[Uu]ser[Ss]ettings/
 /.vscode
 
+# ToolBuddy spline tool has to be added separedly
+/[Aa]ssets/Plugins/ToolBuddy/
+/[Aa]ssets/Plugins/ToolBuddy.meta
+
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
 /[Mm]emoryCaptures/
