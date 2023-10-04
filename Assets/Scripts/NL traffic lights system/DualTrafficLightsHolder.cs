@@ -4,6 +4,6 @@ using UnityEngine;
 
 public class DualTrafficLightsHolder : MonoBehaviour
 {
-    public TrafficLight Forward;
-    public TrafficLight Left;
+    public TrafficLight forward;
+    public TrafficLight left;
 }
