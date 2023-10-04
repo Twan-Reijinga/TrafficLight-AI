@@ -46,8 +46,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09a64fdc03a97564cac4a887067e9742, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Forward: {fileID: 4376735785025171789}
-  Left: {fileID: 5434461080253581386}
+  forward: {fileID: 4376735785025171789}
+  left: {fileID: 5434461080253581386}
 --- !u!1001 &792204886396587082
 PrefabInstance:
   m_ObjectHideFlags: 0

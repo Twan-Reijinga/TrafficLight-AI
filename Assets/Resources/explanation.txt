@@ -1,0 +1,23 @@
+01i: this forward in
+01o: this forward out
+02i: this left in
+02o: this left out
+
+11i: right forward in
+11o: right forward out
+12i: right left in
+12o: right left out
+
+21i: forward forward in
+21o: forward forward out
+22i: forward left in
+22o: forward left out
+
+31i: left forward in
+31o: left forward out
+32i: left left in
+32o: left left out
+
+0xx - 3xx = this right forward left
+x1x - x2x = forward left
+xxi - xxo = in out
