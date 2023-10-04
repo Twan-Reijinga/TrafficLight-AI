@@ -103,7 +103,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rootCar: {fileID: 0}
-  spawningChange: 0.3
+  spawningChange: 1
   intervalInSeconds: 1
 --- !u!114 &6241467233016489386
 MonoBehaviour:
@@ -124,6 +124,8 @@ MonoBehaviour:
   switchTurningSpeed: 0.2
   switchRotation: 20
   actionTrigger: {fileID: 0}
+  exitIndex: 0
+  nextAction: 48
 --- !u!65 &206626831293040984
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -11,6 +11,8 @@ public class CarMovement : MonoBehaviour
     public float switchTurningSpeed = 0.5f;
     public float switchRotation = 20.0f;
     public GameObject actionTrigger;
+    public int exitIndex;
+    public char nextAction;
 
     private char action = 'f'; // f: forward | l: left | r: right | s: SwitchLane
     private Quaternion targetRotation;
@@ -18,13 +20,13 @@ public class CarMovement : MonoBehaviour
     private Vector3 carPosition;
 
 
-    // Update is called once per frame
+
     private void OnTriggerEnter(Collider other) {
         if(other.name == "Right-TriggerBox") {
             targetRotation = Quaternion.Euler(0, transform.eulerAngles.y + 90.0f, 0);
             action = 'r';
         } else if(other.name == "Left-TriggerBox") {
-            targetRotation = Quaternion.Euler(0, transform.eulerAngles.y -90.0f, 0);
+            targetRotation = Quaternion.Euler(0, transform.eulerAngles.y - 90.0f, 0);
             action = 'l';
         } else if(other.name == "SwitchLane-TriggerBox") {
             targetRotation = Quaternion.Euler(0, transform.eulerAngles.y - switchRotation, 0);
@@ -33,6 +35,8 @@ public class CarMovement : MonoBehaviour
     } 
 
     void Update() {
+        Debug.Log(exitIndex);
+        Debug.Log(nextAction);
         direction = transform.forward;
         carPosition = transform.position;
 
