@@ -25,7 +25,7 @@ public class CarMovement : MonoBehaviour
         if(other.name == "Right-TriggerBox") {
             targetRotation = Quaternion.Euler(0, transform.eulerAngles.y + 90.0f, 0);
             action = 'r';
-        } else if(other.name == "Left-TriggerBox") {
+        } else if(other.name == "Left-TriggerBox" && action == 'f') {
             targetRotation = Quaternion.Euler(0, transform.eulerAngles.y - 90.0f, 0);
             action = 'l';
         } else if(other.name == "SwitchLane-TriggerBox") {

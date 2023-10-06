@@ -11,13 +11,17 @@ public class CarGeneration : MonoBehaviour {
         new Vector3(-26.5f, 0.0f, -31.0f),
         new Vector3(-60.0f, 0.0f, -2.7f),
         new Vector3(-32.5f, 0.0f, 31.0f),
-        new Vector3(26.5f, 0.0f, 31.0f)
+        new Vector3(26.5f, 0.0f, 31.0f),
+        new Vector3(60.0f, 0.0f, 3.0f),
+        new Vector3(32.5f, 0.0f, -31.0f)
     };
     private Quaternion[] rotations = {
         Quaternion.Euler(0.0f, 0.0f, 0.0f),
         Quaternion.Euler(0.0f, 90.0f, 0.0f),
         Quaternion.Euler(0.0f, 180.0f, 0.0f),
-        Quaternion.Euler(0.0f, 180.0f, 0.0f)
+        Quaternion.Euler(0.0f, 180.0f, 0.0f),
+        Quaternion.Euler(0.0f, -90.0f, 0.0f),
+        Quaternion.Euler(0.0f, 0.0f, 0.0f)
     };
     private char[,] instructions = {
         {'l', 'f', 'r', 'r', 'r'},
