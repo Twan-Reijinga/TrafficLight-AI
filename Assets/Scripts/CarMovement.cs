@@ -22,21 +22,19 @@ public class CarMovement : MonoBehaviour
 
 
     private void OnTriggerEnter(Collider other) {
-        if(other.name == "Right-TriggerBox") {
+        if(other.name == "Right-TriggerBox" && nextAction == 'r' && action == 'f') {
             targetRotation = Quaternion.Euler(0, transform.eulerAngles.y + 90.0f, 0);
             action = 'r';
-        } else if(other.name == "Left-TriggerBox" && action == 'f') {
+        } else if(other.name == "Left-TriggerBox" && nextAction == 'l' && action == 'f') {
             targetRotation = Quaternion.Euler(0, transform.eulerAngles.y - 90.0f, 0);
             action = 'l';
-        } else if(other.name == "SwitchLane-TriggerBox") {
+        } else if(other.name == "SwitchLane-TriggerBox" && (exitIndex == 1 || exitIndex == 4) && action == 'f') {
             targetRotation = Quaternion.Euler(0, transform.eulerAngles.y - switchRotation, 0);
             action = 's';
         }
     } 
 
     void Update() {
-        Debug.Log(exitIndex);
-        Debug.Log(nextAction);
         direction = transform.forward;
         carPosition = transform.position;
 
