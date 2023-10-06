@@ -10,7 +10,6 @@ public class CarMovement : MonoBehaviour
     public float leftTurningSpeed = 0.2f;
     public float switchTurningSpeed = 0.5f;
     public float switchRotation = 20.0f;
-    public GameObject actionTrigger;
     public int exitIndex;
     public char nextAction;
 
@@ -40,13 +39,13 @@ public class CarMovement : MonoBehaviour
 
         if(action == 'r') {
             transform.Translate(direction * corneringSpeed * Time.deltaTime, Space.World);        
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rightTurningSpeed);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rightTurningSpeed * Time.deltaTime);
             if(transform.rotation == targetRotation) {
                 action = 'f';
             }
         } else if (action == 'l') {
             transform.Translate(direction * corneringSpeed * Time.deltaTime, Space.World);        
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, leftTurningSpeed);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, leftTurningSpeed * Time.deltaTime);
             if(transform.rotation == targetRotation) {
                 action = 'f';
             }
@@ -55,7 +54,7 @@ public class CarMovement : MonoBehaviour
             targetRotation = Quaternion.Euler(0, transform.eulerAngles.y +switchRotation, 0);
             action = 'f';
         } else if ((action == 'f' && transform.rotation != targetRotation) || action == 's'){
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, switchTurningSpeed);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, switchTurningSpeed * Time.deltaTime);
             transform.Translate(direction * forwardSpeed * Time.deltaTime, Space.World);        
         } else {
             transform.Translate(direction * forwardSpeed * Time.deltaTime, Space.World);        

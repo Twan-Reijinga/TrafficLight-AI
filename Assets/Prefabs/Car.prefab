@@ -119,11 +119,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   forwardSpeed: 5
   corneringSpeed: 3
-  rightTurningSpeed: 0.5
-  leftTurningSpeed: 0.3
-  switchTurningSpeed: 0.2
+  rightTurningSpeed: 30
+  leftTurningSpeed: 18
+  switchTurningSpeed: 12
   switchRotation: 20
-  actionTrigger: {fileID: 0}
   exitIndex: 0
   nextAction: 48
 --- !u!65 &206626831293040984
