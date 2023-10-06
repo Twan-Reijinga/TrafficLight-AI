@@ -27,9 +27,16 @@ public class CarMovement : MonoBehaviour
         } else if(other.name == "Left-TriggerBox" && nextAction == 'l' && action == 'f') {
             targetRotation = Quaternion.Euler(0, transform.eulerAngles.y - 90.0f, 0);
             action = 'l';
-        } else if(other.name == "SwitchLane-TriggerBox" && (exitIndex == 1 || exitIndex == 4) && action == 'f') {
-            targetRotation = Quaternion.Euler(0, transform.eulerAngles.y - switchRotation, 0);
-            action = 's';
+        } else if(other.name == "SwitchLane-TriggerBox" && action == 'f') {
+            if(exitIndex == 1 || exitIndex == 4) {
+                targetRotation = Quaternion.Euler(0, transform.eulerAngles.y - switchRotation, 0);
+                action = 's';
+                nextAction = 'l';
+            } else if(exitIndex == 2 || exitIndex == 5) {
+                nextAction = 'f';
+            } else if(exitIndex == 3 || exitIndex == 6) {
+                nextAction = 'r';
+            }
         }
     } 
 

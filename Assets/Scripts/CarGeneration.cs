@@ -47,8 +47,12 @@ public class CarGeneration : MonoBehaviour {
                 newCar.transform.rotation = rotations[entranceIndex];
                 
                 char nextAction = instructions[entranceIndex, exitIndex];
-                newCar.GetComponent<CarMovement>().nextAction = nextAction;
+                if(entranceIndex >= exitIndex) {
+                    exitIndex++;
+                }
                 newCar.GetComponent<CarMovement>().exitIndex = exitIndex;
+
+                newCar.GetComponent<CarMovement>().nextAction = nextAction;
                 if(nextAction == 'l') {
                     newCar.transform.position += newCar.transform.right * -3;
                 }
