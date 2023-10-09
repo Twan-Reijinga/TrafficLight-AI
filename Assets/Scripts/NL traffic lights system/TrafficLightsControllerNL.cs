@@ -12,6 +12,7 @@ public class TrafficLightsControllerNL : MonoBehaviour
     private List<TrafficLight> GreenLights = new List<TrafficLight>();
     public float maxClearingTime = 15f;
     private float clearingtime = 0f;
+    public float carSpeed = 13f;
 
     public enum State
     {
@@ -151,6 +152,9 @@ public class TrafficLightsControllerNL : MonoBehaviour
                 foreach (TrafficLight light in GreenLights)
                 {
                     float T_af = GetDist(nextToTurnGreen, light, true);
+                    float t_exit = GetDist(nextToTurnGreen, light, true) / carSpeed;
+                    float t_entry = GetDist(nextToTurnGreen, light, false) / carSpeed;
+                    clearingtime = Mathf.Max(clearingtime, Mathf.Max(t_exit - t_entry, 0.0f));
                 }
             }
             else
@@ -258,7 +262,7 @@ public class TrafficLightsControllerNL : MonoBehaviour
         int x = GetLightXPosInTable(reference);
         int y = GetLightYPosInTable(reference, other);
         print("x = " + x.ToString() + " y =" + y.ToString());
-        if (getOutTime = true)
+        if (getOutTime == true)
         {
             y += 1;
         }
