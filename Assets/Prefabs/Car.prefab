@@ -74,9 +74,6 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: dd85fd0a6ab296b3ebfe91361a2ce810, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4629415515501277931}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: dd85fd0a6ab296b3ebfe91361a2ce810, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 6241467233016489386}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: dd85fd0a6ab296b3ebfe91361a2ce810, type: 3}
       insertIndex: -1
@@ -90,21 +87,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: dd85fd0a6ab296b3ebfe91361a2ce810, type: 3}
   m_PrefabInstance: {fileID: 2322815661381074720}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4629415515501277931
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3241788368330687089}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fa012f4e047dd0e5a8783265714b4274, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rootCar: {fileID: 0}
-  spawningChange: 1
-  intervalInSeconds: 1
 --- !u!114 &6241467233016489386
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -117,6 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6752e34e8c8232a09febc64002b9d73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speed: 0
   forwardSpeed: 5
   corneringSpeed: 3
   rightTurningSpeed: 30
