@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CarGeneration : MonoBehaviour {
+public class CarGeneration : MonoBehaviour
+{
     public GameObject rootCar;
     public float spawningChange = 0.3f; // between 0-1
     public float intervalInSeconds = 1.0f;
@@ -32,11 +33,14 @@ public class CarGeneration : MonoBehaviour {
         {'l', 'l', 'l', 'f', 'r'}
     };
 
-    void Update() {
+    void Update()
+    {
         secondsSinceLastInterval += Time.deltaTime;
-        if(secondsSinceLastInterval >= intervalInSeconds) {
+        if (secondsSinceLastInterval >= intervalInSeconds)
+        {
             secondsSinceLastInterval = 0;
-            if(Random.value < spawningChange) {
+            if (Random.value < spawningChange)
+            {
                 int entranceIndex = Random.Range(0, positions.Length);
                 int exitIndex = Random.Range(0, positions.Length - 1);
 
@@ -45,15 +49,17 @@ public class CarGeneration : MonoBehaviour {
 
                 newCar.transform.position = positions[entranceIndex];
                 newCar.transform.rotation = rotations[entranceIndex];
-                
+
                 char nextAction = instructions[entranceIndex, exitIndex];
-                if(entranceIndex >= exitIndex) {
+                if (entranceIndex >= exitIndex)
+                {
                     exitIndex++;
                 }
                 newCar.GetComponent<CarMovement>().exitIndex = exitIndex;
 
                 newCar.GetComponent<CarMovement>().nextAction = nextAction;
-                if(nextAction == 'l') {
+                if (nextAction == 'l')
+                {
                     newCar.transform.position += newCar.transform.right * -3;
                 }
             }
