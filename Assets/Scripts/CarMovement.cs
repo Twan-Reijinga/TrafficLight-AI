@@ -10,7 +10,8 @@ public class CarMovement : MonoBehaviour
     public float leftTurningSpeed = 0.2f;
     public float switchTurningSpeed = 0.5f;
     public float switchRotation = 20.0f;
-    public GameObject actionTrigger;
+    public int exitIndex;
+    public char nextAction;
 
     private char action = 'f'; // f: forward | l: left | r: right | s: SwitchLane
     private Quaternion targetRotation;
@@ -18,17 +19,24 @@ public class CarMovement : MonoBehaviour
     private Vector3 carPosition;
 
 
-    // Update is called once per frame
+
     private void OnTriggerEnter(Collider other) {
-        if(other.name == "Right-TriggerBox") {
+        if(other.name == "Right-TriggerBox" && nextAction == 'r' && action == 'f') {
             targetRotation = Quaternion.Euler(0, transform.eulerAngles.y + 90.0f, 0);
             action = 'r';
-        } else if(other.name == "Left-TriggerBox") {
-            targetRotation = Quaternion.Euler(0, transform.eulerAngles.y -90.0f, 0);
+        } else if(other.name == "Left-TriggerBox" && nextAction == 'l' && action == 'f') {
+            targetRotation = Quaternion.Euler(0, transform.eulerAngles.y - 90.0f, 0);
             action = 'l';
-        } else if(other.name == "SwitchLane-TriggerBox") {
-            targetRotation = Quaternion.Euler(0, transform.eulerAngles.y - switchRotation, 0);
-            action = 's';
+        } else if(other.name == "SwitchLane-TriggerBox" && action == 'f') {
+            if(exitIndex == 1 || exitIndex == 4) {
+                targetRotation = Quaternion.Euler(0, transform.eulerAngles.y - switchRotation, 0);
+                action = 's';
+                nextAction = 'l';
+            } else if(exitIndex == 2 || exitIndex == 5) {
+                nextAction = 'f';
+            } else if(exitIndex == 3 || exitIndex == 6) {
+                nextAction = 'r';
+            }
         }
     } 
 
@@ -38,13 +46,13 @@ public class CarMovement : MonoBehaviour
 
         if(action == 'r') {
             transform.Translate(direction * corneringSpeed * Time.deltaTime, Space.World);        
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rightTurningSpeed);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rightTurningSpeed * Time.deltaTime);
             if(transform.rotation == targetRotation) {
                 action = 'f';
             }
         } else if (action == 'l') {
             transform.Translate(direction * corneringSpeed * Time.deltaTime, Space.World);        
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, leftTurningSpeed);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, leftTurningSpeed * Time.deltaTime);
             if(transform.rotation == targetRotation) {
                 action = 'f';
             }
@@ -53,7 +61,7 @@ public class CarMovement : MonoBehaviour
             targetRotation = Quaternion.Euler(0, transform.eulerAngles.y +switchRotation, 0);
             action = 'f';
         } else if ((action == 'f' && transform.rotation != targetRotation) || action == 's'){
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, switchTurningSpeed);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, switchTurningSpeed * Time.deltaTime);
             transform.Translate(direction * forwardSpeed * Time.deltaTime, Space.World);        
         } else {
             transform.Translate(direction * forwardSpeed * Time.deltaTime, Space.World);        
