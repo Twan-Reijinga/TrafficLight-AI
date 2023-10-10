@@ -151,8 +151,7 @@ public class TrafficLightsControllerNL : MonoBehaviour
                 state = State.ClearingDelay;
                 foreach (TrafficLight light in GreenLights)
                 {
-                    float T_af = GetDist(nextToTurnGreen, light, true);
-                    float t_exit = GetDist(nextToTurnGreen, light, true) / carSpeed;
+                    float t_exit = GetDist(light, nextToTurnGreen, true) / carSpeed;
                     float t_entry = GetDist(nextToTurnGreen, light, false) / carSpeed;
                     clearingtime = Mathf.Max(clearingtime, Mathf.Max(t_exit - t_entry, 0.0f));
                 }
