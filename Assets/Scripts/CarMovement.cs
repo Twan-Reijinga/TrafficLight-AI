@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CarMovement : MonoBehaviour
 {
+    public float speed;
     public float forwardSpeed = 5.0f;
     public float corneringSpeed = 3.0f;
     public float rightTurningSpeed = 0.4f;
@@ -18,18 +19,23 @@ public class CarMovement : MonoBehaviour
     private Vector3 direction;
     private Vector3 carPosition;
 
-
+    private void Start() {
+        speed = forwardSpeed;
+    }
 
     private void OnTriggerEnter(Collider other) {
         if(other.name == "Right-TriggerBox" && nextAction == 'r' && action == 'f') {
             targetRotation = Quaternion.Euler(0, transform.eulerAngles.y + 90.0f, 0);
+            speed = corneringSpeed;
             action = 'r';
         } else if(other.name == "Left-TriggerBox" && nextAction == 'l' && action == 'f') {
             targetRotation = Quaternion.Euler(0, transform.eulerAngles.y - 90.0f, 0);
+            speed = corneringSpeed;
             action = 'l';
         } else if(other.name == "SwitchLane-TriggerBox" && action == 'f') {
             if(exitIndex == 1 || exitIndex == 4) {
                 targetRotation = Quaternion.Euler(0, transform.eulerAngles.y - switchRotation, 0);
+                speed = forwardSpeed;
                 action = 's';
                 nextAction = 'l';
             } else if(exitIndex == 2 || exitIndex == 5) {
@@ -45,26 +51,29 @@ public class CarMovement : MonoBehaviour
         carPosition = transform.position;
 
         if(action == 'r') {
-            transform.Translate(direction * corneringSpeed * Time.deltaTime, Space.World);        
+            transform.Translate(direction * speed * Time.deltaTime, Space.World);        
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rightTurningSpeed * Time.deltaTime);
             if(transform.rotation == targetRotation) {
+                speed = forwardSpeed;
                 action = 'f';
             }
         } else if (action == 'l') {
-            transform.Translate(direction * corneringSpeed * Time.deltaTime, Space.World);        
+            transform.Translate(direction * speed * Time.deltaTime, Space.World);        
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, leftTurningSpeed * Time.deltaTime);
             if(transform.rotation == targetRotation) {
+                speed = forwardSpeed;
                 action = 'f';
             }
     
         } else if(action == 's' && transform.rotation == targetRotation) {
             targetRotation = Quaternion.Euler(0, transform.eulerAngles.y +switchRotation, 0);
+            speed = forwardSpeed;
             action = 'f';
         } else if ((action == 'f' && transform.rotation != targetRotation) || action == 's'){
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, switchTurningSpeed * Time.deltaTime);
-            transform.Translate(direction * forwardSpeed * Time.deltaTime, Space.World);        
+            transform.Translate(direction * speed * Time.deltaTime, Space.World);        
         } else {
-            transform.Translate(direction * forwardSpeed * Time.deltaTime, Space.World);        
+            transform.Translate(direction * speed * Time.deltaTime, Space.World);        
         }
     }
 

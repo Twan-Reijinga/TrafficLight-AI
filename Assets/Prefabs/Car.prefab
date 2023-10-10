@@ -99,6 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6752e34e8c8232a09febc64002b9d73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speed: 0
   forwardSpeed: 5
   corneringSpeed: 3
   rightTurningSpeed: 30
