@@ -48,6 +48,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbcffcdf7f94544c99b0af19ddfd5b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  whatIsCar:
+    serializedVersion: 2
+    m_Bits: 256
+  maxClearingTime: 15
+  carSpeed: 13
+  greenTimer: 5
+  innerGreenTimer: 0
+  state: 0
+  test: {fileID: 0}
+  test2: {fileID: 0}
 --- !u!1001 &170932436481729790
 PrefabInstance:
   m_ObjectHideFlags: 0

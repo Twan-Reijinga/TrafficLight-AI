@@ -6,10 +6,12 @@ using UnityEngine;
 public class TrafficLightsControllerNL : MonoBehaviour
 {
     private List<List<string>> distances;
+    public LayerMask whatIsCar;
 
     private List<DualTrafficLightsHolder> Lights;
 
     private List<TrafficLight> GreenLights = new List<TrafficLight>();
+    private List<TrafficLight> WaitingLights = new List<TrafficLight>();
     public float maxClearingTime = 15f;
     private float clearingtime = 0f;
     public float carSpeed = 13f;
@@ -21,8 +23,7 @@ public class TrafficLightsControllerNL : MonoBehaviour
         ClearingDelay
     }
 
-    [SerializeField]
-    private TrafficLight nextToTurnGreen;
+    // [SerializeField]
     private TrafficLight lastPinged;
 
     public float greenTimer = 5f;
@@ -61,24 +62,24 @@ public class TrafficLightsControllerNL : MonoBehaviour
         foreach (DualTrafficLightsHolder holder in Lights)
         {
             RaycastHit hit;
-            if (Physics.Raycast(holder.left.transform.position + Vector3.down * 4, holder.left.transform.right, out hit, 10f))
+            if (Physics.Raycast(holder.left.transform.position + Vector3.down * 4.5f - holder.left.transform.right * 2, holder.left.transform.right, out hit, 10f, whatIsCar))
             {
-                if (nextToTurnGreen == null && !holder.left.isGreen)
+                if (!holder.left.isGreen)
                 {
-                    nextToTurnGreen = holder.left;
+                    WaitingLights.Add(holder.left);
                 }
                 lastPinged = holder.left;
             }
-            else if (Physics.Raycast(holder.forward.transform.position + Vector3.down * 4, holder.forward.transform.right, out hit, 10f))
+            else if (Physics.Raycast(holder.forward.transform.position + Vector3.down * 4.5f - holder.forward.transform.right * 2, holder.forward.transform.right, out hit, 10f, whatIsCar))
             {
-                if (nextToTurnGreen == null && !holder.forward.isGreen)
+                if (!holder.forward.isGreen)
                 {
-                    nextToTurnGreen = holder.forward;
+                    WaitingLights.Add(holder.forward);
                 }
                 lastPinged = holder.forward;
             }
-            Debug.DrawRay(holder.left.transform.position + Vector3.down * 4, holder.left.transform.right * 10, Color.green);
-            Debug.DrawRay(holder.forward.transform.position + Vector3.down * 4, holder.forward.transform.right * 10, Color.green);
+            Debug.DrawRay(holder.left.transform.position + Vector3.down * 4.5f - holder.left.transform.right * 2, holder.left.transform.right * 10, Color.green);
+            Debug.DrawRay(holder.forward.transform.position + Vector3.down * 4.5f - holder.forward.transform.right * 2, holder.forward.transform.right * 10, Color.green);
         }
 
         switch (state)
@@ -104,55 +105,61 @@ public class TrafficLightsControllerNL : MonoBehaviour
 
     void WaitingForCar()
     {
-        if (nextToTurnGreen != null)
+        if (WaitingLights.Count != 0)
         {
+            TrafficLight next = WaitingLights[Random.Range(0, WaitingLights.Count - 1)];
             innerGreenTimer = greenTimer;
 
-            nextToTurnGreen.isGreen = true;
+            next.isGreen = true;
             UpdateGreenLightsList();
+            UpdateWaitingLightsList();
 
-            nextToTurnGreen = null;
             state = State.LightsAreGreen;
         }
     }
 
     void LightsAreGreen()
     {
-        if (lastPinged != null && GreenLights.Count > 0)
+        if (WaitingLights.Count != 0 && GreenLights.Count > 0)
         {
-            bool canBeGreen = true;
-            foreach (TrafficLight light in GreenLights)
+            foreach (TrafficLight lp in WaitingLights)
             {
-                float tmp = GetDist(lastPinged, light);
-
-                print(tmp);
-
-                if (tmp != -1)
+                bool canBeGreen = true;
+                foreach (TrafficLight light in GreenLights)
                 {
-                    canBeGreen = false;
+                    float tmp = GetDist(lp, light);
+
+                    // print(tmp);
+
+                    if (tmp != -1)
+                    {
+                        canBeGreen = false;
+                    }
+                }
+
+                if (canBeGreen)
+                {
+                    lp.isGreen = true;
+                    UpdateGreenLightsList();
                 }
             }
-
-            if (canBeGreen)
-            {
-                lastPinged.isGreen = true;
-                UpdateGreenLightsList();
-            }
-            lastPinged = null;
+            UpdateWaitingLightsList();
         }
-
         innerGreenTimer -= Time.deltaTime;
         if (innerGreenTimer <= 0)
         {
             innerGreenTimer = 0;
-            if (nextToTurnGreen != null && GreenLights.Count != 0)
+            if (WaitingLights.Count != 0 && GreenLights.Count != 0)
             {
                 clearingtime = 0;
                 state = State.ClearingDelay;
+                int lightIndex = Random.Range(0, WaitingLights.Count - 1);
+                TrafficLight nextLight = WaitingLights[lightIndex];
                 foreach (TrafficLight light in GreenLights)
                 {
-                    float t_exit = GetDist(light, nextToTurnGreen, true) / carSpeed;
-                    float t_entry = GetDist(nextToTurnGreen, light, false) / carSpeed;
+                    float t_exit = GetDist(nextLight, light, true) / carSpeed;
+                    float t_entry = GetDist(light, nextLight, false) / carSpeed;
+
                     clearingtime = Mathf.Max(clearingtime, Mathf.Max(t_exit - t_entry, 0.0f));
                 }
             }
@@ -182,6 +189,7 @@ public class TrafficLightsControllerNL : MonoBehaviour
             holder.left.isGreen = green;
         }
         UpdateGreenLightsList();
+        UpdateWaitingLightsList();
     }
 
     bool CheckForCompatibleTrafficLights(TrafficLight tl)
@@ -211,21 +219,37 @@ public class TrafficLightsControllerNL : MonoBehaviour
         GreenLights.Clear();
         foreach (DualTrafficLightsHolder holder in Lights)
         {
-            if (holder.forward.isGreen)
+            if (WaitingLights.Count != 0)
             {
-                GreenLights.Add(holder.forward);
-                if (holder.forward == nextToTurnGreen)
+                TrafficLight next = WaitingLights[Random.Range(0, WaitingLights.Count - 1)];
+                if (holder.forward.isGreen)
                 {
-                    nextToTurnGreen = null;
+                    GreenLights.Add(holder.forward);
+                }
+                if (holder.left.isGreen)
+                {
+                    GreenLights.Add(holder.left);
                 }
             }
-            if (holder.left.isGreen)
+        }
+    }
+
+    void UpdateWaitingLightsList()
+    {
+        List<int> ints = new List<int>();
+        for (int i = 0; i < WaitingLights.Count; i++)
+        {
+            if (WaitingLights[i].isGreen)
             {
-                GreenLights.Add(holder.left);
-                if (holder.left == nextToTurnGreen)
-                {
-                    nextToTurnGreen = null;
-                }
+                ints.Add(i);
+            }
+        }
+
+        if (ints.Count != 0)
+        {
+            for (int i = ints.Count - 1; i >= 0; i--)
+            {
+                WaitingLights.RemoveAt(ints[i]);
             }
         }
     }
@@ -260,7 +284,7 @@ public class TrafficLightsControllerNL : MonoBehaviour
     {
         int x = GetLightXPosInTable(reference);
         int y = GetLightYPosInTable(reference, other);
-        print("x = " + x.ToString() + " y =" + y.ToString());
+        // print("x = " + x.ToString() + " y =" + y.ToString());
         if (getOutTime == true)
         {
             y += 1;

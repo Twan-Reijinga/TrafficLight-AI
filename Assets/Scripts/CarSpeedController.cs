@@ -1,30 +1,100 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 public class CarSpeedController : MonoBehaviour
 {
     private CarMovement carMovement;
-    public float hasteMultiplier;
-    private float speed;
+    public float hasteMultiplier = 1f;
+    private float speed = 1f;
+    public LayerMask ignoreOnRayCast;
 
     void Start()
     {
-        hasteMultiplier = Random.Range(0.75f, 1.25f);
+        hasteMultiplier = 1f;//Random.Range(0.5f, 1.5f);
+        // print(hasteMultiplier);
         carMovement = GetComponent<CarMovement>();
     }
 
     void Update()
     {
-        Debug.DrawRay(transform.position, transform.forward * 10, Color.green);
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, transform.forward, out hit, 10f))
+        RaycastHit hitR;
+        RaycastHit hitL;
+
+        bool rayR = Physics.Raycast(transform.position + transform.right * 0.5f, transform.forward, out hitR, 5f, ~(ignoreOnRayCast));
+        bool rayL = Physics.Raycast(transform.position - transform.right * 0.5f, transform.forward, out hitL, 5f, ~(ignoreOnRayCast));
+
+        if (Selection.activeGameObject == transform.gameObject)
         {
-            if (hit.distance < 5f)
+            if (rayR)
             {
-                // speed = 0;
+                print("R: " + hitR.transform.name);
+            }
+            if (rayL)
+            {
+                print("L: " + hitL.transform.name);
             }
         }
-        // carMovement.speedMult;
+
+        Debug.DrawRay(transform.position + transform.right * 0.5f, transform.forward * 5f, Color.green);
+        Debug.DrawRay(transform.position - transform.right * 0.5f, transform.forward * 5f, Color.green);
+
+
+        if (rayR || rayL)
+        {
+            RaycastHit hit;
+            if (rayR)
+            {
+                if (rayL)
+                {
+                    hit = hitL;
+                    if (hitR.distance < hitL.distance)
+                    {
+                        hit = hitR;
+                    }
+                }
+                else
+                {
+                    hit = hitR;
+                }
+            }
+            else
+            {
+                hit = hitL;
+            }
+
+            if (hit.transform.gameObject.GetComponent<SpeedMeter>().isCar || carMovement.action == 'f')
+            {
+                if (hit.distance < 2.5f)
+                {
+                    speed = 0;
+                }
+                else if (hit.transform.gameObject.GetComponent<SpeedMeter>() != null)
+                {
+                    float thisSpeed = GetComponent<SpeedMeter>().velocity.magnitude;
+                    if (thisSpeed != 0)
+                    {
+                        if (hit.transform.gameObject.GetComponent<SpeedMeter>().velocity.magnitude == 0)
+                        {
+                            if (Vector3.Dot(transform.forward, hit.transform.forward) < 0)
+                            {
+                                speed = Mathf.Max(Mathf.Min(hit.transform.gameObject.GetComponent<SpeedMeter>().velocity.magnitude / thisSpeed, 1.0f), 0.5f);
+                            }
+
+                        }
+                    }
+                    else
+                    {
+                        speed = 0;
+                    }
+                }
+            }
+        }
+        else
+        {
+            speed = 1;
+        }
+        carMovement.speedMult = speed * hasteMultiplier;
     }
 }
