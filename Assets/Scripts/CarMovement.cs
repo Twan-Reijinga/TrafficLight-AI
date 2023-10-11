@@ -15,7 +15,7 @@ public class CarMovement : MonoBehaviour
     public int exitIndex;
     public char nextAction;
 
-    private char action = 'f'; // f: forward | l: left | r: right | s: SwitchLane
+    public char action = 'f'; // f: forward | l: left | r: right | s: SwitchLane
     private Quaternion targetRotation;
     private Vector3 direction;
     private Vector3 carPosition;
