@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CarMovement : MonoBehaviour
 {
+    public EffeciencyStats carStats;
     public float speedMult;
     public float speed;
     public float forwardSpeed = 5.0f;
@@ -56,6 +57,10 @@ public class CarMovement : MonoBehaviour
             {
                 nextAction = 'r';
             }
+        }
+        else if (other.name == "Exit-TriggerBox") {
+            carStats.GetComponent<EffeciencyStats>().prossesedCars++;
+            Destroy(gameObject);
         }
     }
 

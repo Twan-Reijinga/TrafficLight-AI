@@ -5,6 +5,7 @@ using UnityEngine;
 public class CarGeneration : MonoBehaviour
 {
     public GameObject rootCar;
+    public EffeciencyStats carStats;
     public float spawningChange = 0.3f; // between 0-1
     public float intervalInSeconds = 1.0f;
     private float secondsSinceLastInterval = 0.0f;
@@ -56,6 +57,7 @@ public class CarGeneration : MonoBehaviour
                     exitIndex++;
                 }
                 newCar.GetComponent<CarMovement>().exitIndex = exitIndex;
+                newCar.GetComponent<CarMovement>().carStats = carStats;
 
                 newCar.GetComponent<CarMovement>().nextAction = nextAction;
                 if (nextAction == 'l')
