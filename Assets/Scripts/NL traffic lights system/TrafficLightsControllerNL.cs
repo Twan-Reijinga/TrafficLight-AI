@@ -14,7 +14,7 @@ public class TrafficLightsControllerNL : MonoBehaviour
     private List<TrafficLight> WaitingLights = new List<TrafficLight>();
     public float maxClearingTime = 15f;
     private float clearingtime = 0f;
-    public float carSpeed = 13f;
+    public float carSpeed = 8f;
 
     public enum State
     {
