@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class CarGeneration : MonoBehaviour
 {
     public GameObject rootCar;
     public EffeciencyStats carStats;
-    public float spawningChange = 0.3f; // between 0-1
+    public float spawningChance = 0.3f; // between 0-1
+    public List<int> entrancePositionChance = new List<int>(6);
+    public List<int> exitPositionChance = new List<int>(6);
     public float intervalInSeconds = 1.0f;
     private float secondsSinceLastInterval = 0.0f;
     private Vector3[] positions = {
@@ -40,10 +43,13 @@ public class CarGeneration : MonoBehaviour
         if (secondsSinceLastInterval >= intervalInSeconds)
         {
             secondsSinceLastInterval = 0;
-            if (Random.value < spawningChange)
+            if (Random.value < spawningChance)
             {
-                int entranceIndex = Random.Range(0, positions.Length);
-                int exitIndex = Random.Range(0, positions.Length - 1);
+                int entranceIndex = GetPositionFromChance(entrancePositionChance); 
+                // Random.Range(0, positions.Length);
+                int exitIndex = GetPositionFromChance(exitPositionChance, entranceIndex);
+                // Random.Range(0, positions.Length - 1);
+                // print(entranceIndex + " - " + exitIndex);
 
                 GameObject newCar = Instantiate(rootCar);
                 newCar.transform.parent = transform;
@@ -66,5 +72,29 @@ public class CarGeneration : MonoBehaviour
                 }
             }
         }
+    }
+
+    int GetPositionFromChance(List<int> chances, int ignore = -1) {
+        List<int> modifiedChances = new List<int>(chances);
+        if(ignore >= 0) {
+            modifiedChances.RemoveAt(ignore);
+        }
+        // string items = "";
+        // foreach(var item in modifiedChances) {
+        //     items += item + ", ";
+        // }
+        // print(items);
+        int totalChance = modifiedChances.Sum();
+        int randomChoice = Random.Range(0, totalChance);
+        for (int i = 0; i < modifiedChances.Count; i++){
+            if(modifiedChances[i] > randomChoice) {
+                return i;
+            }
+            randomChoice -= modifiedChances[i];
+        }
+        if(totalChance == 0) {
+            print("chance is incorrectly distributed, because there is no possible position.");
+        } 
+        return -1;
     }
 }
