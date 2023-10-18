@@ -23,7 +23,7 @@ public class CarMovement : MonoBehaviour
 
     private void Start()
     {
-        speed = forwardSpeed * speedMult;
+        speed = forwardSpeed;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -31,13 +31,13 @@ public class CarMovement : MonoBehaviour
         if (other.name == "Right-TriggerBox" && nextAction == 'r' && action == 'f')
         {
             targetRotation = Quaternion.Euler(0, transform.eulerAngles.y + 90.0f, 0);
-            speed = corneringSpeed * speedMult;
+            speed = corneringSpeed;
             action = 'r';
         }
         else if (other.name == "Left-TriggerBox" && nextAction == 'l' && action == 'f')
         {
             targetRotation = Quaternion.Euler(0, transform.eulerAngles.y - 90.0f, 0);
-            speed = corneringSpeed * speedMult;
+            speed = corneringSpeed;
             action = 'l';
         }
         else if (other.name == "SwitchLane-TriggerBox" && action == 'f')
@@ -45,7 +45,7 @@ public class CarMovement : MonoBehaviour
             if (exitIndex == 1 || exitIndex == 4)
             {
                 targetRotation = Quaternion.Euler(0, transform.eulerAngles.y - switchRotation, 0);
-                speed = forwardSpeed * speedMult;
+                speed = forwardSpeed;
                 action = 's';
                 nextAction = 'l';
             }
@@ -72,20 +72,20 @@ public class CarMovement : MonoBehaviour
         if (action == 'r')
         {
             transform.Translate(direction * speed * speedMult * Time.deltaTime, Space.World);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rightTurningSpeed * speedMult * speedMult * Time.deltaTime);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rightTurningSpeed * speedMult * Time.deltaTime);
             if (transform.rotation == targetRotation)
             {
-                speed = forwardSpeed * speedMult;
+                speed = forwardSpeed;
                 action = 'f';
             }
         }
         else if (action == 'l')
         {
             transform.Translate(direction * speed * speedMult * Time.deltaTime, Space.World);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, leftTurningSpeed * speedMult * speedMult * Time.deltaTime);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, leftTurningSpeed * speedMult * Time.deltaTime);
             if (transform.rotation == targetRotation)
             {
-                speed = forwardSpeed * speedMult;
+                speed = forwardSpeed;
                 action = 'f';
             }
 
@@ -93,12 +93,12 @@ public class CarMovement : MonoBehaviour
         else if (action == 's' && transform.rotation == targetRotation)
         {
             targetRotation = Quaternion.Euler(0, transform.eulerAngles.y + switchRotation, 0);
-            speed = forwardSpeed * speedMult;
+            speed = forwardSpeed;
             action = 'f';
         }
         else if ((action == 'f' && transform.rotation != targetRotation) || action == 's')
         {
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, switchTurningSpeed * speedMult * speedMult * Time.deltaTime);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, switchTurningSpeed * speedMult * Time.deltaTime);
             transform.Translate(direction * speed * speedMult * Time.deltaTime, Space.World);
         }
         else
