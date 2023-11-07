@@ -2,17 +2,20 @@ using System;
 
 class Test{
     static void Main() {
-        Console.WriteLine("test");
         int[] neuronCounts = {8, 2, 4};
         Network network = new Network(neuronCounts);
     }
 }
 
 class Network {
-    int[] layers;
+    Layer[] layers;
     public Network(int[] neuronCounts) {
-        Layer layer = new Layer(neuronCounts[0], neuronCounts[1]);
-        Console.WriteLine(layer.getInfo());
+        layers = new Layer[neuronCounts.Length];
+        for(int i = 0; i < neuronCounts.Length - 1;i++) {
+            Layer layer = new Layer(neuronCounts[i], neuronCounts[i + 1]);
+            layers[i] = layer;
+            Console.WriteLine(layer.getInfo());
+        }
     }
 };
 
