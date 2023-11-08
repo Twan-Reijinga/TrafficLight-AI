@@ -10,18 +10,21 @@ class Test{
 class Network {
     Layer[] layers;
     public Network(int[] neuronCounts) {
-        layers = new Layer[neuronCounts.Length];
+        layers = new Layer[neuronCounts.Length -1];
         for(int i = 0; i < neuronCounts.Length - 1;i++) {
             Layer layer = new Layer(neuronCounts[i], neuronCounts[i + 1]);
             layers[i] = layer;
             Console.WriteLine(layer.getInfo());
         }
+        Console.WriteLine("length: " + layers.Length);
     }
 };
 
 class Layer {
     int[] inputNodes;
     int[] outputNodes;
+    int[] biases;
+    int[][] weights;
     public Layer(int inputCount, int outputCount) {
         inputNodes = new int[inputCount];
         outputNodes = new int[outputCount];
