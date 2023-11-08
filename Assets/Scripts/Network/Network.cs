@@ -13,6 +13,7 @@ class Network {
         layers = new Layer[neuronCounts.Length -1];
         for(int i = 0; i < neuronCounts.Length - 1;i++) {
             Layer layer = new Layer(neuronCounts[i], neuronCounts[i + 1]);
+            Layer.randomize(layer);
             layers[i] = layer;
             Console.WriteLine(layer.getInfo());
         }
@@ -23,15 +24,25 @@ class Network {
 class Layer {
     int[] inputNodes;
     int[] outputNodes;
-    int[] biases;
-    int[][] weights;
+    float[] biases;
+    float[][] weights;
     public Layer(int inputCount, int outputCount) {
         inputNodes = new int[inputCount];
         outputNodes = new int[outputCount];
     }
 
+    public static void randomize(Layer layer) {
+        Random rand = new Random();
+        layer.biases = new float[layer.outputNodes.Length];
+        for(int i = 0; i < layer.outputNodes.Length; i++) {
+            layer.biases[i] = (float) rand.NextDouble() * 2 - 1;
+            Console.WriteLine(layer.biases[i]);
+        }
+        return;
+    }
+
     public string getInfo() {
-        return "inputCount: " + inputNodes.Length + " outputCount: " + outputNodes.Length;
+        return "biases: " + biases.Length + " outputCount: " + outputNodes.Length;
     }
 };
 
