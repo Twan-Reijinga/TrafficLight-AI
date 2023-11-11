@@ -38,6 +38,13 @@ class Layer {
             layer.biases[i] = (float) rand.NextDouble() * 2 - 1;
             Console.WriteLine(layer.biases[i]);
         }
+
+        layer.weights = new float[inputNodes.Length][outputNodes.Length];
+        for (int i = 0; i < layer.inputNodes.Length; i++) {
+            for (int j = 0; j < layer.inputNodes.Length; j++) {
+                layer.weights[i][j] = (float) rand.NextDouble() * 2 - 1;
+            }
+        }
         return;
     }
 
