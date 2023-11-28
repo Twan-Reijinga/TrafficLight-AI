@@ -8,7 +8,7 @@ class Test{
 }
 
 class Network {
-    Layer[] layers;
+Layer[] layers;
     public Network(int[] neuronCounts) {
         layers = new Layer[neuronCounts.Length -1];
         for(int i = 0; i < neuronCounts.Length - 1;i++) {
@@ -36,13 +36,14 @@ class Layer {
         layer.biases = new float[layer.outputNodes.Length];
         for(int i = 0; i < layer.outputNodes.Length; i++) {
             layer.biases[i] = (float) rand.NextDouble() * 2 - 1;
-            Console.WriteLine(layer.biases[i]);
         }
 
-        layer.weights = new float[inputNodes.Length][outputNodes.Length];
-        for (int i = 0; i < layer.inputNodes.Length; i++) {
+        layer.weights = new float[layer.outputNodes.Length][];
+        for (int i = 0; i < layer.outputNodes.Length; i++) {
             for (int j = 0; j < layer.inputNodes.Length; j++) {
+                layer.weights[i] = new float[layer.inputNodes.Length];
                 layer.weights[i][j] = (float) rand.NextDouble() * 2 - 1;
+                Console.WriteLine(layer.weights[i][j]);
             }
         }
         return;
