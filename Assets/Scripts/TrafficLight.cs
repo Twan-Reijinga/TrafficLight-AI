@@ -11,14 +11,23 @@ public class TrafficLight : MonoBehaviour
     private BoxCollider bc;
     private MeshRenderer mr;
 
-    void Start(){
+    public CarSpeedController carWaitingForThis;
+
+    void Start()
+    {
         bc = GetComponent<BoxCollider>();
         mr = GetComponent<MeshRenderer>();
     }
 
-    void Update(){
-        
+    void Update()
+    {
+        carWaitingForThis = isGreen ? carWaitingForThis : null;
         bc.enabled = !isGreen;
         mr.material = isGreen ? redMat : greenMat;
+    }
+
+    int GetCarsInFront()
+    {
+        return 0;
     }
 }
