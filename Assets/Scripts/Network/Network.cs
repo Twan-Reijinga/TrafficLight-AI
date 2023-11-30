@@ -4,6 +4,8 @@ class Test{
     static void Main() {
         int[] neuronCounts = {8, 2, 4};
         Network network = new Network(neuronCounts);
+        float[] inputs = {0.1f, 0.2f, 0.4f, 0.8f, 1.7f};
+        Network.feedForward(network, inputs);
     }
 }
 
@@ -18,6 +20,14 @@ Layer[] layers;
             Console.WriteLine(layer.getInfo());
         }
         Console.WriteLine("length: " + layers.Length);
+    }
+
+    public static float[] feedForward(Network network, float[] inputs) {
+        float[] outputs = Layer.feedForward(network.layers[0], inputs);
+        for(int i = 0; i < network.layers.Length; i++) {
+            outputs = Layer.feedForward(network.layers[i], outputs);
+        }
+        return outputs;
     }
 };
 
@@ -47,6 +57,14 @@ class Layer {
             }
         }
         return;
+    }
+
+    public static float[] feedForward(Layer layer, float[] inputs) {
+        for(int i = 0; i < inputs.Length; i++) {
+            inputs[i] += 1.0f;
+            Console.WriteLine("input: " + inputs[i]);
+        }
+        return inputs;
     }
 
     public string getInfo() {
