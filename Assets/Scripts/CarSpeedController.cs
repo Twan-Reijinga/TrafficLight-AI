@@ -9,6 +9,7 @@ public class CarSpeedController : MonoBehaviour
     public float hasteMultiplier = 1f;
     private float speed = 1f;
     public LayerMask ignoreOnRayCast;
+    public CarSpeedController carWaitingFor;
 
     void Start()
     {
@@ -19,6 +20,7 @@ public class CarSpeedController : MonoBehaviour
 
     void Update()
     {
+        carWaitingFor = null;
         RaycastHit hitR;
         RaycastHit hitL;
 
@@ -30,6 +32,7 @@ public class CarSpeedController : MonoBehaviour
             if (rayR)
             {
                 print("R: " + hitR.transform.name);
+
             }
             if (rayL)
             {
@@ -63,6 +66,18 @@ public class CarSpeedController : MonoBehaviour
             {
                 hit = hitL;
             }
+
+            carWaitingFor = hit.transform.gameObject.GetComponent<CarSpeedController>();
+            if (carWaitingFor != null)
+            {
+                if (carWaitingFor.carWaitingFor == this)
+                {
+                    print("CRASH");
+                    Destroy(gameObject);    //add crash logic here
+                }
+            }
+
+
 
             // if (hit.transform.gameObject.GetComponent<SpeedMeter>().isCar || carMovement.action == 'f')
             // {
