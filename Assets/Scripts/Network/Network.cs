@@ -4,22 +4,44 @@ class Test{
     static void Main() {
         int[] neuronCounts = {5, 6, 4};
         Network network = new Network(neuronCounts);
-        float[] inputs = {0.1f, 0.2f, 0.4f, 0.8f, 1.7f};
-        Network.feedForward(network, inputs);
+        float[] states = {0.1f, 0.2f, 0.4f, 0.8f, 1.7f};
+        // Network.feedForward(network, inputs);
+        QLearnAgent agent = new QLearnAgent(network, 0.5f);
+        agent.selectAction(states);
+    }
+}
+
+class QLearnAgent {
+    Network network;
+    private float epsilon;
+    public QLearnAgent(Network startNetwork, float exploreChance) {
+        network = startNetwork;
+        epsilon = exploreChance;
+    }
+    
+    public void selectAction(float[] states) {
+        Random rand = new Random();
+        float randomChanceValue = (float) rand.NextDouble();
+        if(randomChanceValue < epsilon) {
+            // explore
+            Console.WriteLine("explore mode");
+        } else {
+            // exploit
+            Console.WriteLine("exploit mode");
+            Network.feedForward(network, states);
+        }
     }
 }
 
 class Network {
-Layer[] layers;
+    Layer[] layers;
     public Network(int[] neuronCounts) {
         layers = new Layer[neuronCounts.Length -1];
         for(int i = 0; i < neuronCounts.Length - 1;i++) {
             Layer layer = new Layer(neuronCounts[i], neuronCounts[i + 1]);
             Layer.randomize(layer);
             layers[i] = layer;
-            Console.WriteLine(layer.getInfo());
         }
-        Console.WriteLine("length: " + layers.Length);
     }
 
     public static float[] feedForward(Network network, float[] inputs) {
@@ -69,7 +91,6 @@ class Layer {
                 weightedSum += inputs[j] * layer.weights[i][j];
             }
             outputs[i] = Signoid(weightedSum - layer.biases[i]);
-            Console.WriteLine("sig: " + Signoid(weightedSum - layer.biases[i]));
         }
         return outputs;
     }
@@ -82,10 +103,3 @@ class Layer {
         return "input: " + inputCount + " outputCount: " + outputCount;
     }
 };
-
-// using System;
-// class HelloWorld {
-//   static void Main() {
-//     Console.WriteLine("Hello World!");
-//   }
-// }
