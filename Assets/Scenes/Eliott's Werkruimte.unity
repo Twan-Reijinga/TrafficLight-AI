@@ -436,7 +436,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeStepSize: 0.05
-  timeBetweenVisualisations: 0.05
+  timeBetweenVisualisations: 1
   seed: 0
   visualiser: {fileID: 973600591}
   runAtSetSpeed: 1
@@ -1876,6 +1876,7 @@ MonoBehaviour:
   Car: {fileID: 919132149155446097, guid: a6c2b4deb3abe9da193357b2b97bcae4, type: 3}
   CarParent: {fileID: 973600592}
   trafficLights: {fileID: 946886110}
+  t: 0
 --- !u!4 &973600592
 Transform:
   m_ObjectHideFlags: 0

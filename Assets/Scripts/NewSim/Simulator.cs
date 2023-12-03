@@ -7,7 +7,7 @@ namespace Simulator
 {
     public class G_Car
     {
-        public uint UUID = 0;
+        public int UUID = 0;
         public Vector2 pos = Vector2.zero;
         public float orientation = 0;
     }
@@ -21,7 +21,7 @@ namespace Simulator
 
     public class Car
     {
-        public uint UUID = 0;
+        public int UUID = 0;
         public Vector2 pos;
         public float orientation = 0;
         public int startIndex;
@@ -109,14 +109,14 @@ namespace Simulator
             return scene;
         }
 
-        public Car GenerateCar(uint id)
+        public Car GenerateCar(int id)
         {
             int index = (int)Mathf.Floor(Random.Range(0, positions.Length));
 
             Car car = new Car
             {
-                orientation = orientations[index],
-                pos = positions[index],
+                orientation = Random.Range(0, 360),//orientations[index],
+                pos = Random.insideUnitCircle * 50,//positions[index],
                 UUID = id
             };
 
@@ -134,7 +134,7 @@ namespace Simulator
             int amountOfCars = 50;
             for (int i = 0; i < amountOfCars; i++)
             {
-                Car car = GenerateCar((uint)i);
+                Car car = GenerateCar(i);
                 cars.Add(car);
             }
 

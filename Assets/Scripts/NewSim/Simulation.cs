@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Simulator;
 using TMPro;
+using UnityEditor.SearchService;
 
 public class Simulation : MonoBehaviour
 {
@@ -26,7 +27,6 @@ public class Simulation : MonoBehaviour
     {
         simulator.seed = seed;
         simulator.TestPopulation();
-        Visualize();
         Step();
         VisualsUpdater();
         lastframe = Time.time;
@@ -35,6 +35,7 @@ public class Simulation : MonoBehaviour
     void Visualize()
     {
         visualiser.SetVisuals(simulator.GetGraphicSceneState());
+        visualiser.timeBetweenVisualisations = timeBetweenVisualisations;
     }
 
     void Step()
