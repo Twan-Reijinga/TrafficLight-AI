@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Simulator
 {
-
     public class G_Car
     {
         public uint UUID = 0;
@@ -34,7 +34,18 @@ namespace Simulator
             }
         }
 
+        public Vector2 right
+        {
+            get
+            {
+                return new Vector2(Mathf.Cos(Mathf.Deg2Rad * -orientation), Mathf.Sin(Mathf.Deg2Rad * -orientation));
+            }
+        }
 
+        public void Move(float dt, float speed)
+        {
+            pos += forward * dt * speed;
+        }
 
     }
 
@@ -55,6 +66,25 @@ namespace Simulator
         List<Car> cars = new List<Car>();
         List<Light> lightsC1 = new List<Light>();
         List<Light> lightsC2 = new List<Light>();
+
+        public List<Vector2[]> spawnPositions = new List<Vector2[]>() { };
+        private Vector2[] positions = {
+            new Vector2(-26.5f, -31.0f),
+            new Vector2(-60.0f, -2.7f),
+            new Vector2(-32.5f, 31.0f),
+            new Vector2(26.5f, 31.0f),
+            new Vector2(60.0f, 3.0f),
+            new Vector2(32.5f, -31.0f)
+        };
+
+        private float[] orientations = {
+            0.0f,
+            90.0f,
+            180.0f,
+            180.0f,
+            -90.0f,
+            0.0f
+        };
 
 
         public G_sceneState GetGraphicSceneState()
@@ -79,6 +109,24 @@ namespace Simulator
             return scene;
         }
 
+        public Car GenerateCar(uint id)
+        {
+            int index = (int)Mathf.Floor(Random.Range(0, positions.Length));
+
+            Car car = new Car
+            {
+                orientation = orientations[index],
+                pos = positions[index],
+                UUID = id
+            };
+
+            if (false)
+            { //car goes to left in first time
+                car.pos += car.right * -3;
+            }
+            return car;
+        }
+
         public void TestPopulation()
         {
             Random.InitState(seed);
@@ -86,10 +134,7 @@ namespace Simulator
             int amountOfCars = 50;
             for (int i = 0; i < amountOfCars; i++)
             {
-                Car car = new Car();
-                car.pos = Random.insideUnitCircle * 50;
-                car.UUID = (uint)i;
-                car.orientation = Random.Range(0, 360);
+                Car car = GenerateCar((uint)i);
                 cars.Add(car);
             }
 
@@ -116,7 +161,7 @@ namespace Simulator
         {
             foreach (Car car in cars)
             {
-                car.pos += car.forward * 3 * dt; // TEST SPEED OF 3!!
+                car.Move(dt, 3); // TEST SPEED OF 3!!
 
             }
         }
