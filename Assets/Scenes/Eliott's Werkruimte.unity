@@ -301,10 +301,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c51cc31bf3d3684e9288ebdb9cd55fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeStepSize: 0.05
-  timeBetweenSteps: 0.05
+  timeStepSize: 0.5
+  timeBetweenVisualisations: 0.5
   seed: 0
   visualiser: {fileID: 973600591}
+  runAtSetSpeed: 0
+  paused: 0
 --- !u!4 &212740489
 Transform:
   m_ObjectHideFlags: 0
