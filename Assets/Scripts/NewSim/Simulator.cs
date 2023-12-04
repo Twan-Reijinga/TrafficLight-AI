@@ -19,13 +19,26 @@ namespace Simulator
 
     }
 
+    public class RayHit
+    {
+        public Light light;
+        public Car car;
+        public bool hasHit;
+        public float dist;
+    }
+
     public class Car
     {
         public int UUID = 0;
         public Vector2 pos;
-        public float orientation = 0;
+        public float orientation;
         public int startIndex;
         public int endIndex;
+
+        private float velocity = 0;
+        private float acceleration = 3;
+        private float maxSpeed = 6;
+
         public Vector2 forward
         {
             get
@@ -42,9 +55,16 @@ namespace Simulator
             }
         }
 
-        public void Move(float dt, float speed)
+        public void Accelerate(float dt, float mult = 1) //pass mult as -1 for deceleration
         {
-            pos += forward * dt * speed;
+            velocity += acceleration * dt * mult;
+            velocity = Mathf.Clamp(velocity, 0, maxSpeed);
+        }
+
+        public void Move(float dt)
+        {
+            Accelerate(dt);
+            pos += forward * velocity * dt;
         }
 
     }
@@ -161,13 +181,43 @@ namespace Simulator
         {
             foreach (Car car in cars)
             {
-                car.Move(dt, 3); // TEST SPEED OF 3!!
+                car.Move(dt); // TEST SPEED OF 3!!
 
             }
         }
 
         void UpdateTrafficLights(float dt)
         {
+
+        }
+
+        public bool Raycast(Vector2 origin, Vector2 dir, float maxDist, out RayHit hit)
+        {
+            hit = new RayHit();
+
+            return false;
+        }
+
+        private Vector2 LineLineIntersect(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4)
+        {
+            float x1 = p1.x;
+            float y1 = p1.y;
+
+            float x2 = p2.x;
+            float y2 = p2.y;
+
+            float x3 = p3.x;
+            float y3 = p3.y;
+
+            float x4 = p4.x;
+            float y4 = p4.y;
+
+            float d = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+
+            float x = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / d;
+            float y = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / d;
+
+            return new Vector2(x, y);
 
         }
     }
