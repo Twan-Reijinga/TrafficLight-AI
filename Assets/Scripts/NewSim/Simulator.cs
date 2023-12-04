@@ -198,27 +198,28 @@ namespace Simulator
             return false;
         }
 
-        private Vector2 LineLineIntersect(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4)
+        private static Vector2? LineLineIntersect(Vector2 from1, Vector2 to1, Vector2 from2, Vector2 to2)
         {
-            float x1 = p1.x;
-            float y1 = p1.y;
+            const int d = 
+                (to1.x - from1.x) * (to2.y - from2.y) - (to1.y - from1.y) * (to2.x - from2.x);
+            
+            if(d == 0) {
+                return null; // no intersection
+            }
 
-            float x2 = p2.x;
-            float y2 = p2.y;
+            const float t =
+                ((from2.x - from1.x) * (to1.y - from1.y) - (from2.y - from1.y) * (to1.x - from1.x)) / d;
+            const float u = 
+                 ((to2.y - from2.y) * (to2.x - from1.x) + (from2.x - to2.x) * (to2.y - from1.y)) / d;
 
-            float x3 = p3.x;
-            float y3 = p3.y;
-
-            float x4 = p4.x;
-            float y4 = p4.y;
-
-            float d = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-
-            float x = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / d;
-            float y = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / d;
-
-            return new Vector2(x, y);
-
+            if(u > 0 && t > 0 && t < 1) {
+                const Vector2 intersection = new Vector2(
+                    from2.x + t * (to2.x - from2.x),
+                    from2.y + t * (to2.y - from2.y)
+                );
+                return intersection;
+            }
+            return null; // no intersection
         }
     }
 }
