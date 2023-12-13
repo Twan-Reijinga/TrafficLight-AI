@@ -5,7 +5,7 @@ using Unity.VisualScripting;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-namespace Simulator
+namespace SimulationAPI
 {
     public class G_Car
     {

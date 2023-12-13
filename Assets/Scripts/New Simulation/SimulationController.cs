@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Simulator;
+using SimulationAPI;
 using TMPro;
 using UnityEditor.SearchService;
 
-public class SimulationInterface : MonoBehaviour
+public class SimulationController : MonoBehaviour
 {
     //DIT WORDT DE INTERFACE MET DE SIMULATOR, SIMULATOR IS GEWOON EEN AANTAL FUNCTIES, DIT GAAT DEZE FUNCTIES AANROEPEN EN NAAR DE AI STUREN
 
@@ -14,7 +14,7 @@ public class SimulationInterface : MonoBehaviour
 
     public int seed;
     public Visualizer visualiser;
-    Simulator.Simulator simulator = new Simulator.Simulator();
+    SimulationAPI.Simulator simulator = new SimulationAPI.Simulator();
 
     public bool runAtSetSpeed = true;
     public bool paused = false;
