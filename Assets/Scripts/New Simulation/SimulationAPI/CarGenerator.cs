@@ -41,15 +41,13 @@ namespace SimulationAPI
             {'l', 'l', 'l', 'f', 'r'}
         };
 
-        void Update(dt)
+        void Update(float dt, Random rand)
         {
             secondsSinceLastInterval += dt;
             if (secondsSinceLastInterval >= intervalInSeconds)
             {
                 secondsSinceLastInterval = 0;
                 
-                // ! use global seed ! //
-                Random rand = new Random();
                 int randomChanceValue = rand.Next();
 
                 if (randomChanceValue < spawningChance)
