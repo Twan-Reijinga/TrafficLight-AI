@@ -7,7 +7,7 @@ class Test{
         float[] states = {0.1f, 0.2f, 0.4f, 0.8f, 1.7f};
         // Network.feedForward(network, inputs);
         QLearnAgent agent = new QLearnAgent(network, 0.5f);
-        agent.SelectAction(states);
+        agent.SelectAction(states, neuronCounts[neuronCounts.Length - 1]);
     }
 }
 
@@ -19,16 +19,18 @@ class QLearnAgent {
         epsilon = exploreChance;
     }
     
-    public void SelectAction(float[] states) {
+    public void SelectAction(float[] state, int NumberOfActions) {
         Random rand = new Random();
         float randomChanceValue = (float) rand.NextDouble();
         if(randomChanceValue < epsilon) {
+            rand.Next(0, NumberOfActions);
             // explore
             Console.WriteLine("explore mode");
+
         } else {
             // exploit
             Console.WriteLine("exploit mode");
-            Network.FeedForward(network, states);
+            Network.FeedForward(network, state);
         }
     }
 }
