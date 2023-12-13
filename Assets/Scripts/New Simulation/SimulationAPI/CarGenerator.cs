@@ -53,7 +53,7 @@ namespace SimulationAPI
 
                 if (randomChanceValue < spawningChance)
                 {
-                    SwawnCar();
+                    SpawnCar();
                 }
             }
         }
@@ -86,20 +86,16 @@ namespace SimulationAPI
             return newCar;
         }
 
-        int GetPositionFromChance(List<int> chances, int ignore = -1)
+        int GetPositionFromChance(List<int> chances, int ignore = -1, Random rand)
         {
             List<int> modifiedChances = new List<int>(chances);
             if (ignore >= 0)
             {
                 modifiedChances.RemoveAt(ignore);
             }
-            // string items = "";
-            // foreach(var item in modifiedChances) {
-            //     items += item + ", ";
-            // }
-            // print(items);
+
             int totalChance = modifiedChances.Sum();
-            int randomChoice = Random.Range(0, totalChance);
+            int randomChoice = rand.Next(0, totalChance);
             for (int i = 0; i < modifiedChances.Count; i++)
             {
                 if (modifiedChances[i] > randomChoice)
