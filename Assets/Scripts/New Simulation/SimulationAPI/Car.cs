@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 namespace SimulationAPI
 {
@@ -17,7 +16,7 @@ namespace SimulationAPI
         private float velocity = 0;
         private float acceleration = 3;
         private float maxSpeed = 6;
-        
+
 
         public Vector2 forward
         {
