@@ -5,7 +5,7 @@ using Simulator;
 using TMPro;
 using UnityEditor.SearchService;
 
-public class Simulation : MonoBehaviour
+public class SimulationInterface : MonoBehaviour
 {
     //DIT WORDT DE INTERFACE MET DE SIMULATOR, SIMULATOR IS GEWOON EEN AANTAL FUNCTIES, DIT GAAT DEZE FUNCTIES AANROEPEN EN NAAR DE AI STUREN
 

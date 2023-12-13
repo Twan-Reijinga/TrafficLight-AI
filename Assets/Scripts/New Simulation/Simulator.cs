@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 namespace Simulator
@@ -24,11 +26,12 @@ namespace Simulator
         public Light light;
         public Car car;
         public bool hasHit;
-        public float dist;
+        public float dist = float.MaxValue;
     }
 
     public class Car
     {
+        public Vector2 size = new Vector2(2.5f, 6.5f);
         public int UUID = 0;
         public Vector2 pos;
         public float orientation;
@@ -72,6 +75,8 @@ namespace Simulator
     public class Light
     {
         public bool isOn = false;
+        public Vector2 pos;
+        public float orientation;
     }
 
     public class G_sceneState
@@ -86,9 +91,11 @@ namespace Simulator
         List<Car> cars = new List<Car>();
         List<Light> lightsC1 = new List<Light>();
         List<Light> lightsC2 = new List<Light>();
-
-        public List<Vector2[]> spawnPositions = new List<Vector2[]>() { };
-        private Vector2[] positions = {
+        private Vector2[] lightPositions = {
+            new Vector2(7.5f, 3.0f),
+            new Vector2(7.5f, 0.0f)
+        };
+        private Vector2[] spawnPositions = {
             new Vector2(-26.5f, -31.0f),
             new Vector2(-60.0f, -2.7f),
             new Vector2(-32.5f, 31.0f),
@@ -97,7 +104,7 @@ namespace Simulator
             new Vector2(32.5f, -31.0f)
         };
 
-        private float[] orientations = {
+        private float[] spawnOrientations = {
             0.0f,
             90.0f,
             180.0f,
@@ -131,12 +138,12 @@ namespace Simulator
 
         public Car GenerateCar(int id)
         {
-            int index = (int)Mathf.Floor(Random.Range(0, positions.Length));
+            int index = (int)Mathf.Floor(Random.Range(0, spawnPositions.Length));
 
             Car car = new Car
             {
-                orientation = Random.Range(0, 360),//orientations[index],
-                pos = Random.insideUnitCircle * 50,//positions[index],
+                orientation = 0,//Random.Range(0, 360),//spawnOrientations[index],
+                pos = Random.insideUnitCircle * 50,//spawnPositions[index],
                 UUID = id
             };
 
@@ -149,24 +156,37 @@ namespace Simulator
 
         public void TestPopulation()
         {
-            Random.InitState(seed);
             cars = new List<Car>();
-            int amountOfCars = 50;
-            for (int i = 0; i < amountOfCars; i++)
+            cars.Add(new Car
             {
-                Car car = GenerateCar(i);
-                cars.Add(car);
-            }
+                orientation = 0,
+                pos = new Vector2(0, 0),
+                UUID = 0
+            });
+            cars.Add(new Car
+            {
+                orientation = 90,
+                pos = new Vector2(0, 6),
+                UUID = 1
+            });
 
             for (int i = 0; i < 8; i++)
             {
                 Light light = new Light();
-                light.isOn = Random.value >= 0.5f;
+                light.isOn = i == 0;//Random.value >= 0.5f;
                 lightsC1.Add(light);
 
                 Light light2 = new Light();
                 light2.isOn = Random.value >= 0.5f;
                 lightsC2.Add(light2);
+            }
+            return;
+            Random.InitState(seed);
+            int amountOfCars = 50;
+            for (int i = 0; i < amountOfCars; i++)
+            {
+                Car car = GenerateCar(i);
+                cars.Add(car);
             }
 
         }
@@ -181,7 +201,7 @@ namespace Simulator
         {
             foreach (Car car in cars)
             {
-                car.Move(dt); // TEST SPEED OF 3!!
+                // car.Move(dt); // TEST SPEED OF 3!!
 
             }
         }
@@ -191,29 +211,65 @@ namespace Simulator
 
         }
 
-        public bool Raycast(Vector2 origin, Vector2 dir, float maxDist, out RayHit hit)
+        public bool Raycast(Vector2 origin, Vector2 dir, float maxDist, out RayHit hit, int ignore = -1)
         {
             hit = new RayHit();
+            hit.dist = maxDist;
+            List<Car> carList = new List<Car>(cars);
+            for (int i = carList.Count - 1; i >= 0; i--)
+            {
+                if (Vector2.Distance(origin, carList[i].pos) > maxDist || carList[i].UUID == ignore)
+                {
+                    carList.RemoveAt(i);  // ignore all cars too far away from car
+                }
+            }
+            //carList.Sort((a, b) => Vector2.Distance(a.pos, origin).CompareTo(Vector2.Distance(b.pos, origin))); // sort cars based on distance to origin so to make first car that hits the closest one
+
+            foreach (Car car in carList) // get distance and reference to closest car
+            {
+                Vector2 hit1 = LineLineIntersect(origin, dir, car.forward * car.size.y + car.right * car.size.x, -car.forward * car.size.y - car.right * car.size.x) ?? Vector2.positiveInfinity;
+                Vector2 hit2 = LineLineIntersect(origin, dir, car.forward * car.size.y - car.right * car.size.x, -car.forward * car.size.y + car.right * car.size.x) ?? Vector2.positiveInfinity;
+
+                if (hit1 == Vector2.positiveInfinity && hit2 == Vector2.positiveInfinity)
+                {
+                    continue;
+                }
+                float dist = Mathf.Min(Vector2.Distance(origin, hit1), Vector2.Distance(origin, hit2));
+
+                if (hit.dist < dist)
+                {
+                    hit.car = car;
+                    hit.dist = dist;
+                }
+            }
+
+            if (hit.dist != maxDist)
+            {
+                return true;
+            }
+
 
             return false;
         }
 
         private static Vector2? LineLineIntersect(Vector2 from1, Vector2 to1, Vector2 from2, Vector2 to2)
         {
-            const int d = 
+            float d =
                 (to1.x - from1.x) * (to2.y - from2.y) - (to1.y - from1.y) * (to2.x - from2.x);
-            
-            if(d == 0) {
+
+            if (d == 0)
+            {
                 return null; // no intersection
             }
 
-            const float t =
+            float t =
                 ((from2.x - from1.x) * (to1.y - from1.y) - (from2.y - from1.y) * (to1.x - from1.x)) / d;
-            const float u = 
+            float u =
                  ((to2.y - from2.y) * (to2.x - from1.x) + (from2.x - to2.x) * (to2.y - from1.y)) / d;
 
-            if(u > 0 && t > 0 && t < 1) {
-                const Vector2 intersection = new Vector2(
+            if (u > 0 && t > 0 && t < 1)
+            {
+                Vector2 intersection = new Vector2(
                     from2.x + t * (to2.x - from2.x),
                     from2.y + t * (to2.y - from2.y)
                 );
