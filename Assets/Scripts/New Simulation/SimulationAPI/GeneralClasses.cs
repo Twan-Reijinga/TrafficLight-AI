@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using UnityEngine;
 
 namespace SimulationAPI
 {
@@ -77,7 +79,21 @@ namespace SimulationAPI
 
         public static bool operator !=(Vector2 v1, Vector2 v2)
         {
-            return !(v1 == v2)
+            return !(v1 == v2);
+        }
+
+        public static float Distance(Vector2 v1, Vector2 v2)
+        {
+            Vector2 v = v2 - v1;
+            return (float)Math.Sqrt(Mathf.Pow(v.x, 2) + Mathf.Pow(v.y, 2));
+        }
+
+        public static Vector2 positiveInfinity = new Vector2(float.PositiveInfinity, float.PositiveInfinity);
+        public static Vector2 zero = new Vector2(0, 0);
+
+        public static Vector2 Lerp(Vector2 a, Vector2 b, float t)
+        {
+            return a + (b - a) * t;
         }
 
     }

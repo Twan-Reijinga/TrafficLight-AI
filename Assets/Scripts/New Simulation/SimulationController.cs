@@ -14,7 +14,7 @@ public class SimulationController : MonoBehaviour
 
     public int seed;
     public Visualizer visualiser;
-    SimulationAPI.Simulator simulator = new SimulationAPI.Simulator();
+    SimulationAPI.Simulator simulator;
 
     public bool runAtSetSpeed = true;
     public bool paused = false;
@@ -25,7 +25,7 @@ public class SimulationController : MonoBehaviour
 
     void Start()
     {
-        simulator.seed = seed;
+        simulator = new Simulator(seed);
         simulator.TestPopulation();
         Step();
         VisualsUpdater();

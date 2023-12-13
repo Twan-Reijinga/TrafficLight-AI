@@ -23,7 +23,7 @@ namespace SimulationAPI
         {
             get
             {
-                return new Vector2(Mathf.Sin((Math.PI / 180) * orientation), Mathf.Cos((Math.PI / 180) * orientation));
+                return new Vector2((float)Math.Sin((Math.PI / 180) * orientation), (float)Math.Cos((Math.PI / 180) * orientation));
             }
         }
 
@@ -31,7 +31,7 @@ namespace SimulationAPI
         {
             get
             {
-                return new Vector2(Mathf.Cos((Math.PI / 180) * -orientation), Mathf.Sin((Math.PI / 180) * -orientation));
+                return new Vector2((float)Math.Cos((Math.PI / 180) * -orientation), (float)Math.Sin((Math.PI / 180) * -orientation));
             }
         }
 

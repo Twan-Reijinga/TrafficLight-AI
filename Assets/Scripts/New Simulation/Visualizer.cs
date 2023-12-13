@@ -83,7 +83,7 @@ public class Visualizer : MonoBehaviour
             {
                 G_Car newCar = new G_Car
                 {
-                    pos = Vector2.Lerp(startCar.pos, endCar.pos, t),
+                    pos = SimulationAPI.Vector2.Lerp(startCar.pos, endCar.pos, t),
                     orientation = Mathf.Lerp(startCar.orientation, endCar.orientation, t),
                     UUID = car.UUID
                 };

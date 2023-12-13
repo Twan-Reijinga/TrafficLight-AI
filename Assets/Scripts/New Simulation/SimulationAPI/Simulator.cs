@@ -1,11 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 
 namespace SimulationAPI
 {
-    public class simulator
+    public class Simulator
     {
+        Random rand;
         public int seed = 0;
         List<Car> cars = new List<Car>();
         List<Light> lightsC1 = new List<Light>();
@@ -14,6 +16,12 @@ namespace SimulationAPI
             new Vector2(7.5f, 3.0f),
             new Vector2(7.5f, 0.0f)
         };
+
+        public Simulator(int seed)
+        {
+            rand = new Random(seed);
+        }
+
         // private Vector2[] spawnPositions = {
         //     new Vector2(-26.5f, -31.0f),
         //     new Vector2(-60.0f, -2.7f),
@@ -55,59 +63,35 @@ namespace SimulationAPI
             return scene;
         }
 
-        public Car GenerateCar(int id)
-        {
-            // int index = (int)Mathf.Floorint)Mathf.Floor(Random.Range(0, spawnPositions.Length));
+        // public Car GenerateCar(int id)
+        // {
+        //     // int index = (int)Mathf.Floorint)Mathf.Floor(Random.Range(0, spawnPositions.Length));
 
-            int entranceIndex = GetPositionFromChance(entrancePositionChance);
+        //     int entranceIndex = GetPositionFromChance(entrancePositionChance);
 
-            Car car = new Car
-            {
-                orientation = spawnOrientations[index],
-                pos = spawnPositions[index],
-                UUID = id
-            };
+        //     Car car = new Car
+        //     {
+        //         orientation = spawnOrientations[index],
+        //         pos = spawnPositions[index],
+        //         UUID = id
+        //     };
 
-            if (false)
-            { //car goes to left in first time
-                car.pos += car.right * -3;
-            }
-            return car;
-        }
+        //     if (false)
+        //     { //car goes to left in first time
+        //         car.pos += car.right * -3;
+        //     }
+        //     return car;
+        // }
 
         public void TestPopulation()
         {
-            cars = new List<Car>();
-            cars.Add(new Car
-            {
-                orientation = 0,
-                pos = new Vector2(0, 0),
-                UUID = 0
-            });
-            cars.Add(new Car
-            {
-                orientation = 90,
-                pos = new Vector2(0, 6),
-                UUID = 1
-            });
-
-            for (int i = 0; i < 8; i++)
-            {
-                Light light = new Light();
-                light.isOn = i == 0;//Random.value >= 0.5f;
-                lightsC1.Add(light);
-
-                Light light2 = new Light();
-                light2.isOn = Random.value >= 0.5f;
-                lightsC2.Add(light2);
-            }
             return;
-            Random.InitState(seed);
+            cars = new List<Car>();
             int amountOfCars = 50;
             for (int i = 0; i < amountOfCars; i++)
             {
-                Car car = GenerateCar(i);
-                cars.Add(car);
+                // Car car = GenerateCar(i);
+                // cars.Add(car);
             }
 
         }
@@ -148,14 +132,14 @@ namespace SimulationAPI
 
             foreach (Car car in carList) // get distance and reference to closest car
             {
-                Vector2 hit1 = LineLineIntersect(origin, dir, car.forward * car.size.y + car.right * car.size.x, -car.forward * car.size.y - car.right * car.size.x) ?? Vector2.positiveInfinity;
-                Vector2 hit2 = LineLineIntersect(origin, dir, car.forward * car.size.y - car.right * car.size.x, -car.forward * car.size.y + car.right * car.size.x) ?? Vector2.positiveInfinity;
+                Vector2 hit1 = LineLineIntersect(origin, dir, car.forward * car.size.y + car.right * car.size.x, Vector2.zero - car.forward * car.size.y - car.right * car.size.x) ?? Vector2.positiveInfinity;
+                Vector2 hit2 = LineLineIntersect(origin, dir, car.forward * car.size.y - car.right * car.size.x, Vector2.zero - car.forward * car.size.y + car.right * car.size.x) ?? Vector2.positiveInfinity;
 
                 if (hit1 == Vector2.positiveInfinity && hit2 == Vector2.positiveInfinity)
                 {
                     continue;
                 }
-                float dist = Mathf.Min(Vector2.Distance(origin, hit1), Vector2.Distance(origin, hit2));
+                float dist = Math.Min(Vector2.Distance(origin, hit1), Vector2.Distance(origin, hit2));
 
                 if (hit.dist < dist)
                 {
