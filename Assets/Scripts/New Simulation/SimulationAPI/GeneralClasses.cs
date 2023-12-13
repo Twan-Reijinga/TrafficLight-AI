@@ -24,10 +24,61 @@ namespace SimulationAPI
         public float x = 0;
         public float y = 0;
 
-        public Vector2(float ix, float iy)
+        public Vector2(float X, float Y)
         {
-            x = ix;
-            y = iy;
+            x = X;
+            y = Y;
         }
+
+        public static Vector2 operator +(Vector2 v1, Vector2 v2)
+        {
+            return new Vector2(v1.x + v2.x, v1.y + v2.y);
+        }
+
+        public static Vector2 operator +(Vector2 v, float f)
+        {
+            return new Vector2(v.x + f, v.y + f);
+        }
+
+        public static Vector2 operator -(Vector2 v1, Vector2 v2)
+        {
+            return new Vector2(v1.x - v2.x, v1.y - v2.y);
+        }
+
+        public static Vector2 operator -(Vector2 v, float f)
+        {
+            return new Vector2(v.x - f, v.y - f);
+        }
+
+        public static Vector2 operator *(Vector2 v1, Vector2 v2)
+        {
+            return new Vector2(v1.x * v2.x, v1.y * v2.y);
+        }
+
+        public static Vector2 operator *(Vector2 v, float f)
+        {
+            return new Vector2(v.x * f, v.y * f);
+        }
+
+        public static Vector2 operator /(Vector2 v1, Vector2 v2)
+        {
+            return new Vector2(v1.x / v2.x, v1.y / v2.y);
+        }
+
+        public static Vector2 operator /(Vector2 v, float f)
+        {
+            return new Vector2(v.x / f, v.y / f);
+        }
+
+        public static bool operator ==(Vector2 v1, Vector2 v2)
+        {
+            return (v1.x == v2.x) && (v1.y == v2.y);
+        }
+
+        public static bool operator !=(Vector2 v1, Vector2 v2)
+        {
+            return !(v1 == v2)
+        }
+
     }
 }
