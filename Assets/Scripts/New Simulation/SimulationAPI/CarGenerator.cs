@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -57,7 +58,7 @@ namespace SimulationAPI
             }
         }
 
-        int SpawnCar()
+        Car SpawnCar()
         {
             int entranceIndex = GetPositionFromChance(entrancePositionChance); 
             int exitIndex = GetPositionFromChance(exitPositionChance, entranceIndex);
@@ -68,11 +69,11 @@ namespace SimulationAPI
                 exitIndex++;
             }
             
-            Car newCar = new Car(
+            Car newCar = new (
                 UUID = uuidCounter,
                 pos = positions[entranceIndex],
                 orientation = rotations[entranceIndex],
-                exitIndex = exitIndex, // ! ERROR maybe ! //
+                exitIndex = exitIndex,
                 nextAction = nextAction
             );
             uuidCounter++;
@@ -81,6 +82,7 @@ namespace SimulationAPI
             {
                 newCar.pos += newCar.right * -3;
             }
+            return newCar;
         }
 
         int GetPositionFromChance(List<int> chances, int ignore = -1) 

@@ -22,25 +22,6 @@ namespace SimulationAPI
             rand = new Random(seed);
         }
 
-        // private Vector2[] spawnPositions = {
-        //     new Vector2(-26.5f, -31.0f),
-        //     new Vector2(-60.0f, -2.7f),
-        //     new Vector2(-32.5f, 31.0f),
-        //     new Vector2(26.5f, 31.0f),
-        //     new Vector2(60.0f, 3.0f),
-        //     new Vector2(32.5f, -31.0f)
-        // };
-
-        // private float[] spawnOrientations = {
-        //     0.0f,
-        //     90.0f,
-        //     180.0f,
-        //     180.0f,
-        //     -90.0f,
-        //     0.0f
-        // };
-
-
         public G_sceneState GetGraphicSceneState()
         {
             G_sceneState scene = new G_sceneState();
