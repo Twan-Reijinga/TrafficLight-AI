@@ -1,19 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using UnityEngine;
 
 namespace SimulationAPI
 {
     public class CarGeneration : MonoBehaviour
     {
-        public GameObject rootCar;
-        public EffeciencyStats carStats;
+        // public GameObject rootCar;
+        // public EffeciencyStats carStats;
         public float spawningChance = 0.3f; // between 0-1
         public List<int> entrancePositionChance = new List<int>(6);
         public List<int> exitPositionChance = new List<int>(6);
         public float intervalInSeconds = 1.0f;
         private float secondsSinceLastInterval = 0.0f;
+        private int uuidCounter = 0;
         private Vector2[] positions = {
                 new Vector2(-26.5f, -31.0f),
                 new Vector2(-60.0f, -2.7f),
@@ -47,38 +47,44 @@ namespace SimulationAPI
             if (secondsSinceLastInterval >= intervalInSeconds)
             {
                 secondsSinceLastInterval = 0;
-                if (Random.value < spawningChance)
+                
+                // ! use global seed ! //
+                Random rand = new Random();
+                int randomChanceValue = rand.Next();
+
+                if (randomChanceValue < spawningChance)
                 {
-                    int entranceIndex = GetPositionFromChance(entrancePositionChance); 
-                    // Random.Range(0, positions.Length);
-                    int exitIndex = GetPositionFromChance(exitPositionChance, entranceIndex);
-                    // Random.Range(0, positions.Length - 1);
-                    // print(entranceIndex + " - " + exitIndex);
-
-                    GameObject newCar = Instantiate(rootCar);
-                    newCar.transform.parent = transform;
-
-                    newCar.transform.position = positions[entranceIndex];
-                    newCar.transform.rotation = rotations[entranceIndex];
-
-                    char nextAction = instructions[entranceIndex, exitIndex];
-                    if (entranceIndex >= exitIndex)
-                    {
-                        exitIndex++;
-                    }
-                    newCar.GetComponent<CarMovement>().exitIndex = exitIndex;
-                    newCar.GetComponent<CarMovement>().carStats = carStats;
-
-                    newCar.GetComponent<CarMovement>().nextAction = nextAction;
-                    if (nextAction == 'l')
-                    {
-                        newCar.transform.position += newCar.transform.right * -3;
-                    }
+                    SwawnCar();
                 }
             }
         }
 
-        int GetPositionFromChance(List<int> chances, int ignore = -1) {
+        int SpawnCar()
+        {
+            int entranceIndex = GetPositionFromChance(entrancePositionChance); 
+            int exitIndex = GetPositionFromChance(exitPositionChance, entranceIndex);
+            char nextAction = instructions[entranceIndex, exitIndex];
+            
+            if (entranceIndex >= exitIndex)
+            {
+                exitIndex++;
+            }
+            
+            Car newCar = new Car(
+                pos = positions[entranceIndex],
+                orientation = rotations[entranceIndex],
+                exitIndex = exitIndex, // ! ERROR maybe ! //
+                nextAction = nextAction
+            );
+
+            if (nextAction == 'l')
+            {
+                newCar.pos += newCar.right * -3;
+            }
+        }
+
+        int GetPositionFromChance(List<int> chances, int ignore = -1) 
+        {
             List<int> modifiedChances = new List<int>(chances);
             if(ignore >= 0) {
                 modifiedChances.RemoveAt(ignore);
