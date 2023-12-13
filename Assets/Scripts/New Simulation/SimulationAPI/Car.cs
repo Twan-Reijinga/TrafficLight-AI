@@ -8,7 +8,7 @@ namespace SimulationAPI
     public class Car
     {
         public Vector2 size = new Vector2(2.5f, 6.5f);
-        public int UUID = 0;
+        public int UUID;
         public Vector2 pos;
         public float orientation;
         public int exitIndex;

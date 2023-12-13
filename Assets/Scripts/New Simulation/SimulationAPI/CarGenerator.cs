@@ -69,11 +69,13 @@ namespace SimulationAPI
             }
             
             Car newCar = new Car(
+                UUID = uuidCounter,
                 pos = positions[entranceIndex],
                 orientation = rotations[entranceIndex],
                 exitIndex = exitIndex, // ! ERROR maybe ! //
                 nextAction = nextAction
             );
+            uuidCounter++;
 
             if (nextAction == 'l')
             {
