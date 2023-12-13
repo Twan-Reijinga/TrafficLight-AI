@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
+using System;
 
 namespace SimulationAPI
 {
@@ -17,13 +17,13 @@ namespace SimulationAPI
         private float velocity = 0;
         private float acceleration = 3;
         private float maxSpeed = 6;
-        
+
 
         public Vector2 forward
         {
             get
             {
-                return new Vector2(Mathf.Sin(Mathf.Deg2Rad * orientation), Mathf.Cos(Mathf.Deg2Rad * orientation));
+                return new Vector2(Mathf.Sin((Math.PI / 180) * orientation), Mathf.Cos((Math.PI / 180) * orientation));
             }
         }
 
@@ -31,14 +31,14 @@ namespace SimulationAPI
         {
             get
             {
-                return new Vector2(Mathf.Cos(Mathf.Deg2Rad * -orientation), Mathf.Sin(Mathf.Deg2Rad * -orientation));
+                return new Vector2(Mathf.Cos((Math.PI / 180) * -orientation), Mathf.Sin((Math.PI / 180) * -orientation));
             }
         }
 
         public void Accelerate(float dt, float mult = 1) //pass mult as -1 for deceleration
         {
             velocity += acceleration * dt * mult;
-            velocity = Mathf.Clamp(velocity, 0, maxSpeed);
+            velocity = Math.Clamp(velocity, 0, maxSpeed);
         }
 
         public void Move(float dt)

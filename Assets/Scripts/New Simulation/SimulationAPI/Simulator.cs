@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using UnityEngine;
 
 namespace SimulationAPI
 {
@@ -59,8 +58,8 @@ namespace SimulationAPI
         public Car GenerateCar(int id)
         {
             // int index = (int)Mathf.Floorint)Mathf.Floor(Random.Range(0, spawnPositions.Length));
-            
-            int entranceIndex = GetPositionFromChance(entrancePositionChance); 
+
+            int entranceIndex = GetPositionFromChance(entrancePositionChance);
 
             Car car = new Car
             {
