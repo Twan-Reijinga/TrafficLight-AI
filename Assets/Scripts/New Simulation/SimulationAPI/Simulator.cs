@@ -1,91 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 namespace SimulationAPI
 {
-    public class G_Car
-    {
-        public int UUID = 0;
-        public Vector2 pos = Vector2.zero;
-        public float orientation = 0;
-    }
-
-    public class G_Lights
-    {
-        public List<bool> cross1 = new List<bool>();
-        public List<bool> cross2 = new List<bool>();
-
-    }
-
-    public class RayHit
-    {
-        public Light light;
-        public Car car;
-        public bool hasHit;
-        public float dist = float.MaxValue;
-    }
-
-    public class Car
-    {
-        public Vector2 size = new Vector2(2.5f, 6.5f);
-        public int UUID = 0;
-        public Vector2 pos;
-        public float orientation;
-        public int startIndex;
-        public int endIndex;
-
-        private float velocity = 0;
-        private float acceleration = 3;
-        private float maxSpeed = 6;
-
-        public Vector2 forward
-        {
-            get
-            {
-                return new Vector2(Mathf.Sin(Mathf.Deg2Rad * orientation), Mathf.Cos(Mathf.Deg2Rad * orientation));
-            }
-        }
-
-        public Vector2 right
-        {
-            get
-            {
-                return new Vector2(Mathf.Cos(Mathf.Deg2Rad * -orientation), Mathf.Sin(Mathf.Deg2Rad * -orientation));
-            }
-        }
-
-        public void Accelerate(float dt, float mult = 1) //pass mult as -1 for deceleration
-        {
-            velocity += acceleration * dt * mult;
-            velocity = Mathf.Clamp(velocity, 0, maxSpeed);
-        }
-
-        public void Move(float dt)
-        {
-            Accelerate(dt);
-            pos += forward * velocity * dt;
-        }
-
-    }
-
-    public class Light
-    {
-        public bool isOn = false;
-        public Vector2 pos;
-        public float orientation;
-    }
-
-    public class G_sceneState
-    {
-        public List<G_Car> cars = new List<G_Car>(8);
-        public G_Lights lights = new G_Lights();
-    }
-
-    public class Simulator
+    public class simulator
     {
         public int seed = 0;
         List<Car> cars = new List<Car>();
@@ -95,23 +15,23 @@ namespace SimulationAPI
             new Vector2(7.5f, 3.0f),
             new Vector2(7.5f, 0.0f)
         };
-        private Vector2[] spawnPositions = {
-            new Vector2(-26.5f, -31.0f),
-            new Vector2(-60.0f, -2.7f),
-            new Vector2(-32.5f, 31.0f),
-            new Vector2(26.5f, 31.0f),
-            new Vector2(60.0f, 3.0f),
-            new Vector2(32.5f, -31.0f)
-        };
+        // private Vector2[] spawnPositions = {
+        //     new Vector2(-26.5f, -31.0f),
+        //     new Vector2(-60.0f, -2.7f),
+        //     new Vector2(-32.5f, 31.0f),
+        //     new Vector2(26.5f, 31.0f),
+        //     new Vector2(60.0f, 3.0f),
+        //     new Vector2(32.5f, -31.0f)
+        // };
 
-        private float[] spawnOrientations = {
-            0.0f,
-            90.0f,
-            180.0f,
-            180.0f,
-            -90.0f,
-            0.0f
-        };
+        // private float[] spawnOrientations = {
+        //     0.0f,
+        //     90.0f,
+        //     180.0f,
+        //     180.0f,
+        //     -90.0f,
+        //     0.0f
+        // };
 
 
         public G_sceneState GetGraphicSceneState()
@@ -138,12 +58,14 @@ namespace SimulationAPI
 
         public Car GenerateCar(int id)
         {
-            int index = (int)Mathf.Floor(Random.Range(0, spawnPositions.Length));
+            // int index = (int)Mathf.Floorint)Mathf.Floor(Random.Range(0, spawnPositions.Length));
+            
+            int entranceIndex = GetPositionFromChance(entrancePositionChance); 
 
             Car car = new Car
             {
-                orientation = 0,//Random.Range(0, 360),//spawnOrientations[index],
-                pos = Random.insideUnitCircle * 50,//spawnPositions[index],
+                orientation = spawnOrientations[index],
+                pos = spawnPositions[index],
                 UUID = id
             };
 
