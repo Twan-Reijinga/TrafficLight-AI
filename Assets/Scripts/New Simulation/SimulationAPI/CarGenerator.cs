@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 
 namespace SimulationAPI
@@ -77,14 +75,7 @@ namespace SimulationAPI
                 exitIndex++;
             }
 
-            Car newCar = new Car
-            {
-                UUID = uuidCounter,
-                pos = positions[entranceIndex],
-                orientation = rotations[entranceIndex],
-                exitIndex = exitIndex,
-                nextAction = nextAction
-            };
+            Car newCar = new Car(uuidCounter, positions[entranceIndex], rotations[entranceIndex], exitIndex, nextAction);
             uuidCounter++;
 
             if (nextAction == 'l')

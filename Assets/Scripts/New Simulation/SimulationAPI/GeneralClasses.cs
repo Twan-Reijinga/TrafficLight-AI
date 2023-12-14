@@ -1,8 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
-using UnityEngine;
 
 namespace SimulationAPI
 {
@@ -102,7 +98,7 @@ namespace SimulationAPI
         public static float Distance(Vector2 v1, Vector2 v2)
         {
             Vector2 v = v2 - v1;
-            return (float)Math.Sqrt(Mathf.Pow(v.x, 2) + Mathf.Pow(v.y, 2));
+            return (float)Math.Sqrt(Math.Pow(v.x, 2) + Math.Pow(v.y, 2));
         }
 
         public static Vector2 positiveInfinity = new Vector2(float.PositiveInfinity, float.PositiveInfinity);

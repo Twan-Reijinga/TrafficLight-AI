@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 namespace SimulationAPI
 {
@@ -32,8 +31,8 @@ namespace SimulationAPI
 
             foreach (Car car in carList) // get distance and reference to closest car
             {
-                Vector2 hit1 = LineLineIntersect(origin, origin + dir, car.pos + car.forward * car.size.y, car.pos - car.forward * car.size.y) ?? Vector2.positiveInfinity;
-                Vector2 hit2 = LineLineIntersect(origin, origin + dir, car.pos - car.forward * car.size.y - car.right * car.size.x, car.pos - car.forward * car.size.y + car.right * car.size.x) ?? Vector2.positiveInfinity;
+                Vector2 hit1 = LineLineIntersect(origin, origin + dir, car.pos + car.forward * car.size.y * 0.5f, car.pos - car.forward * car.size.y * 0.5f) ?? Vector2.positiveInfinity;
+                Vector2 hit2 = LineLineIntersect(origin, origin + dir, car.pos - car.forward * car.size.y * 0.5f - car.right * car.size.x * 0.5f, car.pos - car.forward * car.size.y + car.right * car.size.x * 0.5f) ?? Vector2.positiveInfinity;
 
                 if (hit1 == Vector2.positiveInfinity && hit2 == Vector2.positiveInfinity)
                 {

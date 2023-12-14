@@ -1,9 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using UnityEngine;
 
 namespace SimulationAPI
 {
@@ -51,8 +47,8 @@ namespace SimulationAPI
             carGenerator = new CarGeneration(this);
             for (int i = 0; i < 8; i++)
             {
-                lightsC1.Add(new Light { isOn = false, pos = lightPositions[i] + intersectionPositions[0], orientation = lightOrientations[i] });
-                lightsC2.Add(new Light { isOn = false, pos = lightPositions[i] + intersectionPositions[1], orientation = lightOrientations[i] });
+                lightsC1.Add(new Light { isOn = true, pos = lightPositions[i] + intersectionPositions[0], orientation = lightOrientations[i] });
+                lightsC2.Add(new Light { isOn = true, pos = lightPositions[i] + intersectionPositions[1], orientation = lightOrientations[i] });
             }
 
             physics = new Physics(this);
@@ -92,11 +88,6 @@ namespace SimulationAPI
             UpdateTrafficLights(dt);
             Car newCar = carGenerator.Update(dt, rand);
             if (newCar != null) cars.Add(newCar);
-
-            foreach (Car car in cars)
-            {
-                Debug.DrawRay(new Vector3(car.pos.x, 3, car.pos.y), new Vector3(car.forward.x, 0, car.forward.y) * 6, Color.red, dt);
-            }
         }
 
         void UpdateCarPositions(float dt)
@@ -104,7 +95,8 @@ namespace SimulationAPI
             foreach (Car car in cars)
             {
                 car.Move(dt, physics); // TEST SPEED OF 3!!
-
+                // Print("current: " + car.currentAction);
+                // Print("next:    " + car.nextAction);
             }
         }
 

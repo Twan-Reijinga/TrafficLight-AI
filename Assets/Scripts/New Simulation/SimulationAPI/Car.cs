@@ -1,23 +1,44 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System;
 
 namespace SimulationAPI
 {
+    public class ActionNode
+    {
+        public Vector2 pos;
+        public char action;
+        public float orientation;
+
+        public ActionNode(Vector2 pos, char action, float orientation)
+        {
+            this.pos = pos;
+            this.action = action;
+            this.orientation = orientation;
+        }
+    }
+
     public class Car
     {
         public Vector2 size = new Vector2(2.5f, 6.5f);
         public int UUID;
         public Vector2 pos;
         public float orientation;
-        public int exitIndex;
+        private float orientationTarget;
+        private int exitIndex;
         public char nextAction;
+        public char currentAction = 'f';
 
         private float velocity = 0;
-        private float acceleration = 3;
-        private float maxSpeed = 6;
+        private float acceleration = 3; // tweak this
+        private float maxSpeed = 6;     // also tweak this
 
+        public Car(int id, Vector2 pos, float orientation, int exitIndex, char nextAction)
+        {
+            this.UUID = id;
+            this.pos = pos;
+            this.orientation = orientation;
+            this.exitIndex = exitIndex;
+            this.nextAction = nextAction;
+        }
 
         public Vector2 forward
         {
@@ -35,7 +56,7 @@ namespace SimulationAPI
             }
         }
 
-        public void Accelerate(float dt, float mult = 1) //pass mult as -1 for deceleration
+        private void Accelerate(float dt, float mult = 1) //pass mult as -1 for deceleration
         {
             velocity += acceleration * dt * mult;
             velocity = Math.Clamp(velocity, 0, maxSpeed);
@@ -44,7 +65,7 @@ namespace SimulationAPI
         public void Move(float dt, Physics p)
         {
             RayHit hit;
-            if (p.Raycast(pos, forward, 7, out hit, UUID))
+            if (p.Raycast(pos, forward, 7, out hit, UUID))  //accelerate or decelerate
             {
                 Accelerate(dt, -hit.maxDist * 2 / hit.dist);
             }
@@ -52,8 +73,118 @@ namespace SimulationAPI
             {
                 Accelerate(dt);
             }
+
+            //movement happens here
+            ActionNode currentNode = GetActionNode();
+            if (currentNode != null)
+            {
+                NodeLogic(currentNode);
+            }
+
+            switch (currentAction)
+            {
+                case 'f':
+                    {
+                        //IDK maybe do something here???
+                        break;
+                    }
+
+                case 'l':
+                    {
+                        break;
+                    }
+
+                case 'r':
+                    {
+                        CarTurn(4.5f, dt, 90);
+                        break;
+                    }
+                case 's':
+                    {
+                        break;
+                    }
+            }
+            MoveForward(dt);
+        }
+
+        private void MoveForward(float dt)
+        {
             pos += forward * velocity * dt;
         }
 
+        private ActionNode GetActionNode()
+        {
+            foreach (ActionNode node in CarMovement.nodes)
+            {
+                if (Vector2.Distance(pos, node.pos) < CarMovement.nodeSize)
+                {
+                    return node;
+                }
+            }
+            return null;
+        }
+
+        private void NodeLogic(ActionNode node)
+        {
+            if (currentAction == 'f')
+            {
+                pos = node.pos;
+                orientation = node.orientation;
+
+                if (node.action == nextAction)
+                {
+
+                    currentAction = node.action;
+                    orientationTarget = orientation + (currentAction == 'r' ? 90 : -90) % 360;
+                }
+                else if (node.action == 's')
+                {
+                    switch (exitIndex)
+                    {
+                        case 1:
+                        case 4:
+                            {
+                                //switch logic
+                                currentAction = 's';
+                                nextAction = 'l';
+                                break;
+                            }
+
+                        case 2:
+                        case 5:
+                            {
+                                nextAction = 'f';
+                                break;
+                            }
+
+                        case 3:
+                        case 6:
+                            {
+                                nextAction = 'r';
+                                break;
+                            }
+                    }
+                }
+            }
+        }
+
+        private float RotateTowards(float current, float target, float step)
+        {
+            float distance = (target - current + 360) % 360;
+            if (distance < step) return target;
+
+            int direction = (distance <= 180) ? 1 : -1;
+
+            return (current + step * direction + 360) % 360;
+        }
+
+        private void CarTurn(float radius, float dt, float angle = 90)
+        {
+            float arcLength = 2 * (float)Math.PI * radius * (angle / 360);
+            float angularStepSize = angle / (arcLength / velocity) * dt;
+            orientation = RotateTowards(orientation, orientationTarget, angularStepSize);
+
+            if (orientation == RotateTowards(orientation, orientationTarget, angularStepSize)) currentAction = 'f';
+        }
     }
 }
