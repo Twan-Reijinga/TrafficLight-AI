@@ -10,19 +10,19 @@ namespace SimulationAPI
     {
         // public GameObject rootCar;
         // public EffeciencyStats carStats;
-        public float spawningChance = 1f; // between 0-1
+        public float spawningChance = 0.3f; // between 0-1
         public List<int> entrancePositionChance = new List<int> { 1, 1, 1, 1, 1, 1 };
         public List<int> exitPositionChance = new List<int> { 1, 1, 1, 1, 1, 1 };
-        public float intervalInSeconds = 0.0f;
+        public float intervalInSeconds = 1.0f;
         private float secondsSinceLastInterval = 0.0f;
         private int uuidCounter = 0;
         private Vector2[] positions = {
                 new Vector2(-26.5f, -31.0f),
                 new Vector2(-60.0f, -2.7f),
-                new Vector2(-32.5f, 31.0f),
-                new Vector2(26.5f, 31.0f),
-                new Vector2(60.0f, 3.0f),
-                new Vector2(32.5f, -31.0f)
+                new Vector2(-32.5f,  31.0f),
+                new Vector2( 26.5f,  31.0f),
+                new Vector2( 60.0f,  3.0f),
+                new Vector2( 32.5f, -31.0f)
             };
 
         private float[] rotations = {
@@ -42,17 +42,23 @@ namespace SimulationAPI
             {'f', 'f', 'f', 'r', 'l'},
             {'l', 'l', 'l', 'f', 'r'}
         };
+        private Simulator super;
+
+        public CarGeneration(Simulator super)
+        {
+            this.super = super;
+        }
 
         public Car Update(float dt, Random rand)
         {
             secondsSinceLastInterval += dt;
-            if (secondsSinceLastInterval >= intervalInSeconds)
+            if (secondsSinceLastInterval >= intervalInSeconds) //if can spawn car
             {
                 secondsSinceLastInterval = 0;
 
-                int randomChanceValue = rand.Next();
+                float randomChanceValue = (float)rand.NextDouble();
 
-                if (randomChanceValue < spawningChance)
+                if (randomChanceValue < spawningChance)     //if chance is good
                 {
                     return SpawnCar(rand);
                 }
@@ -108,7 +114,7 @@ namespace SimulationAPI
             }
             if (totalChance == 0)
             {
-                Console.WriteLine("chance is incorrectly distributed, because there is no possible position.");
+                super.Print("chance is incorrectly distributed, because there is no possible position.");
             }
             return -1;
         }

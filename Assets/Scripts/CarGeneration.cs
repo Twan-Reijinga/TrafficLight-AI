@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using SimulationAPI;
 using UnityEngine;
 
 public class CarGeneration : MonoBehaviour
 {
+    Simulator super;
     public GameObject rootCar;
     public EffeciencyStats carStats;
     public float spawningChance = 0.3f; // between 0-1
@@ -45,7 +47,7 @@ public class CarGeneration : MonoBehaviour
             secondsSinceLastInterval = 0;
             if (Random.value < spawningChance)
             {
-                int entranceIndex = GetPositionFromChance(entrancePositionChance); 
+                int entranceIndex = GetPositionFromChance(entrancePositionChance);
                 // Random.Range(0, positions.Length);
                 int exitIndex = GetPositionFromChance(exitPositionChance, entranceIndex);
                 // Random.Range(0, positions.Length - 1);
@@ -74,9 +76,11 @@ public class CarGeneration : MonoBehaviour
         }
     }
 
-    int GetPositionFromChance(List<int> chances, int ignore = -1) {
+    int GetPositionFromChance(List<int> chances, int ignore = -1)
+    {
         List<int> modifiedChances = new List<int>(chances);
-        if(ignore >= 0) {
+        if (ignore >= 0)
+        {
             modifiedChances.RemoveAt(ignore);
         }
         // string items = "";
@@ -86,15 +90,18 @@ public class CarGeneration : MonoBehaviour
         // print(items);
         int totalChance = modifiedChances.Sum();
         int randomChoice = Random.Range(0, totalChance);
-        for (int i = 0; i < modifiedChances.Count; i++){
-            if(modifiedChances[i] > randomChoice) {
+        for (int i = 0; i < modifiedChances.Count; i++)
+        {
+            if (modifiedChances[i] > randomChoice)
+            {
                 return i;
             }
             randomChoice -= modifiedChances[i];
         }
-        if(totalChance == 0) {
+        if (totalChance == 0)
+        {
             print("chance is incorrectly distributed, because there is no possible position.");
-        } 
+        }
         return -1;
     }
 }

@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using UnityEngine;
 
 namespace SimulationAPI
 {
@@ -9,29 +11,51 @@ namespace SimulationAPI
     {
         public event EventHandler<WriteEventArgs> write;
 
-        Random rand;
+        System.Random rand;
         public int seed = 0;
 
-        List<Car> cars = new List<Car>();
-        List<Light> lightsC1 = new List<Light>();
-        List<Light> lightsC2 = new List<Light>();
+        public List<Car> cars = new List<Car>();
+        public List<Light> lightsC1 = new List<Light>();
+        public List<Light> lightsC2 = new List<Light>();
 
         CarGeneration carGenerator;
+        Physics physics;
 
         private Vector2[] lightPositions = {
-            new Vector2(7.5f, 3.0f),
-            new Vector2(7.5f, 0.0f)
+            new Vector2( 7.5f,  3.0f),
+            new Vector2( 7.5f,  0.0f),
+            new Vector2(-3.0f,  7.5f),
+            new Vector2( 0.0f,  7.5f),
+            new Vector2(-7.5f, -3.0f),
+            new Vector2(-7.5f,  0.0f),
+            new Vector2( 3.0f, -7.5f),
+            new Vector2( 0.0f, -7.5f)
         };
+
+        private Vector2[] intersectionPositions = {
+            new Vector2( 29.5f, 0),
+            new Vector2(-29.5f, 0)
+        };
+
+        private float[] lightOrientations = {
+            0  , 0  ,
+            90 , 90 ,
+            180, 180,
+            270, 270
+        };
+
 
         public Simulator(int seed)
         {
-            rand = new Random(seed);
-            carGenerator = new CarGeneration();
+            rand = new System.Random(seed);
+            carGenerator = new CarGeneration(this);
             for (int i = 0; i < 8; i++)
             {
-                lightsC1.Add(new Light());
-                lightsC2.Add(new Light());
+                lightsC1.Add(new Light { isOn = false, pos = lightPositions[i] + intersectionPositions[0], orientation = lightOrientations[i] });
+                lightsC2.Add(new Light { isOn = false, pos = lightPositions[i] + intersectionPositions[1], orientation = lightOrientations[i] });
             }
+
+            physics = new Physics(this);
         }
 
         public G_sceneState GetGraphicSceneState()
@@ -58,7 +82,7 @@ namespace SimulationAPI
 
         public void TestPopulation()
         {
-            Console.WriteLine("No Fuck U");
+            Print("No Fuck U");
             return;
         }
 
@@ -66,15 +90,20 @@ namespace SimulationAPI
         {
             UpdateCarPositions(dt);
             UpdateTrafficLights(dt);
-            Car car = carGenerator.Update(dt, rand);
-            if (car != null) cars.Add(car);
+            Car newCar = carGenerator.Update(dt, rand);
+            if (newCar != null) cars.Add(newCar);
+
+            foreach (Car car in cars)
+            {
+                Debug.DrawRay(new Vector3(car.pos.x, 3, car.pos.y), new Vector3(car.forward.x, 0, car.forward.y) * 6, Color.red, dt);
+            }
         }
 
         void UpdateCarPositions(float dt)
         {
             foreach (Car car in cars)
             {
-                car.Move(dt); // TEST SPEED OF 3!!
+                car.Move(dt, physics); // TEST SPEED OF 3!!
 
             }
         }
@@ -82,76 +111,9 @@ namespace SimulationAPI
         void UpdateTrafficLights(float dt)
         { }
 
-        public bool Raycast(Vector2 origin, Vector2 dir, float maxDist, out RayHit hit, int ignore = -1)
+        public void Print(string e)
         {
-            hit = new RayHit();
-            hit.dist = maxDist;
-            List<Car> carList = new List<Car>(cars);
-            for (int i = carList.Count - 1; i >= 0; i--)
-            {
-                if (Vector2.Distance(origin, carList[i].pos) > maxDist || carList[i].UUID == ignore)
-                {
-                    carList.RemoveAt(i);  // ignore all cars too far away from car
-                }
-            }
-
-            foreach (Car car in carList) // get distance and reference to closest car
-            {
-                Vector2 hit1 = LineLineIntersect(origin, dir, car.forward * car.size.y + car.right * car.size.x, Vector2.zero - car.forward * car.size.y - car.right * car.size.x) ?? Vector2.positiveInfinity;
-                Vector2 hit2 = LineLineIntersect(origin, dir, car.forward * car.size.y - car.right * car.size.x, Vector2.zero - car.forward * car.size.y + car.right * car.size.x) ?? Vector2.positiveInfinity;
-
-                if (hit1 == Vector2.positiveInfinity && hit2 == Vector2.positiveInfinity)
-                {
-                    continue;
-                }
-                float dist = Math.Min(Vector2.Distance(origin, hit1), Vector2.Distance(origin, hit2));
-
-                if (hit.dist < dist)
-                {
-                    hit.car = car;
-                    hit.dist = dist;
-                }
-            }
-
-            if (hit.dist != maxDist)
-            {
-                return true;
-            }
-
-
-            return false;
-        }
-#nullable enable
-        private static Vector2? LineLineIntersect(Vector2 from1, Vector2 to1, Vector2 from2, Vector2 to2)
-        {
-            float d =
-                (to1.x - from1.x) * (to2.y - from2.y) - (to1.y - from1.y) * (to2.x - from2.x);
-
-            if (d == 0)
-            {
-                return null; // no intersection
-            }
-
-            float t =
-                ((from2.x - from1.x) * (to1.y - from1.y) - (from2.y - from1.y) * (to1.x - from1.x)) / d;
-            float u =
-                 ((to2.y - from2.y) * (to2.x - from1.x) + (from2.x - to2.x) * (to2.y - from1.y)) / d;
-
-            if (u > 0 && t > 0 && t < 1)
-            {
-                Vector2 intersection = new Vector2(
-                    from2.x + t * (to2.x - from2.x),
-                    from2.y + t * (to2.y - from2.y)
-                );
-                return intersection;
-            }
-            return null; // no intersection
-        }
-#nullable disable
-
-        protected virtual void Print(WriteEventArgs e)
-        {
-            write?.Invoke(this, e);
+            write?.Invoke(this, new WriteEventArgs(e));
         }
     }
 }

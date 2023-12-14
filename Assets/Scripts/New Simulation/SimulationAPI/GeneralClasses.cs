@@ -12,6 +12,7 @@ namespace SimulationAPI
         public Car car;
         public bool hasHit;
         public float dist = float.MaxValue;
+        public float maxDist;
     }
 
     public class Light
@@ -19,6 +20,22 @@ namespace SimulationAPI
         public bool isOn = false;
         public Vector2 pos;
         public float orientation;
+
+        public Vector2 forward
+        {
+            get
+            {
+                return new Vector2((float)Math.Sin((Math.PI / 180) * orientation), (float)Math.Cos((Math.PI / 180) * orientation));
+            }
+        }
+
+        public Vector2 right
+        {
+            get
+            {
+                return new Vector2((float)Math.Sin((Math.PI / 180) * -orientation), (float)Math.Cos((Math.PI / 180) * -orientation));
+            }
+        }
     }
 
     public class Vector2
@@ -110,5 +127,9 @@ namespace SimulationAPI
     public class WriteEventArgs : EventArgs
     {
         public string msg { get; set; }
+        public WriteEventArgs(string message)
+        {
+            msg = message;
+        }
     }
 }

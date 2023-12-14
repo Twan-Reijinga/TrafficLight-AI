@@ -78,8 +78,8 @@ public class TrafficLightsControllerNL : MonoBehaviour
                 }
                 lastPinged = holder.forward;
             }
-            Debug.DrawRay(holder.left.transform.position + Vector3.down * 4.5f - holder.left.transform.right * 2, holder.left.transform.right * 10, Color.green);
-            Debug.DrawRay(holder.forward.transform.position + Vector3.down * 4.5f - holder.forward.transform.right * 2, holder.forward.transform.right * 10, Color.green);
+            // Debug.DrawRay(holder.left.transform.position + Vector3.down * 4.5f - holder.left.transform.right * 2, holder.left.transform.right * 10, Color.green);
+            // Debug.DrawRay(holder.forward.transform.position + Vector3.down * 4.5f - holder.forward.transform.right * 2, holder.forward.transform.right * 10, Color.green);
         }
 
         switch (state)

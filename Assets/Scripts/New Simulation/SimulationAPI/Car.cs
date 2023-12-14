@@ -41,9 +41,17 @@ namespace SimulationAPI
             velocity = Math.Clamp(velocity, 0, maxSpeed);
         }
 
-        public void Move(float dt)
+        public void Move(float dt, Physics p)
         {
-            Accelerate(dt);
+            RayHit hit;
+            if (p.Raycast(pos, forward, 7, out hit, UUID))
+            {
+                Accelerate(dt, -hit.maxDist * 2 / hit.dist);
+            }
+            else
+            {
+                Accelerate(dt);
+            }
             pos += forward * velocity * dt;
         }
 
