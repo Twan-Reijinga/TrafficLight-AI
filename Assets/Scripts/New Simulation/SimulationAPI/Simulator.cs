@@ -44,26 +44,6 @@ namespace SimulationAPI
             return scene;
         }
 
-        // public Car GenerateCar(int id)
-        // {
-        //     // int index = (int)Mathf.Floorint)Mathf.Floor(Random.Range(0, spawnPositions.Length));
-
-        //     int entranceIndex = GetPositionFromChance(entrancePositionChance);
-
-        //     Car car = new Car
-        //     {
-        //         orientation = spawnOrientations[index],
-        //         pos = spawnPositions[index],
-        //         UUID = id
-        //     };
-
-        //     if (false)
-        //     { //car goes to left in first time
-        //         car.pos += car.right * -3;
-        //     }
-        //     return car;
-        // }
-
         public void TestPopulation()
         {
             return;
@@ -109,7 +89,6 @@ namespace SimulationAPI
                     carList.RemoveAt(i);  // ignore all cars too far away from car
                 }
             }
-            //carList.Sort((a, b) => Vector2.Distance(a.pos, origin).CompareTo(Vector2.Distance(b.pos, origin))); // sort cars based on distance to origin so to make first car that hits the closest one
 
             foreach (Car car in carList) // get distance and reference to closest car
             {
