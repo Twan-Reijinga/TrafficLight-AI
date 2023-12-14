@@ -4,6 +4,7 @@ using UnityEngine;
 using SimulationAPI;
 using TMPro;
 using UnityEditor.SearchService;
+using System;
 
 public class SimulationController : MonoBehaviour
 {
@@ -30,6 +31,12 @@ public class SimulationController : MonoBehaviour
         Step();
         VisualsUpdater();
         lastframe = Time.time;
+        simulator.write += simulator_print;
+    }
+
+    static void simulator_print(object sender, WriteEventArgs e)
+    {
+        print(e.msg);
     }
 
     void Visualize()

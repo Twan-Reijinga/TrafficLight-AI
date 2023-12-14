@@ -96,5 +96,19 @@ namespace SimulationAPI
             return a + (b - a) * t;
         }
 
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+    }
+
+    public class WriteEventArgs : EventArgs
+    {
+        public string msg { get; set; }
     }
 }

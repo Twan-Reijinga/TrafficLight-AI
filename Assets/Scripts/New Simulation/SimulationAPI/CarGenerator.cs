@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace SimulationAPI
 {
@@ -9,10 +10,10 @@ namespace SimulationAPI
     {
         // public GameObject rootCar;
         // public EffeciencyStats carStats;
-        public float spawningChance = 0.3f; // between 0-1
-        public List<int> entrancePositionChance = new List<int>(6);
-        public List<int> exitPositionChance = new List<int>(6);
-        public float intervalInSeconds = 1.0f;
+        public float spawningChance = 1f; // between 0-1
+        public List<int> entrancePositionChance = new List<int> { 1, 1, 1, 1, 1, 1 };
+        public List<int> exitPositionChance = new List<int> { 1, 1, 1, 1, 1, 1 };
+        public float intervalInSeconds = 0.0f;
         private float secondsSinceLastInterval = 0.0f;
         private int uuidCounter = 0;
         private Vector2[] positions = {
@@ -42,7 +43,7 @@ namespace SimulationAPI
             {'l', 'l', 'l', 'f', 'r'}
         };
 
-        void Update(float dt, Random rand)
+        public Car Update(float dt, Random rand)
         {
             secondsSinceLastInterval += dt;
             if (secondsSinceLastInterval >= intervalInSeconds)
@@ -53,15 +54,16 @@ namespace SimulationAPI
 
                 if (randomChanceValue < spawningChance)
                 {
-                    SpawnCar();
+                    return SpawnCar(rand);
                 }
             }
+            return null;
         }
 
-        Car SpawnCar()
+        Car SpawnCar(Random rand)
         {
-            int entranceIndex = GetPositionFromChance(entrancePositionChance);
-            int exitIndex = GetPositionFromChance(exitPositionChance, entranceIndex);
+            int entranceIndex = GetPositionFromChance(entrancePositionChance, rand);
+            int exitIndex = GetPositionFromChance(exitPositionChance, rand, entranceIndex);
             char nextAction = instructions[entranceIndex, exitIndex];
 
             if (entranceIndex >= exitIndex)
@@ -86,7 +88,7 @@ namespace SimulationAPI
             return newCar;
         }
 
-        int GetPositionFromChance(List<int> chances, int ignore = -1, Random rand)
+        int GetPositionFromChance(List<int> chances, Random rand, int ignore = -1)
         {
             List<int> modifiedChances = new List<int>(chances);
             if (ignore >= 0)

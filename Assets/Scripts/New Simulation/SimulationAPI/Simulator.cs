@@ -7,11 +7,17 @@ namespace SimulationAPI
 {
     public class Simulator
     {
+        public event EventHandler<WriteEventArgs> write;
+
         Random rand;
         public int seed = 0;
+
         List<Car> cars = new List<Car>();
         List<Light> lightsC1 = new List<Light>();
         List<Light> lightsC2 = new List<Light>();
+
+        CarGeneration carGenerator;
+
         private Vector2[] lightPositions = {
             new Vector2(7.5f, 3.0f),
             new Vector2(7.5f, 0.0f)
@@ -20,6 +26,12 @@ namespace SimulationAPI
         public Simulator(int seed)
         {
             rand = new Random(seed);
+            carGenerator = new CarGeneration();
+            for (int i = 0; i < 8; i++)
+            {
+                lightsC1.Add(new Light());
+                lightsC2.Add(new Light());
+            }
         }
 
         public G_sceneState GetGraphicSceneState()
@@ -46,36 +58,29 @@ namespace SimulationAPI
 
         public void TestPopulation()
         {
+            Console.WriteLine("No Fuck U");
             return;
-            cars = new List<Car>();
-            int amountOfCars = 50;
-            for (int i = 0; i < amountOfCars; i++)
-            {
-                // Car car = GenerateCar(i);
-                // cars.Add(car);
-            }
-
         }
 
         public void Step(float dt)
         {
             UpdateCarPositions(dt);
             UpdateTrafficLights(dt);
+            Car car = carGenerator.Update(dt, rand);
+            if (car != null) cars.Add(car);
         }
 
         void UpdateCarPositions(float dt)
         {
             foreach (Car car in cars)
             {
-                // car.Move(dt); // TEST SPEED OF 3!!
+                car.Move(dt); // TEST SPEED OF 3!!
 
             }
         }
 
         void UpdateTrafficLights(float dt)
-        {
-
-        }
+        { }
 
         public bool Raycast(Vector2 origin, Vector2 dir, float maxDist, out RayHit hit, int ignore = -1)
         {
@@ -116,7 +121,7 @@ namespace SimulationAPI
 
             return false;
         }
-
+#nullable enable
         private static Vector2? LineLineIntersect(Vector2 from1, Vector2 to1, Vector2 from2, Vector2 to2)
         {
             float d =
@@ -141,6 +146,12 @@ namespace SimulationAPI
                 return intersection;
             }
             return null; // no intersection
+        }
+#nullable disable
+
+        protected virtual void Print(WriteEventArgs e)
+        {
+            write?.Invoke(this, e);
         }
     }
 }
