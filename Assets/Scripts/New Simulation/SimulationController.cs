@@ -64,7 +64,7 @@ public class SimulationController : MonoBehaviour
 
     void updateTPSCounter(float dt)
     {
-        tpsCounter.text = "tps:    " + Mathf.Clamp(Mathf.Round(1 / dt), 0, runAtSetSpeed ? 1 / timeStepSize : 99999).ToString();
+        tpsCounter.text = "tps:  " + Mathf.Clamp(Mathf.Round(1 / dt), 0, runAtSetSpeed ? 1 / timeStepSize : 99999).ToString();
         dt = Mathf.Round(dt * 10f) / 10f;
         MSPTCounter.text = "mspt: " + (dt * 1000).ToString();
     }

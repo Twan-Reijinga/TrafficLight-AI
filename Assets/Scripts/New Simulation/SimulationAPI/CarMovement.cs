@@ -16,11 +16,11 @@ namespace SimulationAPI
             new ActionNode(new Vector2( 29.5f, - 5.0f), 'l',   0),   //'l': left
             new ActionNode(new Vector2( 34.5f,   0.0f), 'l', 270),
             new ActionNode(new Vector2( 29.5f,   5.0f), 'l', 180),
-            new ActionNode(new Vector2( 24.5f,   0.0f), 'l', 90),
+            new ActionNode(new Vector2( 24.5f,   0.0f), 'l',  90),
 
-            new ActionNode(new Vector2(-29.5f, - 5.0f), 'l', 180),
+            new ActionNode(new Vector2(-29.5f, - 5.0f), 'l',   0),
             new ActionNode(new Vector2(-34.5f,   0.0f), 'l',  90),
-            new ActionNode(new Vector2(-29.5f,   5.0f), 'l',   0),
+            new ActionNode(new Vector2(-29.5f,   5.0f), 'l', 180),
             new ActionNode(new Vector2(-24.5f,   0.0f), 'l', 270),
 
             new ActionNode(new Vector2(- 3.0f, - 3.0f), 's',  90),   //'s': switch

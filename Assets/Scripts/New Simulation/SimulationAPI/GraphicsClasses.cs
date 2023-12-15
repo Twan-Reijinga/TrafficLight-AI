@@ -19,7 +19,7 @@ namespace SimulationAPI
 
     public class G_sceneState
     {
-        public List<G_Car> cars = new List<G_Car>(8);
+        public List<Car> cars = new List<Car>();
         public G_Lights lights = new G_Lights();
     }
 }

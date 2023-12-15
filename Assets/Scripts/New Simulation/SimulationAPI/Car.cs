@@ -16,6 +16,7 @@ namespace SimulationAPI
         }
     }
 
+    [Serializable]
     public class Car
     {
         public Vector2 size = new Vector2(2.5f, 6.5f);
@@ -23,11 +24,11 @@ namespace SimulationAPI
         public Vector2 pos;
         public float orientation;
         private float orientationTarget;
-        private int exitIndex;
+        public int exitIndex;
         public char nextAction;
         public char currentAction = 'f';
 
-        private float velocity = 0;
+        public float velocity = 0;
         private float acceleration = 3; // tweak this
         private float maxSpeed = 6;     // also tweak this
 
@@ -38,6 +39,18 @@ namespace SimulationAPI
             this.orientation = orientation;
             this.exitIndex = exitIndex;
             this.nextAction = nextAction;
+        }
+
+        public Car(Car other)
+        {
+            this.UUID = other.UUID;
+            this.pos = other.pos;
+            this.orientation = other.orientation;
+            this.orientationTarget = other.orientationTarget;
+            this.exitIndex = other.exitIndex;
+            this.nextAction = other.nextAction;
+            this.currentAction = other.currentAction;
+            this.velocity = other.velocity;
         }
 
         public Vector2 forward
@@ -91,12 +104,13 @@ namespace SimulationAPI
 
                 case 'l':
                     {
+                        CarTurn(8f, dt);
                         break;
                     }
 
                 case 'r':
                     {
-                        CarTurn(4.5f, dt, 90);
+                        CarTurn(4.5f, dt);
                         break;
                     }
                 case 's':
@@ -135,7 +149,7 @@ namespace SimulationAPI
                 {
 
                     currentAction = node.action;
-                    orientationTarget = orientation + (currentAction == 'r' ? 90 : -90) % 360;
+                    orientationTarget = (orientation + (currentAction == 'r' ? 90 : -90) + 360) % 360;
                 }
                 else if (node.action == 's')
                 {
@@ -184,7 +198,7 @@ namespace SimulationAPI
             float angularStepSize = angle / (arcLength / velocity) * dt;
             orientation = RotateTowards(orientation, orientationTarget, angularStepSize);
 
-            if (orientation == RotateTowards(orientation, orientationTarget, angularStepSize)) currentAction = 'f';
+            if (orientation == RotateTowards(orientation, orientationTarget, angularStepSize) && velocity != 0) currentAction = 'f';
         }
     }
 }

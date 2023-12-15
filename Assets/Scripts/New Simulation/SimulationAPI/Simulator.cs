@@ -60,11 +60,8 @@ namespace SimulationAPI
 
             foreach (Car car in cars)
             {
-                G_Car g_Car = new G_Car();
-                g_Car.UUID = car.UUID;
-                g_Car.pos = car.pos;
-                g_Car.orientation = car.orientation;
-                scene.cars.Add(g_Car);
+                Car gCar = new Car(car);
+                scene.cars.Add(gCar);
             }
 
             for (int i = 0; i < 8; i++)
