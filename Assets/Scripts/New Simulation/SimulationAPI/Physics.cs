@@ -31,19 +31,28 @@ namespace SimulationAPI
 
             foreach (Car car in carList) // get distance and reference to closest car
             {
-                Vector2 hit1 = LineLineIntersect(origin, origin + dir, car.pos + car.forward * car.size.y * 0.5f, car.pos - car.forward * car.size.y * 0.5f) ?? Vector2.positiveInfinity;
-                Vector2 hit2 = LineLineIntersect(origin, origin + dir, car.pos - car.forward * car.size.y * 0.5f - car.right * car.size.x * 0.5f, car.pos - car.forward * car.size.y + car.right * car.size.x * 0.5f) ?? Vector2.positiveInfinity;
+                Vector2 fr = car.pos + car.forward * car.size.y * 0.5f + car.right * car.size.x * 0.5f; //front right
+                Vector2 fl = car.pos + car.forward * car.size.y * 0.5f - car.right * car.size.x * 0.5f;
+                Vector2 br = car.pos - car.forward * car.size.y * 0.5f + car.right * car.size.x * 0.5f;
+                Vector2 bl = car.pos - car.forward * car.size.y * 0.5f - car.right * car.size.x * 0.5f;
 
-                if (hit1 == Vector2.positiveInfinity && hit2 == Vector2.positiveInfinity)
-                {
-                    continue;
-                }
-                float dist = Math.Min(Vector2.Distance(origin, hit1), Vector2.Distance(origin, hit2));
+                Vector2 hitF = LineLineIntersect(origin, origin + dir, fr, fl) ?? Vector2.positiveInfinity; //front
+                Vector2 hitB = LineLineIntersect(origin, origin + dir, br, bl) ?? Vector2.positiveInfinity; //back
+                Vector2 hitR = LineLineIntersect(origin, origin + dir, fr, br) ?? Vector2.positiveInfinity; //left
+                Vector2 hitL = LineLineIntersect(origin, origin + dir, fl, bl) ?? Vector2.positiveInfinity; //right
 
-                if (dist < hit.dist)
+                Vector2[] hits = new Vector2[] { hitF, hitB, hitR, hitL };
+
+                foreach (Vector2 carHit in hits)
                 {
-                    hit.car = car;
-                    hit.dist = dist;
+                    if (carHit == Vector2.positiveInfinity) continue;
+                    float dist = Vector2.Distance(origin, carHit);
+
+                    if (dist < hit.dist)
+                    {
+                        hit.car = car;
+                        hit.dist = dist;
+                    }
                 }
             }
 

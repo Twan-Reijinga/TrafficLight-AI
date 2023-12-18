@@ -27,11 +27,11 @@ public class SimulationController : MonoBehaviour
     void Start()
     {
         simulator = new Simulator(seed);
+        simulator.write += simulator_print;
         simulator.TestPopulation();
         Step();
         VisualsUpdater();
         lastframe = Time.time;
-        simulator.write += simulator_print;
     }
 
     static void simulator_print(object sender, WriteEventArgs e)

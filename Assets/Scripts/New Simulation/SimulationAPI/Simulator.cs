@@ -6,7 +6,7 @@ namespace SimulationAPI
     public class Simulator
     {
         public event EventHandler<WriteEventArgs> write;
-
+        Replay replay = new Replay();
         System.Random rand;
         public int seed = 0;
 
