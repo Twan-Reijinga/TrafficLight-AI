@@ -99,9 +99,7 @@ namespace SimulationAPI
         /// <param name="line2p2">point 2 of the line to intersect with</param>
         /// <returns>Returns a Vector2 if hit, otherwise null</returns>
 
-#nullable enable        //wtf is this C#??
-        private Vector2? LineLineIntersect(Vector2 line1p1, Vector2 line1p2, Vector2 line2p1, Vector2 line2p2)
-#nullable disable       //I hate this...
+        private Vector2 LineLineIntersect(Vector2 line1p1, Vector2 line1p2, Vector2 line2p1, Vector2 line2p2)
         {
             float d =
                 (line1p2.x - line1p1.x) * (line2p2.y - line2p1.y) - (line1p2.y - line1p1.y) * (line2p2.x - line2p1.x);
