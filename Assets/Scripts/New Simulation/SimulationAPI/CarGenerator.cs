@@ -16,10 +16,10 @@ namespace SimulationAPI
         private int uuidCounter = 0;
         private Vector2[] positions = {
                 new Vector2(-26.5f, -31.0f),
-                new Vector2(-60.0f, -2.7f),
+                new Vector2(-60.0f, - 3.0f),
                 new Vector2(-32.5f,  31.0f),
                 new Vector2( 26.5f,  31.0f),
-                new Vector2( 60.0f,  3.0f),
+                new Vector2( 60.0f,   3.0f),
                 new Vector2( 32.5f, -31.0f)
             };
 
@@ -67,7 +67,7 @@ namespace SimulationAPI
         Car SpawnCar(Random rand)
         {
             int entranceIndex = GetPositionFromChance(entrancePositionChance, rand);
-            int exitIndex = GetPositionFromChance(exitPositionChance, rand, entranceIndex);
+            int exitIndex = 4;//GetPositionFromChance(exitPositionChance, rand, entranceIndex);
             char nextAction = instructions[entranceIndex, exitIndex];
 
             if (entranceIndex >= exitIndex)

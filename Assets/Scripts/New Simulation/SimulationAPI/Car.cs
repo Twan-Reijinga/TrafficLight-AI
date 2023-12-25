@@ -1,4 +1,5 @@
 using System;
+using UnityEngine.UIElements;
 
 namespace SimulationAPI
 {
@@ -7,12 +8,14 @@ namespace SimulationAPI
         public Vector2 pos;
         public char action;
         public float orientation;
+        public float size;
 
-        public ActionNode(Vector2 pos, char action, float orientation)
+        public ActionNode(Vector2 pos, char action, float orientation, float size)
         {
             this.pos = pos;
             this.action = action;
             this.orientation = orientation;
+            this.size = size;
         }
     }
 
@@ -31,6 +34,7 @@ namespace SimulationAPI
         public float velocity = 0;
         private float acceleration = 3; // tweak this
         private float maxSpeed = 6;     // also tweak this
+        private int switchphase = 0;
 
         public Car(int id, Vector2 pos, float orientation, int exitIndex, char nextAction)
         {
@@ -98,7 +102,6 @@ namespace SimulationAPI
             {
                 case 'f':
                     {
-                        //IDK maybe do something here???
                         break;
                     }
 
@@ -115,6 +118,14 @@ namespace SimulationAPI
                     }
                 case 's':
                     {
+                        if (switchphase == 0)
+                        {
+                            CarTurn(6 / (float)Math.Sqrt(2), dt, 45);
+                        }
+                        else
+                        {
+                            CarTurn(6 / (float)Math.Sqrt(2), dt, 45);
+                        }
                         break;
                     }
             }
@@ -130,7 +141,7 @@ namespace SimulationAPI
         {
             foreach (ActionNode node in CarMovement.nodes)
             {
-                if (Vector2.Distance(pos, node.pos) < CarMovement.nodeSize)
+                if (Vector2.Distance(pos, node.pos) < node.size)
                 {
                     return node;
                 }
@@ -149,7 +160,9 @@ namespace SimulationAPI
                 {
 
                     currentAction = node.action;
-                    orientationTarget = (orientation + (currentAction == 'r' ? 90 : -90) + 360) % 360;
+                    orientationTarget = orientation + (currentAction == 'r' ? 90 : -90);
+
+                    orientationTarget = (orientationTarget + 360) % 360;
                 }
                 else if (node.action == 's')
                 {
@@ -158,6 +171,7 @@ namespace SimulationAPI
                         case 1:
                         case 4:
                             {
+                                orientationTarget = (orientation - 45 + 360) % 360;
                                 //switch logic
                                 currentAction = 's';
                                 nextAction = 'l';
@@ -198,7 +212,19 @@ namespace SimulationAPI
             float angularStepSize = angle / (arcLength / velocity) * dt;
             orientation = RotateTowards(orientation, orientationTarget, angularStepSize);
 
-            if (orientation == RotateTowards(orientation, orientationTarget, angularStepSize) && velocity != 0) currentAction = 'f';
+            if (orientation == RotateTowards(orientation, orientationTarget, angularStepSize) && velocity != 0)
+            {
+                orientation = orientationTarget;
+                if (currentAction != 's' || switchphase == 1)
+                {
+                    currentAction = 'f';
+                }
+                if (currentAction == 's')
+                {
+                    switchphase = 1;
+                    orientationTarget = (orientation + 45 + 360) % 360;
+                }
+            }
         }
     }
 }
