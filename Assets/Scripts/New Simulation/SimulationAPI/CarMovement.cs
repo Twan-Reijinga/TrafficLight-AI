@@ -24,7 +24,14 @@ namespace SimulationAPI
             new ActionNode(new Vector2(-24.5f,   0.0f), 'l', 270, 0.25f),
 
             new ActionNode(new Vector2(- 3.0f, - 3.0f), 's',  90, 0.25f),   //'s': switch
-            new ActionNode(new Vector2(  3.0f,   3.0f), 's', 270, 0.25f)
+            new ActionNode(new Vector2(  3.0f,   3.0f), 's', 270, 0.25f),
+            
+            new ActionNode(new Vector2( 32.5f,  30.0f), 'e',   0, 0.25f),   //'e': exit
+            new ActionNode(new Vector2( 60.0f, - 3.0f), 'e',   0, 0.25f),
+            new ActionNode(new Vector2( 26.5f, -31.0f), 'e',   0, 0.25f),
+            new ActionNode(new Vector2(-32.5f, -30.0f), 'e',   0, 0.25f),
+            new ActionNode(new Vector2(-60.5f,   3.0f), 'e',   0, 0.25f),
+            new ActionNode(new Vector2(-26.5f,  31.0f), 'e',   0, 0.25f)
         };
 
         public static float nodeSize = 0.15f;

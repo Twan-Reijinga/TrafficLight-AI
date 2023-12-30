@@ -52,7 +52,7 @@ namespace SimulationAPI
             secondsSinceLastInterval += dt;
             if (secondsSinceLastInterval >= intervalInSeconds) //if can spawn car
             {
-                secondsSinceLastInterval = 0;
+                secondsSinceLastInterval = 0.0f;
 
                 float randomChanceValue = (float)rand.NextDouble();
 
