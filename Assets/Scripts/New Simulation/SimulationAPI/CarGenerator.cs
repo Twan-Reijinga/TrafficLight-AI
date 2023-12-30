@@ -67,7 +67,7 @@ namespace SimulationAPI
         Car SpawnCar(Random rand)
         {
             int entranceIndex = GetPositionFromChance(entrancePositionChance, rand);
-            int exitIndex = 4;//GetPositionFromChance(exitPositionChance, rand, entranceIndex);
+            int exitIndex = GetPositionFromChance(exitPositionChance, rand, entranceIndex);
             char nextAction = instructions[entranceIndex, exitIndex];
 
             if (entranceIndex >= exitIndex)
