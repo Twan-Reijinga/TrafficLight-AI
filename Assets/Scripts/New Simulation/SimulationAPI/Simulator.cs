@@ -75,13 +75,14 @@ namespace SimulationAPI
 
         public void TestPopulation()
         {
-            Print("No Fuck U");
+            Print("No Fuck U: TestPopulation incomplete (Simulator.cs ln78)");
             return;
         }
 
         public void Step(float dt)
         {
             UpdateCarPositions(dt);
+            DestroyCars();
             UpdateTrafficLights(dt);
             Car newCar = carGenerator.Update(dt, rand);
             if (newCar != null) cars.Add(newCar);
@@ -89,12 +90,25 @@ namespace SimulationAPI
 
         void UpdateCarPositions(float dt)
         {
-            foreach (Car car in cars)
+            foreach (Car car in cars) 
             {
                 car.Move(dt, physics); // TEST SPEED OF 3!!
                 // Print("current: " + car.currentAction);
                 // Print("next:    " + car.nextAction);
             }
+        }
+
+        void DestroyCars() 
+        {
+            for(int i = 0; i < cars.Count; i++) 
+            {
+                if(cars[i].isDestroyed) 
+                {
+                    cars.RemoveAt(i);
+                    // Print("BOOOOOOM: car " + cars[i].UUID + " destroyed!");
+                }
+            }
+
         }
 
         void UpdateTrafficLights(float dt)
@@ -105,4 +119,3 @@ namespace SimulationAPI
             write?.Invoke(this, new WriteEventArgs(e));
         }
     }
-}

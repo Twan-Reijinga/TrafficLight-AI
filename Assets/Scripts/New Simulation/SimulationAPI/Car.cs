@@ -30,6 +30,7 @@ namespace SimulationAPI
         public int exitIndex;
         public char nextAction;
         public char currentAction = 'f';
+        public bool isDestroyed = false;
 
         public float velocity = 0;
         private float acceleration = 3; // tweak this
@@ -192,6 +193,11 @@ namespace SimulationAPI
                                 break;
                             }
                     }
+                }
+                else if (node.action == 'e')
+                {
+                    // currentAction = 'l';
+                    isDestroyed = true;
                 }
             }
         }
