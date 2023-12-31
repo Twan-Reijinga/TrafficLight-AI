@@ -52,7 +52,7 @@ namespace SimulationAPI
             secondsSinceLastInterval += dt;
             if (secondsSinceLastInterval >= intervalInSeconds) //if can spawn car
             {
-                secondsSinceLastInterval = 0;
+                secondsSinceLastInterval = 0.0f;
 
                 float randomChanceValue = (float)rand.NextDouble();
 
@@ -67,7 +67,7 @@ namespace SimulationAPI
         Car SpawnCar(Random rand)
         {
             int entranceIndex = GetPositionFromChance(entrancePositionChance, rand);
-            int exitIndex = 4;//GetPositionFromChance(exitPositionChance, rand, entranceIndex);
+            int exitIndex = GetPositionFromChance(exitPositionChance, rand, entranceIndex);
             char nextAction = instructions[entranceIndex, exitIndex];
 
             if (entranceIndex >= exitIndex)
