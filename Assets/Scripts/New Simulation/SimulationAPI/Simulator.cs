@@ -195,3 +195,4 @@ namespace SimulationAPI
             write?.Invoke(this, new WriteEventArgs(e));
         }
     }
+}
