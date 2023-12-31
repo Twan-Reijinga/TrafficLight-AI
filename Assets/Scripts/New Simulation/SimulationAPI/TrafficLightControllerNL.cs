@@ -1,0 +1,7 @@
+namespace SimulationAPI{
+    
+    class TrafficControlSystemNL{
+        
+    }
+
+}

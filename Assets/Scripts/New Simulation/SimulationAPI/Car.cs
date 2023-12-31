@@ -79,10 +79,10 @@ namespace SimulationAPI
             velocity = Math.Clamp(velocity, 0, maxSpeed);
         }
 
-        public void Move(float dt, Physics p)
+        public void Move(float dt, Simulator super)
         {
             RayHit hit;
-            if (p.Raycast(pos, forward, 7, out hit, UUID))  //accelerate or decelerate
+            if (super.Raycast(pos, forward, 7, out hit, UUID))  //accelerate or decelerate
             {
                 Accelerate(dt, -hit.maxDist * 2 / hit.dist);
             }

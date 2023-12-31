@@ -13,83 +13,6 @@ namespace SimulationAPI
             this.super = super;
         }
 
-        public bool Raycast(Vector2 origin, Vector2 dir, float maxDist, out RayHit hit, int ignore = -1)
-        {
-            hit = new RayHit();
-            hit.maxDist = maxDist;
-            hit.dist = maxDist;
-            hit.car = null;
-            hit.light = null;
-            List<Car> carList = new List<Car>(super.cars);
-            for (int i = carList.Count - 1; i >= 0; i--)
-            {
-                if (Vector2.Distance(origin, carList[i].pos) > maxDist || carList[i].UUID == ignore)
-                {
-                    carList.RemoveAt(i);  // ignore all cars too far away from car or are a specified car
-                }
-            }
-
-            foreach (Car car in carList) // get distance and reference to closest car
-            {
-                Vector2 fr = car.pos + car.forward * car.size.y * 0.5f + car.right * car.size.x * 0.5f; //front right
-                Vector2 fl = car.pos + car.forward * car.size.y * 0.5f - car.right * car.size.x * 0.5f;
-                Vector2 br = car.pos - car.forward * car.size.y * 0.5f + car.right * car.size.x * 0.5f;
-                Vector2 bl = car.pos - car.forward * car.size.y * 0.5f - car.right * car.size.x * 0.5f;
-
-                Vector2 hitF = LineLineIntersect(origin, origin + dir, fr, fl) ?? Vector2.positiveInfinity; //front
-                Vector2 hitB = LineLineIntersect(origin, origin + dir, br, bl) ?? Vector2.positiveInfinity; //back
-                Vector2 hitR = LineLineIntersect(origin, origin + dir, fr, br) ?? Vector2.positiveInfinity; //left
-                Vector2 hitL = LineLineIntersect(origin, origin + dir, fl, bl) ?? Vector2.positiveInfinity; //right
-
-                Vector2[] hits = new Vector2[] { hitF, hitB, hitR, hitL };
-
-                foreach (Vector2 carHit in hits)
-                {
-                    if (carHit == Vector2.positiveInfinity) continue;
-                    float dist = Vector2.Distance(origin, carHit);
-
-                    if (dist < hit.dist)
-                    {
-                        hit.car = car;
-                        hit.dist = dist;
-                    }
-                }
-            }
-
-            List<Light> lights = super.lightsC1.Concat(super.lightsC2).ToList();
-
-            for (int i = lights.Count - 1; i >= 0; i--)
-            {
-                if (Vector2.Distance(origin, lights[i].pos) > maxDist || lights[i].isOn)
-                {
-                    lights.RemoveAt(i); //ignore all lights that are too far away or are turned on
-                }
-            }
-
-            foreach (Light light in lights)
-            {
-                Vector2 lightHit = LineLineIntersect(origin, origin + dir, light.pos + light.right * 1.25f, light.pos - light.right * 1.25f) ?? Vector2.positiveInfinity;
-
-                float dist = Vector2.Distance(origin, lightHit);
-
-
-                if (dist < hit.dist)
-                {
-                    hit.car = null;
-                    hit.light = light;
-                    hit.dist = dist;
-                }
-            }
-
-            if (hit.dist < maxDist)
-            {
-                return true;
-            }
-
-
-            return false;
-        }
-
         /// <summary>
         /// line line intersection between two lines given two points each, line 1 extends infinitely beyond point 2
         /// </summary>
@@ -99,7 +22,7 @@ namespace SimulationAPI
         /// <param name="line2p2">point 2 of the line to intersect with</param>
         /// <returns>Returns a Vector2 if hit, otherwise null</returns>
 
-        private Vector2 LineLineIntersect(Vector2 line1p1, Vector2 line1p2, Vector2 line2p1, Vector2 line2p2)
+        public static Vector2 LineLineIntersect(Vector2 line1p1, Vector2 line1p2, Vector2 line2p1, Vector2 line2p2)
         {
             float d =
                 (line1p2.x - line1p1.x) * (line2p2.y - line2p1.y) - (line1p2.y - line1p1.y) * (line2p2.x - line2p1.x);
