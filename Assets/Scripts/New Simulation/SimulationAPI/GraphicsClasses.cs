@@ -21,5 +21,7 @@ namespace SimulationAPI
     {
         public List<Car> cars = new List<Car>();
         public G_Lights lights = new G_Lights();
+
+        public List<int> deletedCars = new List<int>();
     }
 }

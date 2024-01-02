@@ -17,6 +17,7 @@ namespace SimulationAPI
 
         CarGeneration carGenerator;
         Physics physics;
+        List<int> deletedCars = new List<int>();
 
         private Vector2[] lightPositions = {
             new Vector2( 7.5f,  3.0f),
@@ -71,12 +72,14 @@ namespace SimulationAPI
                 scene.lights.cross2.Add(lightsC2[i].isOn);
             }
 
+            scene.deletedCars = new List<int>(deletedCars);
+
             return scene;
         }
 
         public void TestPopulation()
         {
-            Print("No Fuck U: TestPopulation incomplete (Simulator.cs ln78)");
+            Print("No Fuck U: TestPopulation incomplete (Simulator.cs)");
             return;
         }
 
@@ -91,23 +94,24 @@ namespace SimulationAPI
 
         void UpdateCarPositions(float dt)
         {
-            foreach (Car car in cars) 
+            foreach (Car car in cars)
             {
                 car.Move(dt, this);
             }
         }
 
-        void DestroyCars() 
+        void DestroyCars()
         {
-            for(int i = 0; i < cars.Count; i++) 
+            deletedCars = new List<int>();
+            for (int i = cars.Count - 1; i > 0; i--)
             {
-                if(cars[i].isDestroyed) 
+                if (cars[i].isDestroyed)
                 {
+                    Print("BOOOOOOM: car " + cars[i].UUID + " destroyed!");
+                    deletedCars.Add(cars[i].UUID);
                     cars.RemoveAt(i);
-                    // Print("BOOOOOOM: car " + cars[i].UUID + " destroyed!");
                 }
             }
-
         }
 
         void UpdateTrafficLights(float dt)

@@ -44,6 +44,7 @@ public class Visualizer : MonoBehaviour
             {
                 if (gCar.name == car.UUID.ToString())
                 {
+                    gCar.GetComponent<SceneCar>().isInScene = true;
                     gCar.GetComponent<SceneCar>().car = car;
                     gCar.position = new Vector3(car.pos.x, 0, car.pos.y);
                     gCar.rotation = Quaternion.Euler(new Vector3(0, car.orientation, 0));
@@ -57,6 +58,17 @@ public class Visualizer : MonoBehaviour
                 SceneCar sc = newCar.AddComponent<SceneCar>();
                 sc.car = car;
                 newCar.name = car.UUID.ToString();
+            }
+        }
+
+        for (int i = CarParent.childCount - 1; i >= 0; i--)
+        {
+            for (int j = 0; j < sceneState.deletedCars.Count; j++)
+            {
+                if (CarParent.GetChild(i).name == sceneState.deletedCars[j].ToString())
+                {
+                    Destroy(CarParent.GetChild(i).gameObject);
+                }
             }
         }
 

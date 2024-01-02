@@ -48,7 +48,7 @@ public class CarInfoVisualizer : MonoBehaviour
 
         Car car = sCar.car;
 
-        string text = car.UUID.ToString() + "<br>" + Math.Round(car.orientation).ToString() + "<br>" + "<br>" + car.currentAction + "<br>" + car.nextAction + "<br>" + "<br>" + car.exitIndex.ToString() + "<br>" + Math.Round(car.velocity, 2).ToString();
+        string text = car.UUID.ToString() + "<br>" + Math.Round(car.orientation).ToString() + "<br>" + "<br>" + car.currentAction + "<br>" + car.nextAction + "<br>" + "<br>" + car.exitIndex.ToString() + "<br>" + Math.Round(car.velocity, 2).ToString() + "<br><br>" + (car.isDestroyed ? "t" : "f");
 
         info.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = text;
         return info;
