@@ -78,6 +78,14 @@ namespace SimulationAPI
             Car newCar = new Car(uuidCounter, positions[entranceIndex], rotations[entranceIndex], exitIndex, nextAction);
             uuidCounter++;
 
+            RayHit hit;
+            if (super.Raycast(newCar.pos, newCar.pos + newCar.forward, 6, out hit))
+            {
+                super.Print("aAAA");
+                super.Print(entranceIndex.ToString());
+                return null;
+            }
+
             if (nextAction == 'l')
             {
                 newCar.pos += newCar.right * -3;

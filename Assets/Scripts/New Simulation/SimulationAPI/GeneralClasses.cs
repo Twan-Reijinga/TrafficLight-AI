@@ -39,6 +39,22 @@ namespace SimulationAPI
         public float x = 0;
         public float y = 0;
 
+        public float magnitude
+        {
+            get
+            {
+                return (float)Math.Sqrt(x * x + y * y);
+            }
+        }
+
+        public Vector2 normalised
+        {
+            get
+            {
+                return this / this.magnitude;
+            }
+        }
+
         public Vector2(float X, float Y)
         {
             x = X;

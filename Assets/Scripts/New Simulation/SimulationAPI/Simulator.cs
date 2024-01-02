@@ -107,7 +107,7 @@ namespace SimulationAPI
             {
                 if (cars[i].isDestroyed)
                 {
-                    Print("BOOOOOOM: car " + cars[i].UUID + " destroyed!");
+                    // Print("BOOOOOOM: car " + cars[i].UUID + " destroyed!");
                     deletedCars.Add(cars[i].UUID);
                     cars.RemoveAt(i);
                 }
