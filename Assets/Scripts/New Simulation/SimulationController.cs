@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SimulationAPI;
+using NetworkAPI;
 using TMPro;
 using UnityEditor.SearchService;
 using System;
@@ -15,6 +16,7 @@ public class SimulationController : MonoBehaviour
 
     public int seed;
     public Visualizer visualiser;
+    NetworkAPI.NetworkInput networkInput;
     SimulationAPI.Simulator simulator;
 
     public bool runAtSetSpeed = true;
@@ -24,8 +26,11 @@ public class SimulationController : MonoBehaviour
 
     private float lastframe;
 
+    private int[] networkNeuronCounts = {6, 6, 4}; // [3*(4*carLimit), ~, cycles] 
+
     void Start()
     {
+        networkInput = new NetworkAPI.NetworkInput(networkNeuronCounts);
         simulator = new Simulator(seed);
         simulator.write += simulator_print;
         simulator.TestPopulation();

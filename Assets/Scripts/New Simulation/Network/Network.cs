@@ -1,42 +1,46 @@
 using System;
 
-class Test{
-    static void Main() {
-        int[] neuronCounts = {5, 6, 4};
-        Network network = new Network(neuronCounts);
-        float[] states = {0.1f, 0.2f, 0.4f, 0.8f, 1.7f};
+// class Test{
+//     static void Main() {
+        // int[] neuronCounts = {5, 6, 4};
+        // Network network = new Network(neuronCounts);
+        // float[] states = {0.1f, 0.2f, 0.4f, 0.8f, 1.7f};
         // Network.feedForward(network, inputs);
-        QLearnAgent agent = new QLearnAgent(network, 0.5f);
-        agent.SelectAction(states, neuronCounts[neuronCounts.Length - 1]);
-    }
-}
+        // QLearnAgent agent = new QLearnAgent(network, 0.5f);
+        // agent.SelectAction(states, neuronCounts[neuronCounts.Length - 1]);
+//     }
+// }
 
 class QLearnAgent {
     Network network;
+    private int NumberOfInputs;
+    private int NumberOfOutputs;
     private float epsilon;
-    public QLearnAgent(Network startNetwork, float exploreChance) {
-        network = startNetwork;
+    public QLearnAgent(int[] neuronCounts, float exploreChance) {
+        Network network = new Network(neuronCounts);
+        NumberOfInputs = neuronCounts[0];
+        NumberOfOutputs = neuronCounts[neuronCounts.Length - 1];
         epsilon = exploreChance;
     }
     
-    public void SelectAction(float[] state, int NumberOfActions) {
+    public void SelectAction(float[] states) {
         Random rand = new Random();
         float randomChanceValue = (float) rand.NextDouble();
         if(randomChanceValue < epsilon) {
-            rand.Next(0, NumberOfActions);
+            rand.Next(0, NumberOfOutputs);
             // explore
             Console.WriteLine("explore mode");
 
         } else {
             // exploit
             Console.WriteLine("exploit mode");
-            Network.FeedForward(network, state);
+            Network.FeedForward(network, states);
         }
     }
 }
 
 class Network {
-    Layer[] layers;
+    private Layer[] layers;
     public Network(int[] neuronCounts) {
         layers = new Layer[neuronCounts.Length -1];
         for(int i = 0; i < neuronCounts.Length - 1;i++) {
