@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SimulationAPI;
-using NetworkAPI;
 using TMPro;
 using UnityEditor.SearchService;
 using System;
@@ -16,7 +15,7 @@ public class SimulationController : MonoBehaviour
 
     public int seed;
     public Visualizer visualiser;
-    NetworkAPI.NetworkInput networkInput;
+    private QLearnAgent qAgent;
     SimulationAPI.Simulator simulator;
 
     public bool runAtSetSpeed = true;
@@ -30,7 +29,7 @@ public class SimulationController : MonoBehaviour
 
     void Start()
     {
-        networkInput = new NetworkAPI.NetworkInput(networkNeuronCounts);
+        qAgent = new QLearnAgent(networkNeuronCounts, 0.5f);
         simulator = new Simulator(seed);
         simulator.write += simulator_print;
         simulator.TestPopulation();
