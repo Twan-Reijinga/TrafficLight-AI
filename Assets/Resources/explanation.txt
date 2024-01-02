@@ -21,3 +21,6 @@
 0xx - 3xx = this right forward left
 x1x - x2x = forward left
 xxi - xxo = in out
+
+01 = light 1
+02 = light 2
