@@ -36,6 +36,7 @@ public class SimulationController : MonoBehaviour
         Step();
         VisualsUpdater();
         lastframe = Time.time;
+        print("test1"); 
     }
 
     static void simulator_print(object sender, WriteEventArgs e)
@@ -51,6 +52,10 @@ public class SimulationController : MonoBehaviour
 
     void Step()
     {
+        
+        // int[] traficLights = {5, 6, 7, 8};
+        // int[] test = simulator.GetQueueLenghts(traficLights);
+        
         if (!paused)
         {
             simulator.Step(timeStepSize);
@@ -61,9 +66,10 @@ public class SimulationController : MonoBehaviour
         if (runAtSetSpeed)
         {
             Invoke(nameof(Step), timeStepSize);
-            return;
+        } else 
+        {
+            Invoke(nameof(Step), 0);
         }
-        Invoke(nameof(Step), 0);
     }
 
     void updateTPSCounter(float dt)

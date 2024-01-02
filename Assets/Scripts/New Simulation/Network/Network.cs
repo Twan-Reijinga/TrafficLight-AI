@@ -16,11 +16,11 @@ class QLearnAgent {
     private int NumberOfInputs;
     private int NumberOfOutputs;
     private float epsilon;
-    public QLearnAgent(int[] neuronCounts, float exploreChance) {
+    public QLearnAgent(int[] neuronCounts, float startExploreChance) {
         Network network = new Network(neuronCounts);
         NumberOfInputs = neuronCounts[0];
         NumberOfOutputs = neuronCounts[neuronCounts.Length - 1];
-        epsilon = exploreChance;
+        epsilon = startExploreChance;
     }
     
     public void SelectAction(float[] states) {
