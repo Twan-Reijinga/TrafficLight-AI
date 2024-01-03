@@ -36,7 +36,6 @@ public class SimulationController : MonoBehaviour
         Step();
         VisualsUpdater();
         lastframe = Time.time;
-        print("test1"); 
     }
 
     static void simulator_print(object sender, WriteEventArgs e)

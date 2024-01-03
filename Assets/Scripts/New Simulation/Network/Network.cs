@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 // class Test{
 //     static void Main() {
@@ -13,10 +14,10 @@ using System;
 
 class QLearnAgent {
     Network network;
-    private const int NumberOfInputs;
-    private const int NumberOfOutputs;
-    private const float EPSILON_START = 0.9;
-    private const float EPSILON_END = 0.05;
+    private int NumberOfInputs;
+    private int NumberOfOutputs;
+    private const float EPSILON_START = 0.9f;
+    private const float EPSILON_END = 0.05f;
     private const float EPSILON_DECAY = 1000; // decay using e^(-steps/decay)
     private int currentStep;
     public QLearnAgent(int[] neuronCounts) {
@@ -27,21 +28,24 @@ class QLearnAgent {
     }
     
     public int SelectAction(float[] states) {
-        int action = 
+        int action;
         Random rand = new Random();
         float randomChanceValue = (float) rand.NextDouble();
         float epsilon = EPSILON_END + (EPSILON_START - EPSILON_END) * MathF.Exp(-currentStep/EPSILON_DECAY);
         currentStep++;
         if(randomChanceValue < epsilon) {
-            rand.Next(0, NumberOfOutputs);
+            action = rand.Next(0, NumberOfOutputs);
             // explore
             Console.WriteLine("explore mode");
 
         } else {
             // exploit
             Console.WriteLine("exploit mode");
-            Network.FeedForward(network, states);
+            float[] actionSpace = Network.FeedForward(network, states);
+            action = Array.IndexOf(actionSpace, actionSpace.Max());
+
         }
+        return action;
     }
 }
 
