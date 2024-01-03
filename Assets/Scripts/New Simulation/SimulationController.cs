@@ -26,10 +26,12 @@ public class SimulationController : MonoBehaviour
     private float lastframe;
 
     private int[] networkNeuronCounts = {6, 6, 4}; // [3*(4*carLimit), ~, cycles] 
+    private int maxIterations;
 
     void Start()
     {
-        qAgent = new QLearnAgent(networkNeuronCounts);
+        maxIterations = 50_000; // ! TO DO: maxIterations given as parameter of Start() !
+        qAgent = new QLearnAgent(networkNeuronCounts, maxIterations);
         simulator = new Simulator(seed);
         simulator.write += simulator_print;
         simulator.TestPopulation();

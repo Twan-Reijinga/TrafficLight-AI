@@ -12,22 +12,56 @@ using System.Linq;
 //     }
 // }
 
+class ExperienceReplay {
+    private int replayIndex;
+    private int capacity;
+
+    private float[][] states;
+    private int[] actions;
+    private float[] rewards;
+    private float[][] nextStates;
+
+    public ExperienceReplay(int capacity) {
+        replayIndex = 0;
+        this.capacity = capacity;
+        states = new float[capacity][];
+        actions = new int[capacity];
+        rewards = new float[capacity];
+        nextStates = new float[capacity][];
+    }
+
+    public bool Add(float[] state, int action, float reward, float[] nextState) {
+        if(replayIndex > capacity) return false;
+        states[replayIndex] = state;
+        actions[replayIndex] = action;
+        rewards[replayIndex] = reward;
+        nextStates[replayIndex] = nextState;
+        replayIndex++;
+        return true;
+    }
+}
+
 class QLearnAgent {
     Network network;
+    ExperienceReplay experienceReplay;
+    private int maxIterations;
     private int NumberOfInputs;
     private int NumberOfOutputs;
     private const float EPSILON_START = 0.9f;
     private const float EPSILON_END = 0.05f;
     private const float EPSILON_DECAY = 1000; // decay using e^(-steps/decay)
     private int currentStep;
-    public QLearnAgent(int[] neuronCounts) {
-        Network network = new Network(neuronCounts);
+    public QLearnAgent(int[] neuronCounts, int maxIterations) {
+        network = new Network(neuronCounts);
         NumberOfInputs = neuronCounts[0];
         NumberOfOutputs = neuronCounts[neuronCounts.Length - 1];
+        
+        this.maxIterations = maxIterations;
+        experienceReplay = new ExperienceReplay(maxIterations);
         currentStep = 0;
     }
     
-    public int SelectAction(float[] states) {
+    public int SelectAction(float[] state) {
         int action;
         Random rand = new Random();
         float randomChanceValue = (float) rand.NextDouble();
@@ -41,7 +75,7 @@ class QLearnAgent {
         } else {
             // exploit
             Console.WriteLine("exploit mode");
-            float[] actionSpace = Network.FeedForward(network, states);
+            float[] actionSpace = Network.FeedForward(network, state);
             action = Array.IndexOf(actionSpace, actionSpace.Max());
 
         }
