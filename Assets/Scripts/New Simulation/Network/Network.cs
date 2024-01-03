@@ -13,19 +13,25 @@ using System;
 
 class QLearnAgent {
     Network network;
-    private int NumberOfInputs;
-    private int NumberOfOutputs;
-    private float epsilon;
-    public QLearnAgent(int[] neuronCounts, float startExploreChance) {
+    private const int NumberOfInputs;
+    private const int NumberOfOutputs;
+    private const float EPSILON_START = 0.9;
+    private const float EPSILON_END = 0.05;
+    private const float EPSILON_DECAY = 1000; // decay using e^(-steps/decay)
+    private int currentStep;
+    public QLearnAgent(int[] neuronCounts) {
         Network network = new Network(neuronCounts);
         NumberOfInputs = neuronCounts[0];
         NumberOfOutputs = neuronCounts[neuronCounts.Length - 1];
-        epsilon = startExploreChance;
+        currentStep = 0;
     }
     
-    public void SelectAction(float[] states) {
+    public int SelectAction(float[] states) {
+        int action = 
         Random rand = new Random();
         float randomChanceValue = (float) rand.NextDouble();
+        float epsilon = EPSILON_END + (EPSILON_START - EPSILON_END) * MathF.Exp(-currentStep/EPSILON_DECAY);
+        currentStep++;
         if(randomChanceValue < epsilon) {
             rand.Next(0, NumberOfOutputs);
             // explore

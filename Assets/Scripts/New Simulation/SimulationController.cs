@@ -29,7 +29,7 @@ public class SimulationController : MonoBehaviour
 
     void Start()
     {
-        qAgent = new QLearnAgent(networkNeuronCounts, 0.5f);
+        qAgent = new QLearnAgent(networkNeuronCounts);
         simulator = new Simulator(seed);
         simulator.write += simulator_print;
         simulator.TestPopulation();
