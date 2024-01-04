@@ -205,11 +205,39 @@ namespace SimulationAPI
             return false;
         }
 
-        public float[] GetQueueLenghts(int[] traficLightNumbers) 
+        public int[] GetQueueLenghts(int crossingNumber) 
         {
             // TODO: raycast queue lenghts
+            List<Light> lights;
+            if(crossingNumber == 1) 
+            {
+                lights = lightsC2;
+            } else 
+            {
+                lights = lightsC1;
+            }
 
-            float[] queueLenghts = {5.0f, 13.0f, 14.0f};
+            int[] queueLenghts = new int[lights.Count];
+            for(int i = 0; i < lights.Count; i++) 
+            {
+                int waitingCars = 0;
+                foreach(Car car in cars) 
+                {
+                    float distance = GetDistanceToCar(lights[i].pos, lights[i].pos + lights[i].forward, car);
+                    if(distance < float.PositiveInfinity) 
+                    {
+                        // TODO: only include cars that are waiting; speed = 0 //
+                        waitingCars++;
+                    }
+                }
+
+                queueLenghts[i] = waitingCars;
+                if(waitingCars > 0) 
+                {
+                    Print("Light " + i + " at (" + lights[i].pos.x + ", " + lights[i].pos.y + ") has " + waitingCars + " waiting car(s)");
+                }
+            }
+
             return queueLenghts;
         }
 
@@ -219,7 +247,7 @@ namespace SimulationAPI
             return;
         }
 
-        public float[] GetTraficLightState(int[] TraficLightNumbers)
+        public float[] GetTraficLightState(int crossingNumber)
         {
             // TODO: 1.Of: Green; 0.0f: Red // 
             float[] traficLightState = {0.1f, 0.0f, 1.0f, 0.0f};

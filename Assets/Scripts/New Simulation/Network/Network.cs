@@ -51,6 +51,7 @@ class QLearnAgent {
     private const float EPSILON_END = 0.05f;
     private const float EPSILON_DECAY = 1000; // decay using e^(-steps/decay)
     private int currentStep;
+
     public QLearnAgent(int[] neuronCounts, int maxIterations) {
         network = new Network(neuronCounts);
         NumberOfInputs = neuronCounts[0];
@@ -62,9 +63,9 @@ class QLearnAgent {
     }
 
     public void Step(SimulationAPI.Simulator simulator) {
-        int[] traficLightNumbers = {5, 6, 7, 8};
-        float[] queueLenghtsBefore = simulator.GetQueueLenghts(traficLightNumbers);
-        float[] traficLightStateBefore = simulator.GetTraficLightState(traficLightNumbers);
+        int crossingNumber = 1;
+        float[] queueLenghtsBefore = simulator.GetQueueLenghts(crossingNumber);
+        float[] traficLightStateBefore = simulator.GetTraficLightState(crossingNumber);
 
         // TODO: get prevStates somehow...
         float[] prevState = {5.0f, 13.0f, 14.0f};
@@ -72,15 +73,13 @@ class QLearnAgent {
         float[] state = CalcState(prevState, queueLenghtsBefore, traficLightStateBefore);
         int action = SelectAction(state);
         simulator.ChangeSignalFase(action);
-        float[] queueLenghtsAfter = simulator.GetQueueLenghts(traficLightNumbers);
-        float[] traficLightStateAfter = simulator.GetTraficLightState(traficLightNumbers);
+        float[] queueLenghtsAfter = simulator.GetQueueLenghts(crossingNumber);
+        float[] traficLightStateAfter = simulator.GetTraficLightState(crossingNumber);
         float[] nextState = CalcState(state, queueLenghtsAfter, traficLightStateAfter);
         float reward = CalcReward(state, nextState);
 
         // TODO: implement done variable for exp.replay //
         experienceReplay.Add(state, action, reward, nextState);
-
-
     }
     
     public int SelectAction(float[] state) {
