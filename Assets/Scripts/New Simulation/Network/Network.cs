@@ -60,6 +60,28 @@ class QLearnAgent {
         experienceReplay = new ExperienceReplay(maxIterations);
         currentStep = 0;
     }
+
+    public void Step(SimulationAPI.Simulator simulator) {
+        int[] traficLightNumbers = {5, 6, 7, 8};
+        float[] queueLenghtsBefore = simulator.GetQueueLenghts(traficLightNumbers);
+        float[] traficLightStateBefore = simulator.GetTraficLightState(traficLightNumbers);
+
+        // TODO: get prevStates somehow...
+        float[] prevState = {5.0f, 13.0f, 14.0f};
+
+        float[] state = CalcState(prevState, queueLenghtsBefore, traficLightStateBefore);
+        int action = SelectAction(state);
+        simulator.ChangeSignalFase(action);
+        float[] queueLenghtsAfter = simulator.GetQueueLenghts(traficLightNumbers);
+        float[] traficLightStateAfter = simulator.GetTraficLightState(traficLightNumbers);
+        float[] nextState = CalcState(state, queueLenghtsAfter, traficLightStateAfter);
+        float reward = CalcReward(state, nextState);
+
+        // TODO: implement done variable for exp.replay //
+        experienceReplay.Add(state, action, reward, nextState);
+
+
+    }
     
     public int SelectAction(float[] state) {
         int action;
@@ -80,6 +102,16 @@ class QLearnAgent {
 
         }
         return action;
+    }
+
+    private float[] CalcState(float[] prevState, float[] queueLenghts, float[] traficLightState) {
+        // TODO: state = current + 2 previous; add last 2 states to nextState //
+        return queueLenghts;
+    }
+
+    private float CalcReward(float[] queueLenghtsBefore, float[] queueLenghtsAfter) {
+        // TODO: calc reward form improvement in state (-1, 1) //
+        return 1.0f;
     }
 }
 

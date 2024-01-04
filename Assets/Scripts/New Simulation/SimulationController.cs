@@ -15,7 +15,6 @@ public class SimulationController : MonoBehaviour
 
     public int seed;
     public Visualizer visualiser;
-    private QLearnAgent qAgent;
     SimulationAPI.Simulator simulator;
 
     public bool runAtSetSpeed = true;
@@ -25,13 +24,19 @@ public class SimulationController : MonoBehaviour
 
     private float lastframe;
 
-    private int[] networkNeuronCounts = {6, 6, 4}; // [3*(4*carLimit), ~, cycles] 
+    private QLearnAgent qAgent;
+    private bool isAIControlled;
+    private int[] networkNeuronCounts = {6, 6, 4}; // [3*(4*carLimit), ~, cycles]
     private int maxIterations;
 
     void Start()
     {
-        maxIterations = 50_000; // ! TO DO: maxIterations given as parameter of Start() !
-        qAgent = new QLearnAgent(networkNeuronCounts, maxIterations);
+        maxIterations = 50_000; // TO DO: maxIterations given as parameter of Start()  //
+        isAIControlled = true; // TO DO: isAIControlled given as parameter of Start() //
+        if(isAIControlled) 
+        {
+            qAgent = new QLearnAgent(networkNeuronCounts, maxIterations);
+        }
         simulator = new Simulator(seed);
         simulator.write += simulator_print;
         simulator.TestPopulation();
@@ -53,12 +58,13 @@ public class SimulationController : MonoBehaviour
 
     void Step()
     {
-        
-        // int[] traficLights = {5, 6, 7, 8};
-        // int[] test = simulator.GetQueueLenghts(traficLights);
-        
         if (!paused)
         {
+            if(isAIControlled)
+            {
+                // NOTE: qAgent stepSize could be bigger than simulator stap in future //
+                qAgent.Step(simulator);
+            }
             simulator.Step(timeStepSize);
             float dt = Time.time - lastframe;
             lastframe = Time.time;

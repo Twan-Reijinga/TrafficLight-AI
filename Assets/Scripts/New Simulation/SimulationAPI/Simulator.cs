@@ -205,11 +205,25 @@ namespace SimulationAPI
             return false;
         }
 
-        public int[] GetQueueLenghts(int[] traficLights) 
+        public float[] GetQueueLenghts(int[] traficLightNumbers) 
         {
-            // Print("QUEUE is a weird word -Sim. 232");
+            // TODO: raycast queue lenghts
 
-            return traficLights;
+            float[] queueLenghts = {5.0f, 13.0f, 14.0f};
+            return queueLenghts;
+        }
+
+        public void ChangeSignalFase(int action)
+        {
+            // TODO: pre-programmed signalfases //
+            return;
+        }
+
+        public float[] GetTraficLightState(int[] TraficLightNumbers)
+        {
+            // TODO: 1.Of: Green; 0.0f: Red // 
+            float[] traficLightState = {0.1f, 0.0f, 1.0f, 0.0f};
+            return traficLightState;
         }
 
         public void Print(string e)
