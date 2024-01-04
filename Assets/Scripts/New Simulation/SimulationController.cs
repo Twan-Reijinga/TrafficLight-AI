@@ -26,7 +26,7 @@ public class SimulationController : MonoBehaviour
 
     private QLearnAgent qAgent;
     private bool isAIControlled;
-    private int[] networkNeuronCounts = {6, 6, 4}; // [3*(4*carLimit), ~, cycles]
+    private int[] networkNeuronCounts = {3, 6, 4}; // [3*(4*carLimit), ~, cycles]
     private int maxIterations;
 
     void Start()
