@@ -64,7 +64,7 @@ class QLearnAgent {
 
     public void Step(SimulationAPI.Simulator simulator) {
         int crossingNumber = 1;
-        float[] queueLenghtsBefore = simulator.GetQueueLenghts(crossingNumber);
+        int[] queueLenghtsBefore = simulator.GetQueueLenghts(crossingNumber);
         float[] traficLightStateBefore = simulator.GetTraficLightState(crossingNumber);
 
         // TODO: get prevStates somehow...
@@ -73,7 +73,7 @@ class QLearnAgent {
         float[] state = CalcState(prevState, queueLenghtsBefore, traficLightStateBefore);
         int action = SelectAction(state);
         simulator.ChangeSignalFase(action);
-        float[] queueLenghtsAfter = simulator.GetQueueLenghts(crossingNumber);
+        int[] queueLenghtsAfter = simulator.GetQueueLenghts(crossingNumber);
         float[] traficLightStateAfter = simulator.GetTraficLightState(crossingNumber);
         float[] nextState = CalcState(state, queueLenghtsAfter, traficLightStateAfter);
         float reward = CalcReward(state, nextState);
@@ -103,9 +103,9 @@ class QLearnAgent {
         return action;
     }
 
-    private float[] CalcState(float[] prevState, float[] queueLenghts, float[] traficLightState) {
+    private float[] CalcState(float[] prevState, int[] queueLenghts, float[] traficLightState) {
         // TODO: state = current + 2 previous; add last 2 states to nextState //
-        return queueLenghts;
+        return traficLightState;
     }
 
     private float CalcReward(float[] queueLenghtsBefore, float[] queueLenghtsAfter) {
