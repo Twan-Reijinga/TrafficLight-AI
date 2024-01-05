@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using SimulationAPI;
 using TMPro;
@@ -26,7 +27,7 @@ public class SimulationController : MonoBehaviour
 
     private QLearnAgent qAgent;
     private bool isAIControlled;
-    private int[] networkNeuronCounts = {3, 6, 4}; // [3*(4*carLimit), ~, cycles]
+    private int[] networkNeuronCounts = {4, 6, 4}; // [3*(4*carLimit), ~, cycles]
     private int maxIterations;
 
     void Start()
@@ -63,7 +64,15 @@ public class SimulationController : MonoBehaviour
             if(isAIControlled)
             {
                 // NOTE: qAgent stepSize could be bigger than simulator stap in future //
-                qAgent.Step(simulator);
+                List<float> debugValues = qAgent.Step(simulator);
+                
+                // for(int i = 0; i < debugValues.Count; i++) {
+                //     if(i % 24 == 0){
+                //         print("NEXXXXT LINE _____________________");
+                //     }
+                //     print("ln.70: " + debugValues[i] + " value " + i);
+                // }
+                isAIControlled = false;
             }
             simulator.Step(timeStepSize);
             float dt = Time.time - lastframe;

@@ -31,6 +31,7 @@ class ExperienceReplay {
         nextStates = new float[capacity][];
     }
 
+    // TODO: state and nextState in List<float> form //
     public bool Add(float[] state, int action, float reward, float[] nextState) {
         if(replayIndex > capacity) return false;
         states[replayIndex] = state;
@@ -48,10 +49,12 @@ class QLearnAgent {
     private int maxIterations;
     private int NumberOfInputs;
     private int NumberOfOutputs;
+
     private const float EPSILON_START = 0.9f;
     private const float EPSILON_END = 0.05f;
     private const float EPSILON_DECAY = 1000; // decay using e^(-steps/decay)
-    private const int MAX_QUEUE_LENGHT = 24;
+
+    private const int MAX_QUEUE_LENGTH = 24;
     private int currentStep;
 
     public QLearnAgent(int[] neuronCounts, int maxIterations) {
@@ -64,7 +67,7 @@ class QLearnAgent {
         currentStep = 0;
     }
 
-    public void Step(SimulationAPI.Simulator simulator) {
+    public List<float> Step(SimulationAPI.Simulator simulator) {
         int crossingNumber = 1;
         int[] queueLenghtsBefore = simulator.GetQueueLenghts(crossingNumber);
         List<float> trafficLightStateBefore = simulator.GetTrafficLightState(crossingNumber);
@@ -81,10 +84,11 @@ class QLearnAgent {
         List<float> nextState = CalcState(state, queueLenghtsAfter, trafficLightStateAfter);
         float reward = CalcReward(state, nextState);
 
-
-        // TODO: state and nextState in List<float> form //
         // TODO: implement done variable for exp.replay //
         experienceReplay.Add(state.ToArray(), action, reward, nextState.ToArray());
+
+        // Temp!
+        return state;
     }
     
     public int SelectAction(List<float> state) {
@@ -110,25 +114,28 @@ class QLearnAgent {
 
     static private List<float> CalcState(List<float> prevState, int[] queueLenghts, List<float> trafficLightState) {
         // TODO: state = current + 2 previous; add last 2 states to nextState //'
-        List<float> processedQueueLenghts = processQueueLenghts(queueLenghts);
+        List<float> processedQueueLengths = processQueueLenghts(queueLenghts);
 
+        List<float> state = new List<float>(processedQueueLengths.Count + trafficLightState.Count);
+        state.AddRange(processedQueueLengths);
+        state.AddRange(trafficLightState);
 
-        return trafficLightState;
+        return state;
     }
     
     static private List<float> processQueueLenghts(int[] queueLenghts) {
-        List<float> processedQueueLenghts = new List<float>();
+        List<float> processedQueueLengths = new List<float>();
 
         for(int i = 0; i < queueLenghts.Length; i++) {
             for(int j = 0; j < queueLenghts[i]; j++) {
-                processedQueueLenghts.Add(1.0f);
+                processedQueueLengths.Add(1.0f);
             } 
 
-            for(int j = queueLenghts[i]; j < MAX_QUEUE_LENGHT; j++) {
-                processedQueueLenghts.Add(0.0f);
+            for(int j = queueLenghts[i]; j < MAX_QUEUE_LENGTH; j++) {
+                processedQueueLengths.Add(0.0f);
             } 
         }
-        return processedQueueLenghts;
+        return processedQueueLengths;
     }
 
     static private float CalcReward(List<float> queueLenghtsBefore, List<float> queueLenghtsAfter) {

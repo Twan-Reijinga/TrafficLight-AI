@@ -249,7 +249,7 @@ namespace SimulationAPI
         public List<float> GetTrafficLightState(int crossingNumber)
         {
             // TODO: 1.Of: Green; 0.0f: Red // 
-            float[] testValues = {0.1f, 0.0f, 1.0f, 0.0f};
+            float[] testValues = {1.0f, 0.0f, 1.0f, 0.0f};
             List<float> trafficLightState = new List<float>(testValues);
             return trafficLightState;
         }
