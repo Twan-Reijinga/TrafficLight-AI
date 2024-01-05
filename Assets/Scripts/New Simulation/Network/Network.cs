@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 // class Test{
@@ -50,6 +51,7 @@ class QLearnAgent {
     private const float EPSILON_START = 0.9f;
     private const float EPSILON_END = 0.05f;
     private const float EPSILON_DECAY = 1000; // decay using e^(-steps/decay)
+    private const int MAX_QUEUE_LENGHT = 24;
     private int currentStep;
 
     public QLearnAgent(int[] neuronCounts, int maxIterations) {
@@ -65,24 +67,27 @@ class QLearnAgent {
     public void Step(SimulationAPI.Simulator simulator) {
         int crossingNumber = 1;
         int[] queueLenghtsBefore = simulator.GetQueueLenghts(crossingNumber);
-        float[] traficLightStateBefore = simulator.GetTraficLightState(crossingNumber);
+        List<float> trafficLightStateBefore = simulator.GetTrafficLightState(crossingNumber);
 
         // TODO: get prevStates somehow...
-        float[] prevState = {5.0f, 13.0f, 14.0f};
+        float[] testValues = {5.0f, 13.0f, 14.0f};
+        List<float> prevState = new List<float>(testValues);
 
-        float[] state = CalcState(prevState, queueLenghtsBefore, traficLightStateBefore);
+        List<float> state = CalcState(prevState, queueLenghtsBefore, trafficLightStateBefore);
         int action = SelectAction(state);
         simulator.ChangeSignalFase(action);
         int[] queueLenghtsAfter = simulator.GetQueueLenghts(crossingNumber);
-        float[] traficLightStateAfter = simulator.GetTraficLightState(crossingNumber);
-        float[] nextState = CalcState(state, queueLenghtsAfter, traficLightStateAfter);
+        List<float> trafficLightStateAfter = simulator.GetTrafficLightState(crossingNumber);
+        List<float> nextState = CalcState(state, queueLenghtsAfter, trafficLightStateAfter);
         float reward = CalcReward(state, nextState);
 
+
+        // TODO: state and nextState in List<float> form //
         // TODO: implement done variable for exp.replay //
-        experienceReplay.Add(state, action, reward, nextState);
+        experienceReplay.Add(state.ToArray(), action, reward, nextState.ToArray());
     }
     
-    public int SelectAction(float[] state) {
+    public int SelectAction(List<float> state) {
         int action;
         Random rand = new Random();
         float randomChanceValue = (float) rand.NextDouble();
@@ -96,19 +101,37 @@ class QLearnAgent {
         } else {
             // exploit
             Console.WriteLine("exploit mode");
-            float[] actionSpace = Network.FeedForward(network, state);
-            action = Array.IndexOf(actionSpace, actionSpace.Max());
+            List<float> actionSpace = Network.FeedForward(network, state);
+            action = actionSpace.IndexOf(actionSpace.Max());
 
         }
         return action;
     }
 
-    private float[] CalcState(float[] prevState, int[] queueLenghts, float[] traficLightState) {
-        // TODO: state = current + 2 previous; add last 2 states to nextState //
-        return traficLightState;
+    static private List<float> CalcState(List<float> prevState, int[] queueLenghts, List<float> trafficLightState) {
+        // TODO: state = current + 2 previous; add last 2 states to nextState //'
+        List<float> processedQueueLenghts = processQueueLenghts(queueLenghts);
+
+
+        return trafficLightState;
+    }
+    
+    static private List<float> processQueueLenghts(int[] queueLenghts) {
+        List<float> processedQueueLenghts = new List<float>();
+
+        for(int i = 0; i < queueLenghts.Length; i++) {
+            for(int j = 0; j < queueLenghts[i]; j++) {
+                processedQueueLenghts.Add(1.0f);
+            } 
+
+            for(int j = queueLenghts[i]; j < MAX_QUEUE_LENGHT; j++) {
+                processedQueueLenghts.Add(0.0f);
+            } 
+        }
+        return processedQueueLenghts;
     }
 
-    private float CalcReward(float[] queueLenghtsBefore, float[] queueLenghtsAfter) {
+    static private float CalcReward(List<float> queueLenghtsBefore, List<float> queueLenghtsAfter) {
         // TODO: calc reward form improvement in state (-1, 1) //
         return 1.0f;
     }
@@ -125,8 +148,8 @@ class Network {
         }
     }
 
-    public static float[] FeedForward(Network network, float[] inputs) {
-        float[] outputs = Layer.FeedForward(network.layers[0], inputs);
+    public static List<float> FeedForward(Network network, List<float> inputs) {
+        List<float> outputs = Layer.FeedForward(network.layers[0], inputs);
         for(int i = 1; i < network.layers.Length; i++) {
             outputs = Layer.FeedForward(network.layers[i], outputs);
         }
@@ -161,17 +184,18 @@ class Layer {
         return;
     }
 
-    public static float[] FeedForward(Layer layer, float[] inputs) {
-        if(inputs.Length != layer.inputCount) {
-            throw new Exception("layer inputCount (" + layer.inputCount + ") does not match given inputs (" + inputs.Length + ")");
+    public static List<float> FeedForward(Layer layer, List<float> inputs) {
+        if(inputs.Count != layer.inputCount) {
+            throw new Exception("layer inputCount (" + layer.inputCount + ") does not match given inputs (" + inputs.Count + ")");
         } 
-        float[] outputs = new float[layer.outputCount];
+        // List<float> outputs = new float[layer.outputCount];
+        List<float> outputs = new List<float>();
         for(int i = 0; i < layer.outputCount; i++) {
             float weightedSum = 0;
             for(int j = 0; j < layer.inputCount; j++) {
                 weightedSum += inputs[j] * layer.weights[i][j];
             }
-            outputs[i] = Signoid(weightedSum - layer.biases[i]);
+            outputs.Add(Signoid(weightedSum - layer.biases[i]));
         }
         return outputs;
     }

@@ -207,7 +207,6 @@ namespace SimulationAPI
 
         public int[] GetQueueLenghts(int crossingNumber) 
         {
-            // TODO: raycast queue lenghts
             List<Light> lights;
             if(crossingNumber == 1) 
             {
@@ -232,10 +231,10 @@ namespace SimulationAPI
                 }
 
                 queueLenghts[i] = waitingCars;
-                if(waitingCars > 0) 
-                {
-                    Print("Light " + i + " at (" + lights[i].pos.x + ", " + lights[i].pos.y + ") has " + waitingCars + " waiting car(s)");
-                }
+                // if(waitingCars > 0) 
+                // {
+                    // Print("Light " + i + " at (" + lights[i].pos.x + ", " + lights[i].pos.y + ") has " + waitingCars + " waiting car(s)");
+                // }
             }
 
             return queueLenghts;
@@ -247,11 +246,12 @@ namespace SimulationAPI
             return;
         }
 
-        public float[] GetTraficLightState(int crossingNumber)
+        public List<float> GetTrafficLightState(int crossingNumber)
         {
             // TODO: 1.Of: Green; 0.0f: Red // 
-            float[] traficLightState = {0.1f, 0.0f, 1.0f, 0.0f};
-            return traficLightState;
+            float[] testValues = {0.1f, 0.0f, 1.0f, 0.0f};
+            List<float> trafficLightState = new List<float>(testValues);
+            return trafficLightState;
         }
 
         public void Print(string e)
