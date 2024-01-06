@@ -140,7 +140,9 @@ class QLearnAgent {
 
     static private float CalcReward(List<float> queueLenghtsBefore, List<float> queueLenghtsAfter) {
         // TODO: calc reward form improvement in state (-1, 1) //
-        return 1.0f;
+
+        float reward = queueLenghtsAfter.Sum();
+        return reward;
     }
 }
 
