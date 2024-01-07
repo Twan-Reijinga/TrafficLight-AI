@@ -41,6 +41,23 @@ class ExperienceReplay {
         replayIndex++;
         return true;
     }
+
+    public bool IsEmpty() {
+        return replayIndex == 0;
+    }
+
+    public (List<float>, int, float, List<float>) GetSample() {
+        Random rand = new Random();
+        int randomIndex = rand.Next();
+
+        List<float> state = states[randomIndex].ToList();
+        int action = actions[randomIndex];
+        float reward = rewards[randomIndex];
+        List<float> nextState = nextStates[randomIndex].ToList();
+
+
+        return (state, action, reward, nextState);        
+    }
 }
 
 class QLearnAgent {
@@ -89,6 +106,11 @@ class QLearnAgent {
 
         // Temp!
         return state;
+    }
+
+    public void Learn(List<float> state, int action, float reward, List<float> nextState) {
+        // TODO: use experience to learn from experience //
+        return;
     }
     
     public int SelectAction(List<float> state) {
