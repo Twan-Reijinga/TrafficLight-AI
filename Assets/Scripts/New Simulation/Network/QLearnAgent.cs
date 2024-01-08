@@ -56,7 +56,7 @@ class QLearnAgent {
         int sampleSize = 32;
         List<Experience> samples = experienceReplay.GetSample(sampleSize);
         for (int i = 0; i < sampleSize; i++) {
-            sample = samples[i];
+            Experience sample = samples[i];
             float nextStateEvaluation = Network.FeedForward(network, sample.nextState).Max();
             float targetValue = sample.reward + DISCOUNT_FACTOR * nextStateEvaluation;
             // network.BackPropagate(sample.state, sample.action, targetValue);

@@ -42,14 +42,14 @@ class ExperienceReplay {
     }
 
     public List<Experience> GetSample(int sampleSize) {
-        // TODO: give multiple samples //
         List<Experience> samples = new List<Experience>();
         Random rand = new Random();
+
         for(int i = 0; i < sampleSize; i++) {
             int randomIndex = rand.Next();
             samples.Add(experiences[randomIndex]);
         }
 
-        return (state, action, reward, nextState);        
+        return samples;        
     }
 }
