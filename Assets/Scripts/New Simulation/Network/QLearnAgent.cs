@@ -53,12 +53,14 @@ class QLearnAgent {
 
     public void Learn() {
         // TODO: use experience to learn from experience //
-        (List<float> state, int action, float reward, List<float> nextState) = experienceReplay.GetSample(32);
-        float nextStateEvaluation = Network.FeedForward(network, nextState).Max();
-        float targetValue = reward + DISCOUNT_FACTOR * nextStateEvaluation;
-        // network.BackPropagate(state, action, targetValue);
-
-        return;
+        int sampleSize = 32;
+        List<Experience> samples = experienceReplay.GetSample(sampleSize);
+        for (int i = 0; i < sampleSize; i++) {
+            sample = samples[i];
+            float nextStateEvaluation = Network.FeedForward(network, sample.nextState).Max();
+            float targetValue = sample.reward + DISCOUNT_FACTOR * nextStateEvaluation;
+            // network.BackPropagate(sample.state, sample.action, targetValue);
+        }
     }
     
     public int SelectAction(List<float> state) {
