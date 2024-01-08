@@ -17,7 +17,7 @@ class Network {
     private Layer[] layers;
     public Network(int[] neuronCounts) {
         layers = new Layer[neuronCounts.Length -1];
-        for(int i = 0; i < neuronCounts.Length - 1;i++) {
+        for(int i = 0; i < neuronCounts.Length - 1; i++) {
             Layer layer = new Layer(neuronCounts[i], neuronCounts[i + 1]);
             Layer.Randomize(layer);
             if(i == neuronCounts.Length - 2) {
