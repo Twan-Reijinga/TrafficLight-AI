@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using SimulationAPI;
 using TMPro;
@@ -24,8 +25,19 @@ public class SimulationController : MonoBehaviour
 
     private float lastframe;
 
+    private QLearnAgent qAgent;
+    private bool isAIControlled;
+    private int[] networkNeuronCounts = {4, 6, 4}; // [3*(4*carLimit), ~, cycles]
+    private int maxIterations;
+
     void Start()
     {
+        maxIterations = 50_000; // TO DO: maxIterations given as parameter of Start()  //
+        isAIControlled = true; // TO DO: isAIControlled given as parameter of Start() //
+        if(isAIControlled) 
+        {
+            qAgent = new QLearnAgent(networkNeuronCounts, maxIterations);
+        }
         simulator = new Simulator(seed);
         simulator.write += simulator_print;
         simulator.TestPopulation();
@@ -49,6 +61,19 @@ public class SimulationController : MonoBehaviour
     {
         if (!paused)
         {
+            if(isAIControlled)
+            {
+                // NOTE: qAgent stepSize could be bigger than simulator stap in future //
+                List<float> debugValues = qAgent.Step(simulator);
+                
+                // for(int i = 0; i < debugValues.Count; i++) {
+                //     if(i % 24 == 0){
+                //         print("NEXXXXT LINE _____________________");
+                //     }
+                //     print("ln.70: " + debugValues[i] + " value " + i);
+                // }
+                isAIControlled = false;
+            }
             simulator.Step(timeStepSize);
             float dt = Time.time - lastframe;
             lastframe = Time.time;
@@ -57,9 +82,10 @@ public class SimulationController : MonoBehaviour
         if (runAtSetSpeed)
         {
             Invoke(nameof(Step), timeStepSize);
-            return;
+        } else 
+        {
+            Invoke(nameof(Step), 0);
         }
-        Invoke(nameof(Step), 0);
     }
 
     void updateTPSCounter(float dt)

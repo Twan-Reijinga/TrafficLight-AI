@@ -37,6 +37,9 @@ namespace SimulationAPI
         private float maxSpeed = 6;     // also tweak this
         private int switchphase = 0;
 
+        public bool WaitingAtTraficlight;
+        public int LastTraficLight;
+
         public Car(int id, Vector2 pos, float orientation, int exitIndex, char nextAction)
         {
             this.UUID = id;
@@ -231,6 +234,11 @@ namespace SimulationAPI
                     orientationTarget = (orientation + 45 + 360) % 360;
                 }
             }
+        }
+
+        private string DetectTraficLight() 
+        {
+            return "Test";
         }
     }
 }

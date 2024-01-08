@@ -117,6 +117,34 @@ namespace SimulationAPI
         void UpdateTrafficLights(float dt)
         { }
 
+        public float GetDistanceToCar(Vector2 origin, Vector2 direction, Car car, float maxDistance = float.PositiveInfinity)
+        { 
+
+                Vector2 fr = car.pos + car.forward * car.size.y * 0.5f + car.right * car.size.x * 0.5f; //front right
+                Vector2 fl = car.pos + car.forward * car.size.y * 0.5f - car.right * car.size.x * 0.5f;
+                Vector2 br = car.pos - car.forward * car.size.y * 0.5f + car.right * car.size.x * 0.5f;
+                Vector2 bl = car.pos - car.forward * car.size.y * 0.5f - car.right * car.size.x * 0.5f;
+
+                Vector2 hitF = Physics.LineLineIntersect(origin, origin + direction, fr, fl) ?? Vector2.positiveInfinity; //front
+                Vector2 hitB = Physics.LineLineIntersect(origin, origin + direction, br, bl) ?? Vector2.positiveInfinity; //back
+                Vector2 hitR = Physics.LineLineIntersect(origin, origin + direction, fr, br) ?? Vector2.positiveInfinity; //left
+                Vector2 hitL = Physics.LineLineIntersect(origin, origin + direction, fl, bl) ?? Vector2.positiveInfinity; //right
+
+                Vector2[] hits = new Vector2[] { hitF, hitB, hitR, hitL };
+
+                float closestDistance = float.PositiveInfinity;
+                foreach (Vector2 carHit in hits)
+                {
+                    if (carHit == Vector2.positiveInfinity) continue;
+                    float distance = Vector2.Distance(origin, carHit);
+                    if(distance < closestDistance && distance < maxDistance) 
+                    {
+                        closestDistance = distance;
+                    }
+                }
+                return closestDistance;
+        }
+
         public bool Raycast(Vector2 origin, Vector2 dir, float maxDist, out RayHit hit, int ignore = -1)
         {
             hit = new RayHit();
@@ -135,28 +163,11 @@ namespace SimulationAPI
 
             foreach (Car car in carList) // get distance and reference to closest car
             {
-                Vector2 fr = car.pos + car.forward * car.size.y * 0.5f + car.right * car.size.x * 0.5f; //front right
-                Vector2 fl = car.pos + car.forward * car.size.y * 0.5f - car.right * car.size.x * 0.5f;
-                Vector2 br = car.pos - car.forward * car.size.y * 0.5f + car.right * car.size.x * 0.5f;
-                Vector2 bl = car.pos - car.forward * car.size.y * 0.5f - car.right * car.size.x * 0.5f;
-
-                Vector2 hitF = Physics.LineLineIntersect(origin, origin + dir, fr, fl) ?? Vector2.positiveInfinity; //front
-                Vector2 hitB = Physics.LineLineIntersect(origin, origin + dir, br, bl) ?? Vector2.positiveInfinity; //back
-                Vector2 hitR = Physics.LineLineIntersect(origin, origin + dir, fr, br) ?? Vector2.positiveInfinity; //left
-                Vector2 hitL = Physics.LineLineIntersect(origin, origin + dir, fl, bl) ?? Vector2.positiveInfinity; //right
-
-                Vector2[] hits = new Vector2[] { hitF, hitB, hitR, hitL };
-
-                foreach (Vector2 carHit in hits)
+                float dist = GetDistanceToCar(origin, dir, car, maxDist);
+                if(dist < hit.dist)
                 {
-                    if (carHit == Vector2.positiveInfinity) continue;
-                    float dist = Vector2.Distance(origin, carHit);
-
-                    if (dist < hit.dist)
-                    {
-                        hit.car = car;
-                        hit.dist = dist;
-                    }
+                    hit.car = car;
+                    hit.dist = dist;
                 }
             }
 
@@ -190,8 +201,57 @@ namespace SimulationAPI
                 return true;
             }
 
-
+            
             return false;
+        }
+
+        public int[] GetQueueLenghts(int crossingNumber) 
+        {
+            List<Light> lights;
+            if(crossingNumber == 1) 
+            {
+                lights = lightsC2;
+            } else 
+            {
+                lights = lightsC1;
+            }
+
+            int[] queueLenghts = new int[lights.Count];
+            for(int i = 0; i < lights.Count; i++) 
+            {
+                int waitingCars = 0;
+                foreach(Car car in cars) 
+                {
+                    float distance = GetDistanceToCar(lights[i].pos, lights[i].pos + lights[i].forward, car);
+                    if(distance < float.PositiveInfinity) 
+                    {
+                        // TODO: only include cars that are waiting; speed = 0 //
+                        waitingCars++;
+                    }
+                }
+
+                queueLenghts[i] = waitingCars;
+                // if(waitingCars > 0) 
+                // {
+                    // Print("Light " + i + " at (" + lights[i].pos.x + ", " + lights[i].pos.y + ") has " + waitingCars + " waiting car(s)");
+                // }
+            }
+
+            return queueLenghts;
+        }
+
+        public void ChangeSignalFase(int action)
+        {
+            // TODO: pre-programmed signalfases //
+            return;
+        }
+
+        public List<float> GetTrafficLightState(int crossingNumber)
+        {
+            // TODO: 1.Of: Green; 0.0f: Red // 
+            float[] testValues = {1.0f, 0.0f, 1.0f, 0.0f};
+            List<float> trafficLightState = new List<float>(testValues);
+            return trafficLightState;
         }
 
         public void Print(string e)
