@@ -108,8 +108,9 @@ class QLearnAgent {
         return state;
     }
 
-    public void Learn(List<float> state, int action, float reward, List<float> nextState) {
+    public void Learn() {
         // TODO: use experience to learn from experience //
+        (List<float> state, int action, float reward, List<float> nextState) = experienceReplay.GetSample();
         return;
     }
     
@@ -175,6 +176,9 @@ class Network {
         for(int i = 0; i < neuronCounts.Length - 1;i++) {
             Layer layer = new Layer(neuronCounts[i], neuronCounts[i + 1]);
             Layer.Randomize(layer);
+            if(i == neuronCounts.Length - 2) {
+                layer.isOutputLayer = true;
+            }
             layers[i] = layer;
         }
     }
@@ -189,10 +193,12 @@ class Network {
 };
 
 class Layer {
-    int inputCount;
-    int outputCount;
-    float[] biases;
-    float[][] weights;
+    private int inputCount;
+    private int outputCount;
+    private float[] biases;
+    private float[][] weights;
+    public bool isOutputLayer = false;
+
     public Layer(int numberOfInputs, int numberOfOutputs) {
         inputCount = numberOfInputs;
         outputCount = numberOfOutputs;
@@ -226,7 +232,12 @@ class Layer {
             for(int j = 0; j < layer.inputCount; j++) {
                 weightedSum += inputs[j] * layer.weights[i][j];
             }
-            outputs.Add(Signoid(weightedSum - layer.biases[i]));
+
+            if(layer.isOutputLayer){
+                outputs.Add(weightedSum - layer.biases[i]);
+            } else {
+                outputs.Add(Signoid(weightedSum - layer.biases[i]));
+            }
         }
         return outputs;
     }
