@@ -2,14 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+struct Experience {
+    public List<float> state;
+    public int action;
+    public float reward;
+    public List<float> nextState;
+}
+
 class ExperienceReplay {
     private int replayIndex;
     private int capacity;
-
-    private float[][] states;
-    private int[] actions;
-    private float[] rewards;
-    private float[][] nextStates;
+    public List<Experience> experiences = new List<Experience>();
 
     public ExperienceReplay(int capacity) {
         replayIndex = 0;
@@ -21,13 +24,16 @@ class ExperienceReplay {
     }
 
     // TODO: state and nextState in List<float> form //
-    public bool Add(float[] state, int action, float reward, float[] nextState) {
+    public bool Add(List<float> state, int action, float reward, List<float> nextState) {
         if(replayIndex > capacity) return false;
-        states[replayIndex] = state;
-        actions[replayIndex] = action;
-        rewards[replayIndex] = reward;
-        nextStates[replayIndex] = nextState;
-        replayIndex++;
+        
+        Experience experience;
+        experience.state = state;
+        experience.action = action;
+        experience.reward = reward;
+        experience.nextState = nextState;
+
+        experiences.Add(experience);
         return true;
     }
 

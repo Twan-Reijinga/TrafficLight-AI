@@ -45,7 +45,7 @@ class QLearnAgent {
         float reward = CalcReward(state, nextState);
 
         // TODO: implement done variable for exp.replay //
-        experienceReplay.Add(state.ToArray(), action, reward, nextState.ToArray());
+        experienceReplay.Add(state, action, reward, nextState);
 
         // Temp!
         return state;
@@ -53,8 +53,8 @@ class QLearnAgent {
 
     public void Learn() {
         // TODO: use experience to learn from experience //
-        (List<float> state, int action, float reward, List<float> nextState) = experienceReplay.GetSample();
-        float nextStateEvaluation = Network.feedForward(network, nextState).Max();
+        (List<float> state, int action, float reward, List<float> nextState) = experienceReplay.GetSample(32);
+        float nextStateEvaluation = Network.FeedForward(network, nextState).Max();
         float targetValue = reward + DISCOUNT_FACTOR * nextStateEvaluation;
         // network.BackPropagate(state, action, targetValue);
 
