@@ -46,10 +46,10 @@ class ExperienceReplay {
         Random rand = new Random();
         int randomIndex = rand.Next();
 
-        List<float> state = experiences.state[randomIndex];
-        int action = experiences.actions[randomIndex];
-        float reward = experiences.rewards[randomIndex];
-        List<float> nextState = experiences.nextStates[randomIndex];
+        List<float> state = experiences[randomIndex].state;
+        int action = experiences[randomIndex].action;
+        float reward = experiences[randomIndex].reward;
+        List<float> nextState = experiences[randomIndex].nextState;
 
 
         return (state, action, reward, nextState);        
