@@ -78,6 +78,12 @@ namespace SimulationAPI
             Car newCar = new Car(uuidCounter, positions[entranceIndex], rotations[entranceIndex], exitIndex, nextAction);
             uuidCounter++;
 
+
+            if (nextAction == 'l')
+            {
+                newCar.pos += newCar.right * -3;
+            }
+
             RayHit hit;
             if (super.Raycast(newCar.pos, newCar.pos + newCar.forward, 7, out hit))
             {
@@ -86,10 +92,6 @@ namespace SimulationAPI
                 return null;
             }
 
-            if (nextAction == 'l')
-            {
-                newCar.pos += newCar.right * -3;
-            }
             return newCar;
         }
 
