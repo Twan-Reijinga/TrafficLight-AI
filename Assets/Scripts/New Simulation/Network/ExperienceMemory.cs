@@ -17,16 +17,16 @@ class ExperienceReplay {
     public ExperienceReplay(int capacity) {
         replayIndex = 0;
         this.capacity = capacity;
-        states = new float[capacity][];
-        actions = new int[capacity];
-        rewards = new float[capacity];
-        nextStates = new float[capacity][];
+        // states = new float[capacity][];
+        // actions = new int[capacity];
+        // rewards = new float[capacity];
+        // nextStates = new float[capacity][];
     }
 
     // TODO: state and nextState in List<float> form //
     public bool Add(List<float> state, int action, float reward, List<float> nextState) {
         if(replayIndex > capacity) return false;
-        
+
         Experience experience;
         experience.state = state;
         experience.action = action;
