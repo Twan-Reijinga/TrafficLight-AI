@@ -46,7 +46,8 @@ class ExperienceReplay {
         return replayIndex == 0;
     }
 
-    public (List<float>, int, float, List<float>) GetSample() {
+    public (List<float>, int, float, List<float>) GetSample(int sampleSize) {
+        // TODO: give multiple samples //
         Random rand = new Random();
         int randomIndex = rand.Next();
 
@@ -67,6 +68,7 @@ class QLearnAgent {
     private int NumberOfInputs;
     private int NumberOfOutputs;
 
+    private const float DISCOUNT_FACTOR = 0.9f;
     private const float EPSILON_START = 0.9f;
     private const float EPSILON_END = 0.05f;
     private const float EPSILON_DECAY = 1000; // decay using e^(-steps/decay)
@@ -111,6 +113,10 @@ class QLearnAgent {
     public void Learn() {
         // TODO: use experience to learn from experience //
         (List<float> state, int action, float reward, List<float> nextState) = experienceReplay.GetSample();
+        float nextStateEvaluation = Network.feedForward(network, nextState).Max();
+        float targetValue = reward + DISCOUNT_FACTOR * nextStateEvaluation;
+        // network.BackPropagate(state, action, targetValue);
+
         return;
     }
     
@@ -190,6 +196,11 @@ class Network {
         }
         return outputs;
     }
+
+    public static void BackPropagate(Network network, List<float> state, int action, float targetValue) {
+        // TODO: backpropagate //
+        return;
+    }
 };
 
 class Layer {
@@ -233,13 +244,18 @@ class Layer {
                 weightedSum += inputs[j] * layer.weights[i][j];
             }
 
-            if(layer.isOutputLayer){
+            if(layer.isOutputLayer) {
                 outputs.Add(weightedSum - layer.biases[i]);
             } else {
                 outputs.Add(Signoid(weightedSum - layer.biases[i]));
             }
         }
         return outputs;
+    }
+    
+    public static void BackPropagate(Network network, List<float> state, int action, float targetValue) {
+        // TODO: backpropagate //
+        return;
     }
 
     private static float Signoid(float x) {
