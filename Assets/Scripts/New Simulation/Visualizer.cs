@@ -58,6 +58,7 @@ public class Visualizer : MonoBehaviour
                 SceneCar sc = newCar.AddComponent<SceneCar>();
                 sc.car = car;
                 newCar.name = car.UUID.ToString();
+                newCar.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
             }
         }
 

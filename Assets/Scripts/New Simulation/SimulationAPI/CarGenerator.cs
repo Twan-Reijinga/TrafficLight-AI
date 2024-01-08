@@ -79,7 +79,7 @@ namespace SimulationAPI
             uuidCounter++;
 
             RayHit hit;
-            if (super.Raycast(newCar.pos, newCar.pos + newCar.forward, 6, out hit))
+            if (super.Raycast(newCar.pos, newCar.pos + newCar.forward, 7, out hit))
             {
                 super.Print("aAAA");
                 super.Print(entranceIndex.ToString());

@@ -22,7 +22,7 @@ namespace SimulationAPI
     [Serializable]
     public class Car
     {
-        public Vector2 size = new Vector2(2.5f, 6.5f);
+        public Vector2 size = new Vector2(2f, 4.8f);
         public int UUID;
         public Vector2 pos;
         public float orientation;
