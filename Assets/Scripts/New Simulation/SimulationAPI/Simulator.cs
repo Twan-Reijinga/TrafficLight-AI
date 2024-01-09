@@ -12,8 +12,8 @@ namespace SimulationAPI
         public int seed = 0;
 
         public List<Car> cars = new List<Car>();
-        public List<Light> lightsC1 = new List<Light>();
-        public List<Light> lightsC2 = new List<Light>();
+        public Intersection intersection1;
+        public Intersection intersection2;
 
         CarGeneration carGenerator;
         Physics physics;
@@ -47,11 +47,8 @@ namespace SimulationAPI
         {
             rand = new System.Random(seed);
             carGenerator = new CarGeneration(this);
-            for (int i = 0; i < 8; i++)
-            {
-                lightsC1.Add(new Light { isOn = true, pos = lightPositions[i] + intersectionPositions[0], orientation = lightOrientations[i] });
-                lightsC2.Add(new Light { isOn = true, pos = lightPositions[i] + intersectionPositions[1], orientation = lightOrientations[i] });
-            }
+            intersection1 = new Intersection(this, intersectionPositions[0], lightPositions, lightOrientations, true);
+            intersection2 = new Intersection(this, intersectionPositions[1], lightPositions, lightOrientations, true);
 
             physics = new Physics(this);
         }
@@ -68,8 +65,8 @@ namespace SimulationAPI
 
             for (int i = 0; i < 8; i++)
             {
-                scene.lights.cross1.Add(lightsC1[i].isOn);
-                scene.lights.cross2.Add(lightsC2[i].isOn);
+                scene.lights.cross1.Add(intersection1.lights[i].isOn);
+                scene.lights.cross2.Add(intersection2.lights[i].isOn);
             }
 
             scene.deletedCars = new List<int>(deletedCars);
@@ -116,7 +113,8 @@ namespace SimulationAPI
 
         void UpdateTrafficLights(float dt)
         {
-            ChangeSignalFase(-1);
+            intersection1.ChangeSignalFase(-1);
+            intersection2.ChangeSignalFase(-1);
         }
 
         public float GetDistanceToCar(Vector2 origin, Vector2 direction, Car car, float maxDistance = float.PositiveInfinity)
@@ -173,7 +171,7 @@ namespace SimulationAPI
                 }
             }
 
-            List<Light> lights = lightsC1.Concat(lightsC2).ToList();
+            List<Light> lights = intersection1.lights.Concat(intersection2.lights).ToList();
 
             for (int i = lights.Count - 1; i >= 0; i--)
             {
@@ -205,72 +203,6 @@ namespace SimulationAPI
 
 
             return false;
-        }
-
-        public int[] GetQueueLenghts(int crossingNumber)
-        {
-            List<Light> lights;
-            if (crossingNumber == 1)
-            {
-                lights = lightsC2;
-            }
-            else
-            {
-                lights = lightsC1;
-            }
-
-            int[] queueLenghts = new int[lights.Count];
-            for (int i = 0; i < lights.Count; i++)
-            {
-                int waitingCars = 0;
-                foreach (Car car in cars)
-                {
-                    float distance = GetDistanceToCar(lights[i].pos, lights[i].pos + lights[i].forward, car);
-                    if (distance < float.PositiveInfinity)
-                    {
-                        // TODO: only include cars that are waiting; speed = 0 //
-                        waitingCars++;
-                    }
-                }
-
-                queueLenghts[i] = waitingCars;
-                // if(waitingCars > 0) 
-                // {
-                // Print("Light " + i + " at (" + lights[i].pos.x + ", " + lights[i].pos.y + ") has " + waitingCars + " waiting car(s)");
-                // }
-            }
-
-            return queueLenghts;
-        }
-
-        public void ChangeSignalFase(int intersection1Phase)
-        {
-            bool[,] phases = {
-                {false, false, false, false},
-                {true, false, false, false},
-                {false, true, false, false},
-                {false, false, true, false},
-                {false, false, false, true}
-            };
-
-            if (intersection1Phase != -1)
-            {
-                float j = 0;
-                for (int i = 0; i < 8; i++)
-                {
-                    lightsC1[i].isOn = phases[intersection1Phase, (int)Math.Floor(j)];
-                    j += 0.5f;
-                }
-            }
-            return;
-        }
-
-        public List<float> GetTrafficLightState(int crossingNumber)
-        {
-            // TODO: 1.Of: Green; 0.0f: Red // 
-            float[] testValues = { 1.0f, 0.0f, 1.0f, 0.0f };
-            List<float> trafficLightState = new List<float>(testValues);
-            return trafficLightState;
         }
 
         public void Print(string e)
