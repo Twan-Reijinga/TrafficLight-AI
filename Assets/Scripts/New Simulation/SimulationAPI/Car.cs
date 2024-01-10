@@ -1,5 +1,4 @@
 using System;
-using UnityEngine.UIElements;
 
 namespace SimulationAPI
 {
@@ -236,7 +235,7 @@ namespace SimulationAPI
             }
         }
 
-        private string DetectTraficLight() 
+        private string DetectTraficLight()
         {
             return "Test";
         }

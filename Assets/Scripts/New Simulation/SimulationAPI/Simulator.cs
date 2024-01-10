@@ -117,6 +117,11 @@ namespace SimulationAPI
             intersection2.ChangeSignalFase(-1);
         }
 
+        // private Vector3 vec2to3(Vector2 vIn) //!quick useful temp function to convert Simulation.Vector2 to UnityEngine.Vector3
+        // {
+        //     return new Vector3(vIn.x, 2, vIn.y);
+        // }
+
         public float GetDistanceToCar(Vector2 origin, Vector2 direction, Car car, float maxDistance = float.PositiveInfinity)
         {
 
@@ -124,6 +129,12 @@ namespace SimulationAPI
             Vector2 fl = car.pos + car.forward * car.size.y * 0.5f - car.right * car.size.x * 0.5f;
             Vector2 br = car.pos - car.forward * car.size.y * 0.5f + car.right * car.size.x * 0.5f;
             Vector2 bl = car.pos - car.forward * car.size.y * 0.5f - car.right * car.size.x * 0.5f;
+
+            // Debug.DrawLine(vec2to3(fr), vec2to3(fl), Color.red, 0.05f);
+            // Debug.DrawLine(vec2to3(fr), vec2to3(br), Color.red, 0.05f);
+            // Debug.DrawLine(vec2to3(bl), vec2to3(fl), Color.red, 0.05f);
+            // Debug.DrawLine(vec2to3(br), vec2to3(bl), Color.red, 0.05f);
+            // Debug.DrawLine(vec2to3(origin), vec2to3(origin + direction * 10), Color.red, 0.05f); //!bunch of test drawLines
 
             Vector2 hitF = Physics.LineLineIntersect(origin, origin + direction, fr, fl) ?? Vector2.positiveInfinity; //front
             Vector2 hitB = Physics.LineLineIntersect(origin, origin + direction, br, bl) ?? Vector2.positiveInfinity; //back

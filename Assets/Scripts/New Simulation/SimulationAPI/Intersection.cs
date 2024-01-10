@@ -23,23 +23,30 @@ namespace SimulationAPI
             }
         }
 
+        public void Update(float dt)
+        {
+            // int i = 2;
+        }
+
         public void ChangeSignalFase(int phase)
         {
-            bool[,] phases = {
-                {false, false, false, false},
-                {true, false, false, false},
-                {false, true, false, false},
-                {false, false, true, false},
-                {false, false, false, true}
-            };
+            int[][] phases = new int[5][];
+            phases[0] = new int[] { 0, 4 };
+            phases[1] = new int[] { 1, 5 };
+            phases[2] = new int[] { 2, 6 };
+            phases[3] = new int[] { 3, 7 };
+            phases[4] = new int[] { };
 
             if (phase != -1)
             {
-                float j = 0;
                 for (int i = 0; i < 8; i++)
                 {
-                    lights[i].isOn = phases[phase, (int)Math.Floor(j)];
-                    j += 0.5f;
+                    lights[i].isOn = false;
+                }
+
+                foreach (int i in phases[phase])
+                {
+                    lights[i].isOn = true;
                 }
             }
             return;
@@ -47,17 +54,21 @@ namespace SimulationAPI
 
         public int[] GetQueueLenghts()
         {
+            float maxQueueLength = 20;  //! this might have to be changed later
+
             int[] queueLenghts = new int[this.lights.Count];
             for (int i = 0; i < this.lights.Count; i++)
             {
                 int waitingCars = 0;
                 foreach (Car car in sim.cars)
                 {
-                    float distance = sim.GetDistanceToCar(this.lights[i].pos, this.lights[i].pos + this.lights[i].forward, car);
-                    if (distance < float.PositiveInfinity)
+                    if (car.velocity == 0)
                     {
-                        // TODO: only include cars that are waiting; speed = 0 //
-                        waitingCars++;
+                        float distance = sim.GetDistanceToCar(this.lights[i].pos, this.lights[i].forward, car);
+                        if (distance < maxQueueLength)
+                        {
+                            waitingCars++;
+                        }
                     }
                 }
 
