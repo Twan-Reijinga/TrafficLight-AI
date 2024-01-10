@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 public class Visualizer : MonoBehaviour
 {
     public GameObject Car;
+    public List<GameObject> CarModels;
     public Transform CarParent;
     public Transform trafficLights;
     public Dictionary<int, List<Car>> idToCars;
@@ -54,7 +55,8 @@ public class Visualizer : MonoBehaviour
             }
             if (!exists)
             {
-                GameObject newCar = Instantiate(Car, new Vector3(car.pos.x, 0, car.pos.y), Quaternion.Euler(new Vector3(0, car.orientation, 0)), CarParent);
+                GameObject model = CarModels[Random.Range(0, CarModels.Count - 1)];
+                GameObject newCar = Instantiate(model, new Vector3(car.pos.x, 0, car.pos.y), Quaternion.Euler(new Vector3(0, car.orientation, 0)), CarParent);
                 SceneCar sc = newCar.AddComponent<SceneCar>();
                 sc.car = car;
                 newCar.name = car.UUID.ToString();
