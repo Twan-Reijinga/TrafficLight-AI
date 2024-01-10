@@ -3,9 +3,16 @@ using System.Collections.Generic;
 
 namespace SimulationAPI
 {
-
     public class Intersection
     {
+        int[][] phases = new int[5][];
+        public enum States
+        {
+            Green,
+            Red,
+            ClearingDelay,
+        }
+        private States state = States.Red;
         public Simulator sim;
         public Vector2 pos;
         public List<Light> lights;
