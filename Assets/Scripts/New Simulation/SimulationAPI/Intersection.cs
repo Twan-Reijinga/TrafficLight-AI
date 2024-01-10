@@ -1,16 +1,36 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace SimulationAPI
 {
-
     public class Intersection
     {
+        int[][] phases = new int[5][];
+        public enum States
+        {
+            Green,
+            Red,
+            ClearingDelay,
+        }
+        private States state = States.Red;
         public Simulator sim;
         public Vector2 pos;
         public List<Light> lights;
+
+        private float maxGreenTime = 7;
+
+        private float timer;
+
+        private int currentPhase = 0;
+
         public Intersection(Simulator parent, Vector2 pos, Vector2[] lightPositions, float[] lightOrientations, bool isOn = false)
         {
+            phases[0] = new int[] { 0, 4 };
+            phases[1] = new int[] { 1, 5 };
+            phases[2] = new int[] { 2, 6 };
+            phases[3] = new int[] { 3, 7 };
+            phases[4] = new int[] { };
             this.sim = parent;
             this.pos = pos;
             this.lights = new List<Light>();
@@ -21,21 +41,39 @@ namespace SimulationAPI
                 this.lights[i].pos = lightPositions[i] + this.pos;
                 this.lights[i].orientation = lightOrientations[i];
             }
+            timer = maxGreenTime;
         }
 
         public void Update(float dt)
         {
-            // int i = 2;
+            switch (state)
+            {
+                case States.Green:
+                    {
+                        ChangeSignalFase(currentPhase);
+                        break;
+                    }
+                case States.Red:
+                    {
+                        break;
+                    }
+                case States.ClearingDelay:
+                    {
+                        break;
+                    }
+            }
+        }
+
+        public void setStateGreen(int phase)
+        {
+            currentPhase = phase;
+            ChangeSignalFase(phase);
+            timer = maxGreenTime;
         }
 
         public void ChangeSignalFase(int phase)
         {
-            int[][] phases = new int[5][];
-            phases[0] = new int[] { 0, 4 };
-            phases[1] = new int[] { 1, 5 };
-            phases[2] = new int[] { 2, 6 };
-            phases[3] = new int[] { 3, 7 };
-            phases[4] = new int[] { };
+
 
             if (phase != -1)
             {
@@ -52,7 +90,7 @@ namespace SimulationAPI
             return;
         }
 
-        public int[] GetQueueLenghts()
+        public int[] GetQueueLenghts(float maxSpeed = 0)
         {
             float maxQueueLength = 20;  //! this might have to be changed later
 
@@ -62,7 +100,7 @@ namespace SimulationAPI
                 int waitingCars = 0;
                 foreach (Car car in sim.cars)
                 {
-                    if (car.velocity == 0)
+                    if (car.velocity <= maxSpeed)
                     {
                         float distance = sim.GetDistanceToCar(this.lights[i].pos, this.lights[i].forward, car);
                         if (distance < maxQueueLength)
