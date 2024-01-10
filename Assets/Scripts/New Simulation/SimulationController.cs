@@ -45,31 +45,22 @@ public class SimulationController : MonoBehaviour
         Step();
         VisualsUpdater();
         lastframe = Time.time;
-        StartCoroutine(GetRequest("http://localhost:8000/"));
+        StartCoroutine(Upload());
     }
 
-    IEnumerator GetRequest(string uri)
+    IEnumerator Upload()
     {
-        using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
+        using (UnityWebRequest www = UnityWebRequest.Post("http://localhost:8000/", "{ \"field1\": 1, \"field2\": 2 }", "application/json"))
         {
-            // Request and wait for the desired page.
-            yield return webRequest.SendWebRequest();
+            yield return www.SendWebRequest();
 
-            string[] pages = uri.Split('/');
-            int page = pages.Length - 1;
-
-            switch (webRequest.result)
+            if (www.result != UnityWebRequest.Result.Success)
             {
-                case UnityWebRequest.Result.ConnectionError:
-                case UnityWebRequest.Result.DataProcessingError:
-                    Debug.LogError(pages[page] + ": Error: " + webRequest.error);
-                    break;
-                case UnityWebRequest.Result.ProtocolError:
-                    Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
-                    break;
-                case UnityWebRequest.Result.Success:
-                    Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
-                    break;
+                Debug.Log(www.error);
+            }
+            else
+            {
+                Debug.Log("Form upload complete!" + www.downloadHandler.text);
             }
         }
     }
