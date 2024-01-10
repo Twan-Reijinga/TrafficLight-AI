@@ -1828,6 +1828,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Car: {fileID: 919132149155446097, guid: a6c2b4deb3abe9da193357b2b97bcae4, type: 3}
+  CarModels:
+  - {fileID: 919132149155446097, guid: 701a5029fdd79e3848e5048470662753, type: 3}
+  - {fileID: 919132149155446097, guid: ab72e1e3917736217a8dbe7eaa2d303e, type: 3}
+  - {fileID: 919132149155446097, guid: b940f67966632ed32a0ca732acaaab1d, type: 3}
+  - {fileID: 919132149155446097, guid: c7f40ba5650d6f602af5c800630c8fb9, type: 3}
+  - {fileID: 919132149155446097, guid: 6dd35d2de757a2c55af79390e239c252, type: 3}
+  - {fileID: 919132149155446097, guid: a6c2b4deb3abe9da193357b2b97bcae4, type: 3}
+  - {fileID: 919132149155446097, guid: 8cca86672a7a11aef91d8eea358d50a1, type: 3}
+  - {fileID: 919132149155446097, guid: 6c6111a7e0dd989ad830430d60c4c410, type: 3}
+  - {fileID: 919132149155446097, guid: 352c0ca3365cb46dc97712890082affc, type: 3}
+  - {fileID: 919132149155446097, guid: dd85fd0a6ab296b3ebfe91361a2ce810, type: 3}
+  - {fileID: 919132149155446097, guid: 10d7f02cef01e81bd93acdd3eeab974a, type: 3}
+  - {fileID: 919132149155446097, guid: 9ba75d942878d2be3aa03556340cd99b, type: 3}
+  - {fileID: 919132149155446097, guid: 1e1cbfab3e0dc8f129790d19bd2876cc, type: 3}
+  - {fileID: 919132149155446097, guid: e19ed26509163413ebc7a6fffb329d76, type: 3}
   CarParent: {fileID: 973600592}
   trafficLights: {fileID: 946886110}
   interpolate: 0

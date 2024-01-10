@@ -55,7 +55,7 @@ public class Visualizer : MonoBehaviour
             }
             if (!exists)
             {
-                GameObject model = CarModels[Random.Range(0, CarModels.Count - 1)];
+                GameObject model = CarModels[Random.Range(0, CarModels.Count)];
                 GameObject newCar = Instantiate(model, new Vector3(car.pos.x, 0, car.pos.y), Quaternion.Euler(new Vector3(0, car.orientation, 0)), CarParent);
                 SceneCar sc = newCar.AddComponent<SceneCar>();
                 sc.car = car;

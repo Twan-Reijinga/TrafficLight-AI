@@ -80,6 +80,7 @@ namespace SimulationAPI
             return;
         }
 
+        int test = 0;
         public void Step(float dt)
         {
             UpdateCarPositions(dt);
@@ -113,8 +114,8 @@ namespace SimulationAPI
 
         void UpdateTrafficLights(float dt)
         {
-            intersection1.ChangeSignalFase(-1);
-            intersection2.ChangeSignalFase(-1);
+            // intersection1.Update(dt);
+            // intersection2.Update(dt);
         }
 
         // private Vector3 vec2to3(Vector2 vIn) //!quick useful temp function to convert Simulation.Vector2 to UnityEngine.Vector3
