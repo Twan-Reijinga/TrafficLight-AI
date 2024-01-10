@@ -6,6 +6,7 @@ using SimulationAPI;
 using TMPro;
 using UnityEditor.SearchService;
 using System;
+using IronPython.Hosting;
 
 public class SimulationController : MonoBehaviour
 {
@@ -44,6 +45,9 @@ public class SimulationController : MonoBehaviour
         Step();
         VisualsUpdater();
         lastframe = Time.time;
+
+
+        PythonEngine engine = new PythonEngine(); engine.LoadAssembly(Assembly.GetAssembly(typeof(GameObject))); engine.ExecuteFile("Test.py");
     }
 
     static void simulator_print(object sender, WriteEventArgs e)
