@@ -2,15 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using static UnityEngine.InputSystem.InputAction;
 
 public class DevConsoleBehaviour : MonoBehaviour
 {
+    [SerializeField]
+    private FreeFlyCamera freeFlyCamera;
+    [SerializeField]
+    private SimulationSpeedController simulationSpeedController;
+    private Controls controls;
+    private InputAction toggle;
     [SerializeField] private ConsoleCommand[] commands = new ConsoleCommand[0];
 
     [Header("UI")]
     [SerializeField] private GameObject uiCanvas = null;
     [SerializeField] private TMP_InputField inputField = null;
+
 
     private float pausedTimeScale;
     private static DevConsoleBehaviour instance;
@@ -20,13 +28,18 @@ public class DevConsoleBehaviour : MonoBehaviour
     {
         get
         {
-            if (devConsole != null) return DevConsole;
+            if (devConsole != null) return devConsole;
             return devConsole = new DevConsole(commands);
         }
     }
 
     private void Awake()
     {
+        controls = new Controls();
+        toggle = controls.Developer.ToggleConsole;
+        toggle.performed += Toggle;
+        toggle.Enable();
+
         if (instance != null && instance != this)
         {
             Destroy(gameObject);
@@ -43,6 +56,8 @@ public class DevConsoleBehaviour : MonoBehaviour
         {
             Time.timeScale = pausedTimeScale;
             uiCanvas.SetActive(false);
+            simulationSpeedController.enabled = true;
+            freeFlyCamera.enabled = true;
         }
         else
         {
@@ -50,11 +65,14 @@ public class DevConsoleBehaviour : MonoBehaviour
             Time.timeScale = 0;
             uiCanvas.SetActive(true);
             inputField.ActivateInputField();
+            simulationSpeedController.enabled = false;
+            freeFlyCamera.enabled = false;
         }
     }
 
     public void ProcessCommand(string input)
     {
+        inputField.ActivateInputField();
         DevConsole.ProcessCommand(input);
         inputField.text = string.Empty;
     }

@@ -6,6 +6,8 @@ namespace SimulationAPI
 {
     public class Simulator
     {
+        public static Simulator instance;
+
         public event EventHandler<WriteEventArgs> write;
         Replay replay = new Replay();
         System.Random rand;
@@ -45,6 +47,12 @@ namespace SimulationAPI
 
         public Simulator(int seed)
         {
+            if (instance != null)
+            {
+                throw new Exception("Simulator already exists");
+            }
+            instance = this;
+
             rand = new System.Random(seed);
             carGenerator = new CarGeneration(this);
             intersection1 = new Intersection(this, intersectionPositions[0], lightPositions, lightOrientations, true);
@@ -220,6 +228,19 @@ namespace SimulationAPI
         public void Print(string e)
         {
             write?.Invoke(this, new WriteEventArgs(e));
+        }
+
+        public bool SpawnCar(int entranceindex, int exitIndex)
+        {
+            try
+            {
+                cars.Add(carGenerator.SpawnCar(entranceindex, exitIndex));
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

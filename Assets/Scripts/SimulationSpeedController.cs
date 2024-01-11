@@ -11,27 +11,26 @@ public class SimulationSpeedController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            simSpeed *= 2;
+            Time.timeScale *= 2;
         }
 
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
-            simSpeed *= 0.5f;
+            Time.timeScale *= 0.5f;
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (simSpeed == 0)
+            if (Time.timeScale == 0)
             {
-                simSpeed = 1;
+                Time.timeScale = 1;
             }
             else
             {
-                simSpeed = 0;
+                Time.timeScale = 0;
             }
         }
 
-        Time.timeScale = simSpeed;
-        text.SetText((Mathf.Round(simSpeed * 100) / 100).ToString());
+        text.SetText((Mathf.Round(Time.timeScale * 100) / 100).ToString());
     }
 }
