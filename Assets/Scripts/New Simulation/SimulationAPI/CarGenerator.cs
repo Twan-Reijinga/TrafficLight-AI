@@ -8,7 +8,7 @@ namespace SimulationAPI
     {
         // public GameObject rootCar;
         // public EffeciencyStats carStats;
-        public float spawningChance = 0f; // between 0-1
+        public float spawningChance = 0.3f; // between 0-1
         public List<int> entrancePositionChance = new List<int> { 1, 1, 1, 1, 1, 1 };
         public List<int> exitPositionChance = new List<int> { 1, 1, 1, 1, 1, 1 };
         public float intervalInSeconds = 1.0f;
