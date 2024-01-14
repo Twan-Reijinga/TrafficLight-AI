@@ -12,7 +12,7 @@ class DeepQNetwork(nn.Module):
         self.fc2_dims = fc2_dims
         self.n_actions = n_actions
         
-        self.fc1 = nn.Linear(self.input_dims, self.fc1_dims)
+        self.fc1 = nn.Linear(*self.input_dims, self.fc1_dims)
         self.fc2 = nn.Linear(self.fc1_dims, self.fc2_dims)
         self.fc3 = nn.Linear(self.fc2_dims, self.n_actions)
         
@@ -36,11 +36,11 @@ class Agent():
         self.lr = lr
         self.input_dims = input_dims
         self.batch_size = batch_size
-        self.max_mem_size = max_mem_size
+        self.mem_size = max_mem_size
         self.eps_end = eps_end
         self.eps_decay = eps_decay
         
-        self.mem_couter = 0
+        self.mem_counter = 0
         self.action_space = [i for i in range(n_actions)]
 
         self.Q_eval = DeepQNetwork(self.lr, input_dims=input_dims, fc1_dims=256, 
