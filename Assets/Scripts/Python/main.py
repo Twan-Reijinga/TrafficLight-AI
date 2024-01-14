@@ -23,7 +23,7 @@ if __name__ == '__main__':
             state = next_state
         
         scores.append(score)
-        eps.eps_history.append(agent.epsilon)
+        eps_history.append(agent.epsilon)
         
         avg_score = np.mean(scores[-100:])
         
