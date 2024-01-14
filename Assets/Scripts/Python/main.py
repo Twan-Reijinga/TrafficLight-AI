@@ -5,10 +5,10 @@ import numpy as np
 
 if __name__ == '__main__':
     env = gym.make('LunarLander-v2')
-    agent = Agent(gamma=0.99, epsilon=1.0, batch_size=64, n_actions=4,
-                  eps_end=0.01, input_dims=[8], lr=0.0005)
+    agent = Agent(gamma=0.99, epsilon=1.0, batch_size=128, n_actions=4,
+                  eps_end=0.05, input_dims=[8], lr=0.001)
     scores, eps_history = [], []
-    n_games = 500
+    n_games = 800
     
     for i in range(n_games):
         score = 0
@@ -22,6 +22,7 @@ if __name__ == '__main__':
             agent.learn()
             state = next_state
         
+        print(done)
         scores.append(score)
         eps_history.append(agent.epsilon)
         

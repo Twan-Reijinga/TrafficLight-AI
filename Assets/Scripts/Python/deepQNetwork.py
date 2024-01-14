@@ -31,7 +31,7 @@ class DeepQNetwork(nn.Module):
     
 class Agent():
     def __init__(self, gamma, epsilon, lr, input_dims, batch_size, n_actions, 
-                 max_mem_size=100000, eps_end=0.05, eps_decay=5e-5):
+                 max_mem_size=10000, eps_end=0.05, eps_decay=5e-5):
         self.gamma = gamma
         self.epsilon = epsilon
         self.lr = lr
@@ -70,7 +70,7 @@ class Agent():
     
     def choose_action(self, state):
         if np.random.random() > self.epsilon:
-            state = T.tensor(np.array(state)).to(self.Q_eval.device)
+            state = T.tensor(state).to(self.Q_eval.device)
             actions = self.Q_eval.forward(state)
             action = T.argmax(actions).item()
         else:
@@ -114,4 +114,5 @@ class Agent():
         self.epsilon = self.epsilon - self.eps_decay if self.epsilon > self.eps_end else self.eps_end
 
         if self.mem_counter % 1000 == 0:
+            print("mem_counter: ", self.mem_counter)
             self.Q_next.load_state_dict(self.Q_eval.state_dict())
