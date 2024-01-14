@@ -13,7 +13,7 @@ if __name__ == '__main__':
     for i in range(n_games):
         score = 0
         done = False
-        state = env.reset()
+        state, _ = env.reset()
         while not done:
             action = agent.choose_action(state)
             next_state, reward, done, _, info = env.step(action)

@@ -31,7 +31,7 @@ class DeepQNetwork(nn.Module):
     
 class Agent():
     def __init__(self, gamma, epsilon, lr, input_dims, batch_size, n_actions, 
-                 max_mem_size=100000, eps_end=0.05, eps_decay=5e-4):
+                 max_mem_size=1000000, eps_end=0.05, eps_decay=5e-8):
         self.gamma = gamma
         self.epsilon = epsilon
         self.lr = lr
@@ -55,12 +55,11 @@ class Agent():
         self.terminal_memory = np.zeros(self.mem_size, dtype=np.bool)
 
     def store_transition(self, state, action, reward, next_state, done):
-        print(state)
         index = self.mem_counter % self.mem_size
         
         
-        self.state_memory[index] = state[0]
-        self.next_state_memory[index] = next_state[0]
+        self.state_memory[index] = state 
+        self.next_state_memory[index] = next_state
         self.action_memory[index] = action
         self.reward_memory[index] = reward
         self.terminal_memory[index] = done
@@ -69,7 +68,7 @@ class Agent():
     
     def choose_action(self, state):
         if np.random.random() > self.epsilon:
-            state = T.tensor([state]).to(self.Q_eval.device)
+            state = T.tensor([np.array(state)]).to(self.Q_eval.device)
             actions = self.Q_eval.forward(state)
             action = T.argmax(actions).item()
         else:
