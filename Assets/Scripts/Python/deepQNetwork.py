@@ -31,7 +31,7 @@ class DeepQNetwork(nn.Module):
     
 class Agent():
     def __init__(self, gamma, epsilon, lr, input_dims, batch_size, n_actions, 
-                 max_mem_size=1000000, eps_end=0.05, eps_decay=5e-8):
+                 max_mem_size=100000, eps_end=0.05, eps_decay=5e-5):
         self.gamma = gamma
         self.epsilon = epsilon
         self.lr = lr
@@ -45,6 +45,8 @@ class Agent():
         self.action_space = [i for i in range(n_actions)]
 
         self.Q_eval = DeepQNetwork(lr, input_dims=input_dims, fc1_dims=256, 
+                                   fc2_dims=256, n_actions=n_actions)
+        self.Q_next = DeepQNetwork(lr, input_dims=input_dims, fc1_dims=256, 
                                    fc2_dims=256, n_actions=n_actions)
 
         self.state_memory = np.zeros((self.mem_size, *input_dims), dtype=np.float32)
@@ -68,7 +70,7 @@ class Agent():
     
     def choose_action(self, state):
         if np.random.random() > self.epsilon:
-            state = T.tensor([np.array(state)]).to(self.Q_eval.device)
+            state = T.tensor(np.array(state)).to(self.Q_eval.device)
             actions = self.Q_eval.forward(state)
             action = T.argmax(actions).item()
         else:
@@ -96,12 +98,20 @@ class Agent():
         Q_eval = self.Q_eval.forward(state_batch)[batch_index, action_batch]
         Q_next = self.Q_eval.forward(next_state_batch)
         Q_next[terminal_batch] = 0.0
+
+        Q_target_next = self.Q_next.forward(next_state_batch).detach()
+        Q_target = reward_batch + self.gamma * T.max(Q_target_next, dim=1)[0]
+
+        self.Q_eval.optimizer.zero_grad()
+
+        Q_eval = self.Q_eval.forward(state_batch)[batch_index, action_batch]
         
-        Q_target = reward_batch + self.gamma * T.max(Q_next, dim=1)[0]
-        
-        # backprogagation
         loss = self.Q_eval.loss(Q_target, Q_eval).to(self.Q_eval.device)
+        
         loss.backward()
         self.Q_eval.optimizer.step()
         
         self.epsilon = self.epsilon - self.eps_decay if self.epsilon > self.eps_end else self.eps_end
+
+        if self.mem_counter % 1000 == 0:
+            self.Q_next.load_state_dict(self.Q_eval.state_dict())
