@@ -3,18 +3,7 @@ from deepQNetwork import Agent
 from utils import plot_learning_curve
 import numpy as np
 
-from server import RequestHandler
-import http.server
-import socketserver
-
 if __name__ == '__main__':
-    PORT = 8000
-    with socketserver.TCPServer(("", PORT), RequestHandler) as httpd:
-        print(f"Serving on port {PORT}")
-        httpd.serve_forever()
-    
-    
-    
     env = gym.make('LunarLander-v2', render_mode="human")
     agent = Agent(gamma=0.99, epsilon=1.0, batch_size=64, n_actions=4,
                   eps_end=0.05, input_dims=[8], lr=0.001)
