@@ -31,7 +31,7 @@ class QLearnAgent
 
     public List<float> Step(SimulationAPI.Simulator simulator)
     {
-        SimulationAPI.Intersection intersection = simulator.intersection1; //! using intersection1 as test (THIS MUST BE CHANGED LATER)
+        SimulationAPI.Intersection intersection = simulator.intersections[0]; //! using intersection1 as test (THIS MUST BE CHANGED LATER)
         int[] queueLenghtsBefore = intersection.GetQueueLenghts();
         List<float> trafficLightStateBefore = intersection.GetTrafficLightAIInputs();
 

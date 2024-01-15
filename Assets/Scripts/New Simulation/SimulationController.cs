@@ -28,14 +28,14 @@ public class SimulationController : MonoBehaviour
 
     private QLearnAgent qAgent;
     private bool isAIControlled;
-    private int[] networkNeuronCounts = {4, 6, 4}; // [3*(4*carLimit), ~, cycles]
+    private int[] networkNeuronCounts = { 4, 6, 4 }; // [3*(4*carLimit), ~, cycles]
     private int maxIterations;
 
     void Start()
     {
         maxIterations = 50_000; // TO DO: maxIterations given as parameter of Start()  //
         isAIControlled = true; // TO DO: isAIControlled given as parameter of Start() //
-        if(isAIControlled) 
+        if (isAIControlled)
         {
             qAgent = new QLearnAgent(networkNeuronCounts, maxIterations);
         }
@@ -80,11 +80,11 @@ public class SimulationController : MonoBehaviour
     {
         if (!paused)
         {
-            if(isAIControlled)
+            if (isAIControlled)
             {
                 // NOTE: qAgent stepSize could be bigger than simulator stap in future //
                 List<float> debugValues = qAgent.Step(simulator);
-                
+
                 // for(int i = 0; i < debugValues.Count; i++) {
                 //     if(i % 24 == 0){
                 //         print("NEXXXXT LINE _____________________");
@@ -101,7 +101,8 @@ public class SimulationController : MonoBehaviour
         if (runAtSetSpeed)
         {
             Invoke(nameof(Step), timeStepSize);
-        } else 
+        }
+        else
         {
             Invoke(nameof(Step), 0);
         }

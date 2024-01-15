@@ -14,7 +14,7 @@ namespace SimulationAPI
             ClearingDelay,
         }
         private States state = States.Green;
-        public Simulator sim;
+        [NonSerialized] private Simulator sim;
         public Vector2 pos;
         public List<Light> lights;
 
@@ -52,7 +52,7 @@ namespace SimulationAPI
                 case States.Green:
                     {
                         timer -= dt;
-                        if (timer <= 0 || NoCarsAtPhases()[currentPhase])
+                        if (timer <= 0 || phaseIsEmpty(currentPhase))
                         {
                             NextPhase();
                         }
@@ -64,7 +64,7 @@ namespace SimulationAPI
                     }
                 case States.ClearingDelay:
                     {
-                        timer -= dt * 10000;
+                        timer -= dt;
                         if (timer <= 0)
                         {
                             setStateGreen(nextPhase);
@@ -82,24 +82,30 @@ namespace SimulationAPI
             timer = maxGreenTime;
         }
 
-        bool[] NoCarsAtPhases()
+        bool laneIsEmpty(int lightIndex)
         {
-            bool[] list = new bool[4];
-            int[] queues = GetQueueLenghts();
-            for (int i = 0; i < 4; i++)
+            Light l = lights[lightIndex];
+            foreach (Car car in sim.cars)
             {
-                int[] phase = phases[i];
-                bool isClear = false;
-                foreach (int index in phase)
+                if (sim.GetDistanceToCar(l.pos, l.forward, car) <= 10f)
                 {
-                    if (queues[index] == 0)
-                    {
-                        isClear = true;
-                    }
+                    return false;
                 }
-                list[i] = isClear;
             }
-            return list;
+            return true;
+        }
+
+        bool phaseIsEmpty(int phaseIndex)
+        {
+            int[] phase = phases[phaseIndex];
+            foreach (int laneIndex in phase)
+            {
+                if (!laneIsEmpty(laneIndex))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         bool NextPhase()
@@ -107,11 +113,10 @@ namespace SimulationAPI
             nextPhase = currentPhase;
             state = States.ClearingDelay;
 
-            bool[] nocarsatphases = NoCarsAtPhases();
             for (int i = 0; i < 4; i++)
             {
                 nextPhase = (nextPhase + 1) % 4;
-                if (!nocarsatphases[i])
+                if (!phaseIsEmpty(nextPhase))
                 {
                     timer = 3;  //!temp length change to calculation
                     return true;
