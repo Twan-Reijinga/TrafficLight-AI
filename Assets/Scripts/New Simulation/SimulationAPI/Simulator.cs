@@ -4,19 +4,17 @@ using System.Linq;
 
 namespace SimulationAPI
 {
+    [Serializable]
     public class Simulator
     {
         public static Simulator instance;
 
         public event EventHandler<WriteEventArgs> write;
-        Replay replay = new Replay();
         System.Random rand;
         public int seed = 0;
 
         public List<Car> cars = new List<Car>();
-        public Intersection intersection1;
-        public Intersection intersection2;
-
+        public Intersection[] intersections = new Intersection[2];
         CarGeneration carGenerator;
         Physics physics;
         List<int> deletedCars = new List<int>();
@@ -55,8 +53,8 @@ namespace SimulationAPI
 
             rand = new System.Random(seed);
             carGenerator = new CarGeneration(this);
-            intersection1 = new Intersection(this, intersectionPositions[0], lightPositions, lightOrientations, true);
-            intersection2 = new Intersection(this, intersectionPositions[1], lightPositions, lightOrientations, true);
+            intersections[0] = new Intersection(this, intersectionPositions[0], lightPositions, lightOrientations, true);
+            intersections[1] = new Intersection(this, intersectionPositions[1], lightPositions, lightOrientations, true);
 
             physics = new Physics(this);
         }
@@ -73,8 +71,8 @@ namespace SimulationAPI
 
             for (int i = 0; i < 8; i++)
             {
-                scene.lights.cross1.Add(intersection1.lights[i].isOn);
-                scene.lights.cross2.Add(intersection2.lights[i].isOn);
+                scene.lights.cross1.Add(intersections[0].lights[i].isOn);
+                scene.lights.cross2.Add(intersections[1].lights[i].isOn);
             }
 
             scene.deletedCars = new List<int>(deletedCars);
@@ -122,8 +120,8 @@ namespace SimulationAPI
 
         void UpdateTrafficLights(float dt)
         {
-            // intersection1.Update(dt);
-            // intersection2.Update(dt);
+            intersections[0].Update(dt);
+            intersections[1].Update(dt);
         }
 
         // private Vector3 vec2to3(Vector2 vIn) //!quick useful temp function to convert Simulation.Vector2 to UnityEngine.Vector3
@@ -191,7 +189,7 @@ namespace SimulationAPI
                 }
             }
 
-            List<Light> lights = intersection1.lights.Concat(intersection2.lights).ToList();
+            List<Light> lights = intersections[0].lights.Concat(intersections[1].lights).ToList();
 
             for (int i = lights.Count - 1; i >= 0; i--)
             {
