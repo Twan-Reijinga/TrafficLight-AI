@@ -4,6 +4,7 @@ using UnityEngine;
 using SimulationAPI;
 using System.Linq;
 using System.Runtime.InteropServices;
+using UnityEditor.SearchService;
 
 public class Visualizer : MonoBehaviour
 {
@@ -38,6 +39,7 @@ public class Visualizer : MonoBehaviour
 
     public void DrawState(G_sceneState sceneState)
     {
+        //make or update cars
         foreach (Car car in sceneState.cars)
         {
             bool exists = false;
@@ -64,14 +66,18 @@ public class Visualizer : MonoBehaviour
             }
         }
 
+        List<GameObject> allChildren = new List<GameObject>();
+        foreach (Transform child in CarParent.transform)
+        {
+            allChildren.Add(child.gameObject);
+        }
+
         for (int i = CarParent.childCount - 1; i >= 0; i--)
         {
-            for (int j = 0; j < sceneState.deletedCars.Count; j++)
+            Transform child = CarParent.GetChild(i);
+            if (!sceneState.cars.Any(car => car.UUID == child.GetComponent<SceneCar>().car.UUID))
             {
-                if (CarParent.GetChild(i).name == sceneState.deletedCars[j].ToString())
-                {
-                    Destroy(CarParent.GetChild(i).gameObject);
-                }
+                Destroy(child.gameObject);
             }
         }
 

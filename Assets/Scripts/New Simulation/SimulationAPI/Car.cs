@@ -196,11 +196,11 @@ namespace SimulationAPI
                             }
                     }
                 }
-                else if (node.action == 'e')
-                {
-                    // currentAction = 'l';
-                    isDestroyed = true;
-                }
+            }
+            if (node.action == 'e')
+            {
+                // currentAction = 'l';
+                isDestroyed = true;
             }
         }
 
