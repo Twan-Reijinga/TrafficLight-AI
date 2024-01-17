@@ -55,6 +55,7 @@ public class SimulationController : MonoBehaviour
         Step();
         VisualsUpdater();
         lastframe = Time.time;
+        visualiser.SetSeed(seed);
     }
 
     IEnumerator Upload(int state, int action, int reward, int nextState, int done)
