@@ -3,13 +3,22 @@ import socketserver
 import json
 
 class RequestHandler(http.server.SimpleHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header('Content-type', 'application/json')
+        self.end_headers()
+        response_message = {'message': 'Hello World!'}
+        self.wfile.write(json.dumps(response_message).encode('utf-8'))
+    
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length).decode('utf-8')
 
         try:
             data = json.loads(post_data)
-            print(data)
+            print(data['state'])
+            print(data['action'])
+            print(data['reward'])
 
             # replay_memory.push(state, action, reward, next_state)
 
@@ -34,4 +43,8 @@ if __name__ == "__main__":
     PORT = 8002
     with socketserver.TCPServer(("", PORT), RequestHandler) as httpd:
         print(f"Serving on port {PORT}")
-        httpd.serve_forever()
+        try:
+            httpd.serve_forever()
+        except KeyboardInterrupt:
+            print("\nKeyboardInterrupt received. Shutting down gracefully.")
+            httpd.shutdown()
