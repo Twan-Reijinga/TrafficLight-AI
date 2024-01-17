@@ -16,7 +16,7 @@ namespace SimulationAPI
         public List<Car> cars = new List<Car>();
         public Intersection[] intersections = new Intersection[2];
         CarGeneration carGenerator;
-        Physics physics;
+        public Physics physics;
         List<int> deletedCars = new List<int>();
 
         private Vector2[] lightPositions = {
@@ -53,9 +53,10 @@ namespace SimulationAPI
 
             rand = new System.Random(seed);
             carGenerator = new CarGeneration(this);
-            intersections[0] = new Intersection(this, intersectionPositions[0], lightPositions, lightOrientations, true);
-            intersections[1] = new Intersection(this, intersectionPositions[1], lightPositions, lightOrientations, true);
-
+            intersections[0] = new Intersection(this, intersectionPositions[0], lightPositions, lightOrientations, false);
+            intersections[0].setStateGreen(0);
+            intersections[1] = new Intersection(this, intersectionPositions[1], lightPositions, lightOrientations, false);
+            intersections[1].setStateGreen(0);
             physics = new Physics(this);
         }
 

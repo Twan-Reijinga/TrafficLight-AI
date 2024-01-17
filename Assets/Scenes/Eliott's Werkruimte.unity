@@ -437,7 +437,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeStepSize: 0.05
   timeBetweenVisualisations: 0.05
-  seed: 0
+  seed: 12
   visualiser: {fileID: 973600591}
   runAtSetSpeed: 1
   paused: 0

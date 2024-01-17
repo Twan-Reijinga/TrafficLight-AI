@@ -27,9 +27,11 @@ namespace SimulationAPI
         public float orientation;
         private float orientationTarget;
         public int exitIndex;
-        public char nextAction;
-        public char currentAction = 'f';
+        public CarMovement.Actions nextAction;
+        public CarMovement.Actions currentAction = CarMovement.Actions.FORWARD;
         public bool isDestroyed = false;
+
+        private ActionLine lastLine = null;
 
         public float velocity = 0;
         private float acceleration = 3; // tweak this
@@ -39,7 +41,7 @@ namespace SimulationAPI
         public bool WaitingAtTraficlight;
         public int LastTraficLight;
 
-        public Car(int id, Vector2 pos, float orientation, int exitIndex, char nextAction)
+        public Car(int id, Vector2 pos, float orientation, int exitIndex, CarMovement.Actions nextAction)
         {
             this.UUID = id;
             this.pos = pos;
@@ -95,31 +97,32 @@ namespace SimulationAPI
             }
 
             //movement happens here
-            ActionNode currentNode = GetActionNode();
-            if (currentNode != null)
+            ActionLine currentLine = GetActionLine();
+            if (lastLine != null && currentLine != lastLine)
             {
-                NodeLogic(currentNode);
+                NodeLogic(lastLine);
             }
+            lastLine = currentLine;
 
             switch (currentAction)
             {
-                case 'f':
+                case CarMovement.Actions.FORWARD:
                     {
                         break;
                     }
 
-                case 'l':
+                case CarMovement.Actions.LEFT:
                     {
                         CarTurn(8f, dt);
                         break;
                     }
 
-                case 'r':
+                case CarMovement.Actions.RIGHT:
                     {
                         CarTurn(4.5f, dt);
                         break;
                     }
-                case 's':
+                case CarMovement.Actions.SWITCH:
                     {
                         if (switchphase == 0)
                         {
@@ -152,22 +155,34 @@ namespace SimulationAPI
             return null;
         }
 
-        private void NodeLogic(ActionNode node)
+        private ActionLine GetActionLine()
         {
-            if (currentAction == 'f')
+            foreach (ActionLine line in CarMovement.lines)
             {
-                pos = node.pos;
-                orientation = node.orientation;
+                if (Vector2.Distance(Physics.LineLineIntersect(this.pos, this.pos + this.forward, line.p1, line.p2) ?? Vector2.positiveInfinity, this.pos) < 2.0f)
+                {
+                    return line;
+                }
+            }
+            return null;
+        }
 
-                if (node.action == nextAction)
+        private void NodeLogic(ActionLine line)
+        {
+            if (currentAction == CarMovement.Actions.FORWARD)
+            {
+                pos = Vector2.Lerp(line.p1, line.p2, 0.5f);
+                orientation = line.orientation;
+
+                if (line.action == nextAction)
                 {
 
-                    currentAction = node.action;
-                    orientationTarget = orientation + (currentAction == 'r' ? 90 : -90);
+                    currentAction = line.action;
+                    orientationTarget = orientation + (currentAction == CarMovement.Actions.RIGHT ? 90 : -90);
 
                     orientationTarget = (orientationTarget + 360) % 360;
                 }
-                else if (node.action == 's')
+                else if (line.action == CarMovement.Actions.SWITCH)
                 {
                     switch (exitIndex)
                     {
@@ -176,28 +191,28 @@ namespace SimulationAPI
                             {
                                 orientationTarget = (orientation - 45 + 360) % 360;
                                 //switch logic
-                                currentAction = 's';
-                                nextAction = 'l';
+                                currentAction = CarMovement.Actions.SWITCH;
+                                nextAction = CarMovement.Actions.LEFT;
                                 break;
                             }
 
                         case 2:
                         case 5:
                             {
-                                nextAction = 'f';
+                                nextAction = CarMovement.Actions.FORWARD;
                                 break;
                             }
 
                         case 3:
                         case 6:
                             {
-                                nextAction = 'r';
+                                nextAction = CarMovement.Actions.RIGHT;
                                 break;
                             }
                     }
                 }
             }
-            if (node.action == 'e')
+            if (line.action == CarMovement.Actions.EXIT)
             {
                 // currentAction = 'l';
                 isDestroyed = true;
@@ -223,11 +238,11 @@ namespace SimulationAPI
             if (orientation == RotateTowards(orientation, orientationTarget, angularStepSize) && velocity != 0)
             {
                 orientation = orientationTarget;
-                if (currentAction != 's' || switchphase == 1)
+                if (currentAction != CarMovement.Actions.SWITCH || switchphase == 1)
                 {
-                    currentAction = 'f';
+                    currentAction = CarMovement.Actions.FORWARD;
                 }
-                if (currentAction == 's')
+                if (currentAction == CarMovement.Actions.SWITCH)
                 {
                     switchphase = 1;
                     orientationTarget = (orientation + 45 + 360) % 360;

@@ -66,7 +66,7 @@ namespace SimulationAPI
 
         public Car SpawnCar(int entranceIndex, int exitIndex)
         {
-            char nextAction = instructions[entranceIndex, exitIndex];
+            CarMovement.Actions nextAction = (CarMovement.Actions)instructions[entranceIndex, exitIndex];
             Car newCar = new Car(uuidCounter, positions[entranceIndex], rotations[entranceIndex], exitIndex, nextAction);
             uuidCounter++;
             if (uuidCounter == 219)
@@ -75,7 +75,7 @@ namespace SimulationAPI
             }
 
 
-            if (nextAction == 'l')
+            if (nextAction == CarMovement.Actions.LEFT)
             {
                 newCar.pos += newCar.right * -3;
             }
@@ -86,7 +86,7 @@ namespace SimulationAPI
         {
             int entranceIndex = GetPositionFromChance(entrancePositionChance, rand);
             int exitIndex = GetPositionFromChance(exitPositionChance, rand, entranceIndex);
-            char nextAction = instructions[entranceIndex, exitIndex];
+            CarMovement.Actions nextAction = (CarMovement.Actions)instructions[entranceIndex, exitIndex];
 
             if (entranceIndex >= exitIndex)
             {
@@ -97,7 +97,7 @@ namespace SimulationAPI
             uuidCounter++;
 
 
-            if (nextAction == 'l')
+            if (nextAction == CarMovement.Actions.LEFT)
             {
                 newCar.pos += newCar.right * -3;
             }

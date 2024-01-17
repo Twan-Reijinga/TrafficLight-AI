@@ -46,6 +46,7 @@ public class SimulationController : MonoBehaviour
         VisualsUpdater();
         lastframe = Time.time;
         StartCoroutine(Upload());
+        visualiser.SetSeed(seed);
     }
 
     IEnumerator Upload()

@@ -22,7 +22,7 @@ public class CarCommand : ConsoleCommand
         }
         else
         {
-            Debug.Log("inputs not ints! >(");
+            Debug.Log("inputs not ints! >:(");
         }
         Debug.Log("DIE");
         return false;

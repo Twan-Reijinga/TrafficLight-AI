@@ -21,6 +21,10 @@ public class Visualizer : MonoBehaviour
 
     [Range(0.0f, 1.0f)]
     public float t = 0f;
+    public void SetSeed(int seed)
+    {
+        Random.InitState(seed);
+    }
     void Update()
     {
         if (state1 != null && state2 != null)
