@@ -7,7 +7,6 @@ using TMPro;
 using UnityEditor.SearchService;
 using System;
 using UnityEngine.Networking;
-using Newtonsoft.Json;
 
 
 public class ResponseData
