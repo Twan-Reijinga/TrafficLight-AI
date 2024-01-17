@@ -61,10 +61,10 @@ class DQN_Runner():
         self.state = self.next_state
         if(done):
             self.current_game += 1
-            self.scores += self.score
+            self.scores.append(self.score)
             self.eps_history.append(self.agent.epsilon)
             self.avg_score = np.mean(self.scores[-100:])
-            print('episode ', i, 'score %.2f' % self.score,
+            print('episode ', self.current_game, 'score %.2f' % self.score,
                 'avg score %.2f' % self.avg_score,
                 'epsilon %.2f' % self.agent.epsilon)
     
@@ -76,8 +76,8 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
         self.send_header('Content-type', 'application/json')
         self.end_headers()
         action = DQN_runner.getAction()
-        print(action)
-        response_message = {'action': action}
+        # print(action)
+        response_message = {'action': int(action)}
         self.wfile.write(json.dumps(response_message).encode('utf-8'))
     
     def do_POST(self):
@@ -87,6 +87,17 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
         try:
             data = json.loads(post_data)
             print(data) 
+            state = data['state']
+            action = data['action']
+            reward = data['reward']
+            next_state = data['nextState']
+            
+            done = False
+            if data['done'] == 1: 
+                done = True 
+            print(state, action, reward, next_state, done)
+                
+            DQN_runner.store_transition(state, action, reward, next_state, done)
 
             # replay_memory.push(state, action, reward, next_state)
 
@@ -108,7 +119,7 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
 if __name__ == '__main__':
     # global DQN_runner
     DQN_runner = DQN_Runner()
-    PORT = 8001
+    PORT = 8000
     httpd = socketserver.TCPServer(("", PORT), RequestHandler)
     print(f"Serving on port {PORT}")
     try:

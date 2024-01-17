@@ -54,14 +54,14 @@ public class SimulationController : MonoBehaviour
         Step();
         VisualsUpdater();
         lastframe = Time.time;
-        StartCoroutine(GetRequest("http://localhost:8001/"));
+        StartCoroutine(GetRequest("http://localhost:8000/"));
         // int action = JsonConvert.DeserializeObject<Action>(json).action;
         StartCoroutine(Upload());
     }
 
     IEnumerator Upload()
     {
-        using (UnityWebRequest www = UnityWebRequest.Post("http://localhost:8001/", "{ \"state\": 1, \"action\": 2, \"reward\": 2, \"nextState\": 2 }", "application/json"))
+        using (UnityWebRequest www = UnityWebRequest.Post("http://localhost:8000/", "{ \"state\": 1, \"action\": 2, \"reward\": 2, \"nextState\": 2, \"done\": 1 }", "application/json"))
         {
             yield return www.SendWebRequest();
 
