@@ -7,6 +7,12 @@ using TMPro;
 using UnityEditor.SearchService;
 using System;
 using UnityEngine.Networking;
+using Newtonsoft.Json;
+
+
+public class ResponseData {
+    public int action;
+}
 
 public class SimulationController : MonoBehaviour
 {
@@ -31,8 +37,11 @@ public class SimulationController : MonoBehaviour
     private int[] networkNeuronCounts = { 4, 6, 4 }; // [3*(4*carLimit), ~, cycles]
     private int maxIterations;
 
+    private int currentAction;
+
     void Start()
     {
+        currentAction = -2;
         maxIterations = 50_000; // TO DO: maxIterations given as parameter of Start()  //
         isAIControlled = true; // TO DO: isAIControlled given as parameter of Start() //
         if (isAIControlled)
@@ -45,12 +54,14 @@ public class SimulationController : MonoBehaviour
         Step();
         VisualsUpdater();
         lastframe = Time.time;
+        StartCoroutine(GetRequest("http://localhost:8001/"));
+        // int action = JsonConvert.DeserializeObject<Action>(json).action;
         StartCoroutine(Upload());
     }
 
     IEnumerator Upload()
     {
-        using (UnityWebRequest www = UnityWebRequest.Post("http://localhost:8000/", "{ \"field1\": 1, \"field2\": 2 }", "application/json"))
+        using (UnityWebRequest www = UnityWebRequest.Post("http://localhost:8001/", "{ \"state\": 1, \"action\": 2, \"reward\": 2, \"nextState\": 2 }", "application/json"))
         {
             yield return www.SendWebRequest();
 
@@ -63,6 +74,35 @@ public class SimulationController : MonoBehaviour
                 Debug.Log("Form upload complete!" + www.downloadHandler.text);
             }
         }
+    }
+
+    IEnumerator GetRequest(string uri)
+    {
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
+        {
+            // Request and wait for the desired page.
+            yield return webRequest.SendWebRequest();
+
+            string[] pages = uri.Split('/');
+            int page = pages.Length - 1;
+
+            switch (webRequest.result)
+            {
+                case UnityWebRequest.Result.ConnectionError:
+                case UnityWebRequest.Result.DataProcessingError:
+                    Debug.LogError(pages[page] + ": Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.ProtocolError:
+                    Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.Success:
+                    ResponseData responseData = JsonUtility.FromJson<ResponseData>(webRequest.downloadHandler.text);
+                    Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
+                    this.currentAction = responseData.action;
+                    break;
+            }
+        }
+
     }
 
     static void simulator_print(object sender, WriteEventArgs e)
