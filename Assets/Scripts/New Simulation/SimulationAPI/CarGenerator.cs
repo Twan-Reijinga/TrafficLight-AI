@@ -69,6 +69,10 @@ namespace SimulationAPI
             char nextAction = instructions[entranceIndex, exitIndex];
             Car newCar = new Car(uuidCounter, positions[entranceIndex], rotations[entranceIndex], exitIndex, nextAction);
             uuidCounter++;
+            if (uuidCounter == 219)
+            {
+                super.Print("219 INCOMING BICHASS!");
+            }
 
 
             if (nextAction == 'l')

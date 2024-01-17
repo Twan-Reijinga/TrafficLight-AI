@@ -76,6 +76,7 @@ namespace SimulationAPI
             }
 
             scene.deletedCars = new List<int>(deletedCars);
+            deletedCars = new List<int>();
 
             return scene;
         }
@@ -106,8 +107,7 @@ namespace SimulationAPI
 
         void DestroyCars()
         {
-            deletedCars = new List<int>();
-            for (int i = cars.Count - 1; i > 0; i--)
+            for (int i = cars.Count - 1; i >= 0; i--)
             {
                 if (cars[i].isDestroyed)
                 {
