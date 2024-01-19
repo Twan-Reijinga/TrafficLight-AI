@@ -130,6 +130,11 @@ public class SimulationController : MonoBehaviour
             {
                 int done = this.stepCount / this.maxIterations;
                 StartCoroutine(GetRequest());
+                if(this.currentAction >= 0) {
+                    simulator.intersections[0].ChangeSignalFase(this.currentAction);
+                }
+
+                simulator.GetState(0, 16);
                 StartCoroutine(Upload(2, this.currentAction, 3, 3, done));
                 // List<float> debugValues = qAgent.Step(simulator);
 
