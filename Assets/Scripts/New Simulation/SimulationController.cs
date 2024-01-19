@@ -7,6 +7,7 @@ using TMPro;
 using UnityEditor.SearchService;
 using System;
 using UnityEngine.Networking;
+using Newtonsoft.Json;
 
 
 public class ResponseData
@@ -134,11 +135,11 @@ public class SimulationController : MonoBehaviour
                     simulator.intersections[0].ChangeSignalFase(this.currentAction);
                 }
 
-                simulator.GetState(0, 16);
+                List<float> state = simulator.GetState(0, 16);
+
+                string jsonState = "[" + string.Join(", ", state) + "]";
                 StartCoroutine(Upload(2, this.currentAction, 3, 3, done));
                 // List<float> debugValues = qAgent.Step(simulator);
-
-
             }
             simulator.Step(this.timeStepSize);
             float dt = Time.time - lastframe;

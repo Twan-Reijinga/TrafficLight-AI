@@ -233,9 +233,7 @@ namespace SimulationAPI
 
             int queueListLength = maxQueueLength * queueLengths.Length ;
             List<float> queueList = new List<float>(new float[queueListLength]);
-
             int currentIndex = 0;
-
             foreach (int queueLength in queueLengths)
             {
                 for (int i = 0; i < queueLength; i++)
@@ -245,13 +243,11 @@ namespace SimulationAPI
 
                 currentIndex += maxQueueLength - queueLength; // Skip remaining zeros
             }
-            
-            Print("Result: " + string.Join(", ", queueList));
-    
-
 
             List<float> trafficState = intersections[intersectionNumber].GetTrafficState();
-            return queueList;
+
+            List<float> state = queueList.Concat(trafficState).ToList();
+            return state;
         }
 
         public void Print(string e)
