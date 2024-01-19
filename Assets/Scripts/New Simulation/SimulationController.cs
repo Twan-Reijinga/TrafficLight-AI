@@ -33,7 +33,7 @@ public class SimulationController : MonoBehaviour
     private float lastframe;
 
     private QLearnAgent qAgent;
-    private bool isAIControlled;
+    [SerializeField] private bool isAIControlled = true;
     private int[] networkNeuronCounts = { 4, 6, 4 }; // [3*(4*carLimit), ~, cycles]
     private int maxIterations = 5000;
 
@@ -43,7 +43,7 @@ public class SimulationController : MonoBehaviour
     void Start()
     {
         currentAction = -2;
-        isAIControlled = true; // TO DO: isAIControlled given as parameter of Start() //
+        // isAIControlled = true; // TO DO: isAIControlled given as parameter of Start() //
         if (isAIControlled)
         {
             qAgent = new QLearnAgent(networkNeuronCounts, maxIterations);

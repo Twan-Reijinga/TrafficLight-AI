@@ -9,6 +9,7 @@ namespace SimulationAPI
         public float orientation;
         public float size;
 
+
         public ActionNode(Vector2 pos, char action, float orientation, float size)
         {
             this.pos = pos;
@@ -21,6 +22,7 @@ namespace SimulationAPI
     [Serializable]
     public class Car
     {
+        public event EventHandler<CarPassEventArgs> pass;
         public Vector2 size = new Vector2(2f, 4.8f);
         public int UUID;
         public Vector2 pos;
@@ -216,6 +218,10 @@ namespace SimulationAPI
             {
                 // currentAction = 'l';
                 isDestroyed = true;
+            }
+            if (line.action == CarMovement.Actions.IEXIT)
+            {
+                this.pass?.Invoke(this, new CarPassEventArgs());
             }
         }
 

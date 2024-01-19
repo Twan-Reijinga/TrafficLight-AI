@@ -8,7 +8,8 @@ namespace SimulationAPI
             RIGHT = 'r',
             LEFT = 'l',
             SWITCH = 's',
-            EXIT = 'e'
+            EXIT = 'e',
+            IEXIT = 'i'
         }
 
         public static ActionNode[] nodes = new ActionNode[]{
@@ -73,6 +74,16 @@ namespace SimulationAPI
             CreateActionLine(new Vector2(-31.0f, -30.0f), new Vector2(-34.0f, -30.0f), Actions.EXIT,    180),
             CreateActionLine(new Vector2(-25.0f,  30.0f), new Vector2(-28.0f,  30.0f), Actions.EXIT,      0),
             CreateActionLine(new Vector2(-59.5f,   4.5f), new Vector2(-59.5f,   1.5f), Actions.EXIT,    270),
+
+            CreateActionLine(new Vector2(-31.0f, - 7.5f), new Vector2(-34.0f, - 7.5f), Actions.IEXIT,   180),
+            CreateActionLine(new Vector2(-28.0f,   7.5f), new Vector2(-25.0f,   7.5f), Actions.IEXIT,     0),
+            CreateActionLine(new Vector2(-37.0f,   1.5f), new Vector2(-37.0f,   4.5f), Actions.IEXIT,   270),
+            CreateActionLine(new Vector2(-22.0f, - 1.5f), new Vector2(-22.0f, - 4.5f), Actions.IEXIT,    90),
+
+            CreateActionLine(new Vector2( 28.0f, - 7.5f), new Vector2( 25.0f, - 7.5f), Actions.IEXIT,   180),
+            CreateActionLine(new Vector2( 31.0f,   7.5f), new Vector2( 34.0f,   7.5f), Actions.IEXIT,     0),
+            CreateActionLine(new Vector2( 22.0f,   1.5f), new Vector2( 22.0f,   4.5f), Actions.IEXIT,   270),
+            CreateActionLine(new Vector2( 37.0f, - 1.5f), new Vector2( 37.0f, - 4.5f), Actions.IEXIT,    90),
         };
 
         public static float nodeSize = 0.15f;

@@ -95,7 +95,11 @@ namespace SimulationAPI
             DestroyCars();
             UpdateTrafficLights(dt);
             Car newCar = carGenerator.Update(dt, rand);
-            if (newCar != null) cars.Add(newCar);
+            if (newCar != null)
+            {
+                newCar.pass += RegisterCarPass;
+                cars.Add(newCar);
+            }
         }
 
         void UpdateCarPositions(float dt)
@@ -227,6 +231,12 @@ namespace SimulationAPI
         public void Print(string e)
         {
             write?.Invoke(this, new WriteEventArgs(e));
+        }
+
+        public void RegisterCarPass(object sender, CarPassEventArgs e)
+        {
+            // UP COUNTER HERE, THIS IS CALLED EVERY TIME A CAR LEAVES AN INTERSECTION
+            Print((sender as Car).UUID.ToString());
         }
 
         public bool SpawnCar(int entranceindex, int exitIndex)

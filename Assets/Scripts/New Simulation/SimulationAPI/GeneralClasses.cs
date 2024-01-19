@@ -144,4 +144,9 @@ namespace SimulationAPI
             msg = message;
         }
     }
+
+    public class CarPassEventArgs : EventArgs
+    {
+        public float multiplier = 1.0f;
+    }
 }
