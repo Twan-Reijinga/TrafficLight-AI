@@ -33,7 +33,7 @@ class QLearnAgent
     {
         SimulationAPI.Intersection intersection = simulator.intersections[0]; //! using intersection1 as test (THIS MUST BE CHANGED LATER)
         int[] queueLenghtsBefore = intersection.GetQueueLenghts();
-        List<float> trafficLightStateBefore = intersection.GetTrafficLightAIInputs();
+        List<float> trafficLightStateBefore = intersection.GetTrafficState();
 
         // TODO: get prevStates somehow...
         float[] testValues = { 5.0f, 13.0f, 14.0f };
@@ -43,7 +43,7 @@ class QLearnAgent
         int action = SelectAction(state);
         intersection.ChangeSignalFase(action);
         int[] queueLenghtsAfter = intersection.GetQueueLenghts();
-        List<float> trafficLightStateAfter = intersection.GetTrafficLightAIInputs();
+        List<float> trafficLightStateAfter = intersection.GetTrafficState();
         List<float> nextState = CalcState(state, queueLenghtsAfter, trafficLightStateAfter);
         float reward = CalcReward(state, nextState);
 

@@ -173,7 +173,7 @@ namespace SimulationAPI
             return queueLenghts;
         }
 
-        public List<float> GetTrafficLightAIInputs()
+        public List<float> GetTrafficState()
         {
             List<float> list = new List<float>();
             for (int i = 0; i < 8; i++)

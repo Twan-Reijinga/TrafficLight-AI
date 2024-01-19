@@ -228,6 +228,32 @@ namespace SimulationAPI
             return false;
         }
 
+        public List<float> GetState(int intersectionNumber, int maxQueueLength) {
+            int[] queueLengths = intersections[intersectionNumber].GetQueueLenghts();
+
+            int queueListLength = maxQueueLength * queueLengths.Length ;
+            List<float> queueList = new List<float>(new float[queueListLength]);
+
+            int currentIndex = 0;
+
+            foreach (int queueLength in queueLengths)
+            {
+                for (int i = 0; i < queueLength; i++)
+                {
+                    queueList[currentIndex++] = 1.0f;
+                }
+
+                currentIndex += maxQueueLength - queueLength; // Skip remaining zeros
+            }
+            
+            Print("Result: " + string.Join(", ", queueList));
+    
+
+
+            List<float> trafficState = intersections[intersectionNumber].GetTrafficState();
+            return queueList;
+        }
+
         public void Print(string e)
         {
             write?.Invoke(this, new WriteEventArgs(e));
@@ -236,7 +262,7 @@ namespace SimulationAPI
         public void RegisterCarPass(object sender, CarPassEventArgs e)
         {
             // UP COUNTER HERE, THIS IS CALLED EVERY TIME A CAR LEAVES AN INTERSECTION
-            Print((sender as Car).UUID.ToString());
+            // Print((sender as Car).UUID.ToString());
         }
 
         public bool SpawnCar(int entranceindex, int exitIndex)
