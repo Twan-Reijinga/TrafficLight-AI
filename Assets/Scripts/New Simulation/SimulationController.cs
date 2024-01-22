@@ -35,7 +35,7 @@ public class SimulationController : MonoBehaviour
     private int maxIterations = 5000;
 
     private int currentAction;
-    private string SERVER_URL = "http://localhost:8001/";
+    private string SERVER_URL = "http://localhost:8006/";
 
     void Start()
     {
@@ -54,14 +54,13 @@ public class SimulationController : MonoBehaviour
         visualiser.SetSeed(seed);
     }
 
-    IEnumerator Upload(string state, int action, int reward, int nextState, int done)
+    IEnumerator Upload(string state, int action, float reward, bool done)
     {
         string data =
             "{ \"state\": " + state
             + ", \"action\": " + action
             + ", \"reward\": " + reward
-            + " , \"nextState\": " + nextState
-            + ", \"done\": " + done + " }";
+            + ", \"done\": " + (done ? 1 : 0) + " }";
 
         using (UnityWebRequest www = UnityWebRequest.Post(this.SERVER_URL, data, "application/json"))
         {
@@ -125,7 +124,10 @@ public class SimulationController : MonoBehaviour
         {
             if (isAIControlled && this.stepCount % 20 == 0)
             {
-                int done = this.stepCount / this.maxIterations;
+                bool done = false;
+                if((this.stepCount / 20) % this.maxIterations == 0) {
+                    done = true;
+                }
                 StartCoroutine(GetRequest());
                 if (this.currentAction >= 0)
                 {
@@ -133,9 +135,10 @@ public class SimulationController : MonoBehaviour
                 }
 
                 List<float> state = simulator.GetState(0, 16);
+                float reward = simulator.intersections[0].CalculateReward();
 
                 string jsonState = "[" + string.Join(", ", state) + "]";
-                StartCoroutine(Upload(jsonState, this.currentAction, 3, 3, done));
+                StartCoroutine(Upload(jsonState, this.currentAction, reward, done));
                 // List<float> debugValues = qAgent.Step(simulator);
             }
             simulator.Step(this.timeStepSize, isAIControlled);

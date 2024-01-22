@@ -53,12 +53,14 @@ class DQN_Runner():
             return -1
         return self.agent.choose_action(self.state)
     
-    def store_transition(self, state, action, reward, next_state, done):
-        self.agent.store_transition(state, action, reward, next_state, done)
+    def store_transition(self, state, action, reward, done):
+        self.agent.store_transition(state, action, reward, done)
         self.score += reward
-        self.next_state = next_state
+        
+        
         self.agent.learn()
-        self.state = self.next_state
+        # self.next_state = next_state
+        # self.state = self.next_state
         if(done):
             self.current_game += 1
             self.scores.append(self.score)
@@ -90,14 +92,12 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
             state = data['state']
             action = data['action']
             reward = data['reward']
-            next_state = data['nextState']
+            # next_state = data['nextState']
             
-            done = False
-            if data['done'] == 1: 
-                done = True 
-            print(state, action, reward, next_state, done)
+            done = data['done'] == 1 
+            print("values: ", state, action, reward, done)
                 
-            DQN_runner.store_transition(state, action, reward, next_state, done)
+            DQN_runner.store_transition(state, action, reward, done)
 
             # replay_memory.push(state, action, reward, next_state)
 
@@ -119,7 +119,7 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
 if __name__ == '__main__':
     # global DQN_runner
     DQN_runner = DQN_Runner(136)
-    PORT = 8001
+    PORT = 8006
     httpd = socketserver.TCPServer(("", PORT), RequestHandler)
     print(f"Serving on port {PORT}")
     try:

@@ -41,6 +41,8 @@ class Agent():
         self.eps_end = eps_end
         self.eps_decay = eps_decay
         
+        self.episodeStartIndex = 0
+        
         self.mem_counter = 0
         self.action_space = [i for i in range(n_actions)]
 
@@ -56,12 +58,12 @@ class Agent():
         self.reward_memory = np.zeros(self.mem_size, dtype=np.float32)
         self.terminal_memory = np.zeros(self.mem_size, dtype=np.bool)
 
-    def store_transition(self, state, action, reward, next_state, done):
+    def store_transition(self, state, action, reward, done):
         index = self.mem_counter % self.mem_size
         
         
         self.state_memory[index] = state 
-        self.next_state_memory[index] = next_state
+        # self.next_state_memory[index] = next_state
         self.action_memory[index] = action
         self.reward_memory[index] = reward
         self.terminal_memory[index] = done
