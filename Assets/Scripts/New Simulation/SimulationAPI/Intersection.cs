@@ -137,11 +137,13 @@ namespace SimulationAPI
                 if (!phaseIsEmpty(nextPhase))
                 {
                     timer = phaseSwitches[currentPhase, nextPhase] / 4;
+                    ChangeSignalFase(4);
                     return true;
                 }
             }
             return false;
         }
+
         public void ChangeSignalFase(int phase)
         {
 
@@ -184,10 +186,6 @@ namespace SimulationAPI
                 }
 
                 queueLenghts[i] = waitingCars;
-                // if(waitingCars > 0) 
-                // {
-                // Print("Light " + i + " at (" + lights[i].pos.x + ", " + lights[i].pos.y + ") has " + waitingCars + " waiting car(s)");
-                // }
             }
 
             return queueLenghts;
@@ -245,10 +243,9 @@ namespace SimulationAPI
         public float CalculateReward()
         {
             float carExitReward = 1.0f;
-            float carStillReward = -0.01f;
-            float carMoveReward = 0.02f;
+            float carStillReward = -0.005f;
 
-            float reward = carExitCount * carExitReward + carStillCount * carStillReward + carMoveCount * carMoveReward;
+            float reward = carExitCount * carExitReward + carStillCount * carStillReward;
 
             carExitCount = 0;
             carStillCount = 0;
