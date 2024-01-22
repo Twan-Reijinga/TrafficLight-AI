@@ -60,6 +60,7 @@ class DQN_Runner():
         if(done):
             self.current_game += 1
             self.scores.append(self.score)
+            self.score = 0
             self.eps_history.append(self.agent.epsilon)
             self.avg_score = np.mean(self.scores[-100:])
             print('episode ', self.current_game, 'score %.2f' % self.score,
@@ -69,6 +70,9 @@ class DQN_Runner():
 
 
 class RequestHandler(http.server.SimpleHTTPRequestHandler):
+    def log_message(self, format, *args):
+        pass
+
     def do_GET(self):
         self.send_response(200)
         self.send_header('Content-type', 'application/json')
