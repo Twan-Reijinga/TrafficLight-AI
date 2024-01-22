@@ -45,8 +45,6 @@ public class DevConsoleBehaviour : MonoBehaviour
             Destroy(gameObject);
         }
         instance = this;
-
-        DontDestroyOnLoad(gameObject);
     }
 
     public void Toggle(CallbackContext ctx)
