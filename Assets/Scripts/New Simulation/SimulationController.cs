@@ -1,13 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using SimulationAPI;
 using TMPro;
-using UnityEditor.SearchService;
-using System;
 using UnityEngine.Networking;
-using Newtonsoft.Json;
 
 
 public class ResponseData
@@ -131,7 +127,8 @@ public class SimulationController : MonoBehaviour
             {
                 int done = this.stepCount / this.maxIterations;
                 StartCoroutine(GetRequest());
-                if(this.currentAction >= 0) {
+                if (this.currentAction >= 0)
+                {
                     simulator.intersections[0].ChangeSignalFase(this.currentAction);
                 }
 
@@ -141,7 +138,7 @@ public class SimulationController : MonoBehaviour
                 StartCoroutine(Upload(jsonState, this.currentAction, 3, 3, done));
                 // List<float> debugValues = qAgent.Step(simulator);
             }
-            simulator.Step(this.timeStepSize);
+            simulator.Step(this.timeStepSize, isAIControlled);
             float dt = Time.time - lastframe;
             lastframe = Time.time;
             updateTPSCounter(dt);

@@ -45,50 +45,50 @@ namespace SimulationAPI
         };
 
         public static ActionLine[] lines = new ActionLine[]{
-            CreateActionLine(new Vector2(-28.0f, - 7.5f), new Vector2(-25.0f, - 7.5f), Actions.RIGHT,     0),
-            CreateActionLine(new Vector2(-31.0f,   7.5f), new Vector2(-34.0f,   7.5f), Actions.RIGHT,   180),
-            CreateActionLine(new Vector2(-37.0f, - 1.5f), new Vector2(-37.0f, - 4.5f), Actions.RIGHT,    90),
-            CreateActionLine(new Vector2(-22.0f,   1.5f), new Vector2(-22.0f,   4.5f), Actions.RIGHT,   270),
+            CreateActionLine(new Vector2(-28.0f, - 7.5f), new Vector2(-25.0f, - 7.5f), Actions.RIGHT,     0, 1),
+            CreateActionLine(new Vector2(-31.0f,   7.5f), new Vector2(-34.0f,   7.5f), Actions.RIGHT,   180, 1),
+            CreateActionLine(new Vector2(-37.0f, - 1.5f), new Vector2(-37.0f, - 4.5f), Actions.RIGHT,    90, 1),
+            CreateActionLine(new Vector2(-22.0f,   1.5f), new Vector2(-22.0f,   4.5f), Actions.RIGHT,   270, 1),
 
-            CreateActionLine(new Vector2( 31.0f, - 7.5f), new Vector2( 34.0f, - 7.5f), Actions.RIGHT,     0),
-            CreateActionLine(new Vector2( 28.0f,   7.5f), new Vector2( 25.0f,   7.5f), Actions.RIGHT,   180),
-            CreateActionLine(new Vector2( 22.0f, - 1.5f), new Vector2( 22.0f, - 4.5f), Actions.RIGHT,    90),
-            CreateActionLine(new Vector2( 37.0f,   1.5f), new Vector2( 37.0f,   4.5f), Actions.RIGHT,   270),
+            CreateActionLine(new Vector2( 31.0f, - 7.5f), new Vector2( 34.0f, - 7.5f), Actions.RIGHT,     0, 0),
+            CreateActionLine(new Vector2( 28.0f,   7.5f), new Vector2( 25.0f,   7.5f), Actions.RIGHT,   180, 0),
+            CreateActionLine(new Vector2( 22.0f, - 1.5f), new Vector2( 22.0f, - 4.5f), Actions.RIGHT,    90, 0),
+            CreateActionLine(new Vector2( 37.0f,   1.5f), new Vector2( 37.0f,   4.5f), Actions.RIGHT,   270, 0),
 
-            CreateActionLine(new Vector2(-31.0f,   5.0f), new Vector2(-28.0f,   5.0f), Actions.LEFT,    180),
-            CreateActionLine(new Vector2(-31.0f, - 5.0f), new Vector2(-28.0f, - 5.0f), Actions.LEFT,      0),
-            CreateActionLine(new Vector2(-24.5f, - 1.5f), new Vector2(-24.5f,   1.5f), Actions.LEFT,    270),
-            CreateActionLine(new Vector2(-34.5f, - 1.5f), new Vector2(-34.5f,   1.5f), Actions.LEFT,     90),
+            CreateActionLine(new Vector2(-31.0f,   5.0f), new Vector2(-28.0f,   5.0f), Actions.LEFT,    180, 1),
+            CreateActionLine(new Vector2(-31.0f, - 5.0f), new Vector2(-28.0f, - 5.0f), Actions.LEFT,      0, 1),
+            CreateActionLine(new Vector2(-24.5f, - 1.5f), new Vector2(-24.5f,   1.5f), Actions.LEFT,    270, 1),
+            CreateActionLine(new Vector2(-34.5f, - 1.5f), new Vector2(-34.5f,   1.5f), Actions.LEFT,     90, 1),
 
-            CreateActionLine(new Vector2( 31.0f, - 5.0f), new Vector2( 28.0f, - 5.0f), Actions.LEFT,      0),
-            CreateActionLine(new Vector2( 31.0f,   5.0f), new Vector2( 28.0f,   5.0f), Actions.LEFT,    180),
-            CreateActionLine(new Vector2( 24.5f,   1.5f), new Vector2( 24.5f, - 1.5f), Actions.LEFT,     90),
-            CreateActionLine(new Vector2( 34.5f,   1.5f), new Vector2( 34.5f, - 1.5f), Actions.LEFT,    270),
+            CreateActionLine(new Vector2( 31.0f, - 5.0f), new Vector2( 28.0f, - 5.0f), Actions.LEFT,      0, 0),
+            CreateActionLine(new Vector2( 31.0f,   5.0f), new Vector2( 28.0f,   5.0f), Actions.LEFT,    180, 0),
+            CreateActionLine(new Vector2( 24.5f,   1.5f), new Vector2( 24.5f, - 1.5f), Actions.LEFT,     90, 0),
+            CreateActionLine(new Vector2( 34.5f,   1.5f), new Vector2( 34.5f, - 1.5f), Actions.LEFT,    270, 0),
 
-            CreateActionLine(new Vector2(- 3.0f, - 1.5f), new Vector2(- 3.0f, - 4.5f), Actions.SWITCH,   90),
-            CreateActionLine(new Vector2(  3.0f,   1.5f), new Vector2(  3.0f,   4.5f), Actions.SWITCH,  270),
+            CreateActionLine(new Vector2(- 3.0f, - 1.5f), new Vector2(- 3.0f, - 4.5f), Actions.SWITCH,   90, 1),
+            CreateActionLine(new Vector2(  3.0f,   1.5f), new Vector2(  3.0f,   4.5f), Actions.SWITCH,  270, 0),
 
-            CreateActionLine(new Vector2( 31.0f,  30.0f), new Vector2( 34.0f,  30.0f), Actions.EXIT,      0),
-            CreateActionLine(new Vector2( 25.0f, -30.0f), new Vector2( 28.0f, -30.0f), Actions.EXIT,    180),
-            CreateActionLine(new Vector2( 59.5f, - 4.5f), new Vector2( 59.5f, - 1.5f), Actions.EXIT,     90),
-            CreateActionLine(new Vector2(-31.0f, -30.0f), new Vector2(-34.0f, -30.0f), Actions.EXIT,    180),
-            CreateActionLine(new Vector2(-25.0f,  30.0f), new Vector2(-28.0f,  30.0f), Actions.EXIT,      0),
-            CreateActionLine(new Vector2(-59.5f,   4.5f), new Vector2(-59.5f,   1.5f), Actions.EXIT,    270),
+            CreateActionLine(new Vector2( 31.0f,  30.0f), new Vector2( 34.0f,  30.0f), Actions.EXIT,      0, 0),
+            CreateActionLine(new Vector2( 25.0f, -30.0f), new Vector2( 28.0f, -30.0f), Actions.EXIT,    180, 0),
+            CreateActionLine(new Vector2( 59.5f, - 4.5f), new Vector2( 59.5f, - 1.5f), Actions.EXIT,     90, 0),
+            CreateActionLine(new Vector2(-31.0f, -30.0f), new Vector2(-34.0f, -30.0f), Actions.EXIT,    180, 1),
+            CreateActionLine(new Vector2(-25.0f,  30.0f), new Vector2(-28.0f,  30.0f), Actions.EXIT,      0, 1),
+            CreateActionLine(new Vector2(-59.5f,   4.5f), new Vector2(-59.5f,   1.5f), Actions.EXIT,    270, 1),
 
-            CreateActionLine(new Vector2(-31.0f, - 7.5f), new Vector2(-34.0f, - 7.5f), Actions.IEXIT,   180),
-            CreateActionLine(new Vector2(-28.0f,   7.5f), new Vector2(-25.0f,   7.5f), Actions.IEXIT,     0),
-            CreateActionLine(new Vector2(-37.0f,   1.5f), new Vector2(-37.0f,   4.5f), Actions.IEXIT,   270),
-            CreateActionLine(new Vector2(-22.0f, - 1.5f), new Vector2(-22.0f, - 4.5f), Actions.IEXIT,    90),
+            CreateActionLine(new Vector2(-31.0f, - 7.5f), new Vector2(-34.0f, - 7.5f), Actions.IEXIT,   180, 1),
+            CreateActionLine(new Vector2(-28.0f,   7.5f), new Vector2(-25.0f,   7.5f), Actions.IEXIT,     0, 1),
+            CreateActionLine(new Vector2(-37.0f,   1.5f), new Vector2(-37.0f,   4.5f), Actions.IEXIT,   270, 1),
+            CreateActionLine(new Vector2(-22.0f, - 1.5f), new Vector2(-22.0f, - 4.5f), Actions.IEXIT,    90, 1),
 
-            CreateActionLine(new Vector2( 28.0f, - 7.5f), new Vector2( 25.0f, - 7.5f), Actions.IEXIT,   180),
-            CreateActionLine(new Vector2( 31.0f,   7.5f), new Vector2( 34.0f,   7.5f), Actions.IEXIT,     0),
-            CreateActionLine(new Vector2( 22.0f,   1.5f), new Vector2( 22.0f,   4.5f), Actions.IEXIT,   270),
-            CreateActionLine(new Vector2( 37.0f, - 1.5f), new Vector2( 37.0f, - 4.5f), Actions.IEXIT,    90),
+            CreateActionLine(new Vector2( 28.0f, - 7.5f), new Vector2( 25.0f, - 7.5f), Actions.IEXIT,   180, 0),
+            CreateActionLine(new Vector2( 31.0f,   7.5f), new Vector2( 34.0f,   7.5f), Actions.IEXIT,     0, 0),
+            CreateActionLine(new Vector2( 22.0f,   1.5f), new Vector2( 22.0f,   4.5f), Actions.IEXIT,   270, 0),
+            CreateActionLine(new Vector2( 37.0f, - 1.5f), new Vector2( 37.0f, - 4.5f), Actions.IEXIT,    90, 0),
         };
 
         public static float nodeSize = 0.15f;
 
-        static ActionLine CreateActionLine(Vector2 p1, Vector2 p2, CarMovement.Actions action, float orientation)
+        static ActionLine CreateActionLine(Vector2 p1, Vector2 p2, CarMovement.Actions action, float orientation, int intersection)
         {
             return new ActionLine
             {
@@ -96,6 +96,7 @@ namespace SimulationAPI
                 p2 = p2,
                 action = action,
                 orientation = orientation,
+                intersection = intersection
             };
         }
     }
@@ -106,5 +107,6 @@ namespace SimulationAPI
         public Vector2 p2;
         public float orientation;
         public CarMovement.Actions action;
+        public int intersection;
     }
 }

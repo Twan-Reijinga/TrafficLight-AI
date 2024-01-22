@@ -221,7 +221,7 @@ namespace SimulationAPI
             }
             if (line.action == CarMovement.Actions.IEXIT)
             {
-                this.pass?.Invoke(this, new CarPassEventArgs());
+                this.pass?.Invoke(this, new CarPassEventArgs() { intersection = line.intersection });
             }
         }
 

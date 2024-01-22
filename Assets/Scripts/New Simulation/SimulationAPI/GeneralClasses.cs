@@ -148,5 +148,6 @@ namespace SimulationAPI
     public class CarPassEventArgs : EventArgs
     {
         public float multiplier = 1.0f;
+        public int intersection;
     }
 }

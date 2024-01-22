@@ -89,12 +89,14 @@ namespace SimulationAPI
         }
 
         int test = 0;
-        public void Step(float dt)
+        public void Step(float dt, bool AIenabled)
         {
             UpdateCarPositions(dt);
             DestroyCars();
-            UpdateTrafficLights(dt);
+            UpdateTrafficLights(dt, AIenabled);
+
             Car newCar = carGenerator.Update(dt, rand);
+
             if (newCar != null)
             {
                 newCar.pass += RegisterCarPass;
@@ -123,10 +125,10 @@ namespace SimulationAPI
             }
         }
 
-        void UpdateTrafficLights(float dt)
+        void UpdateTrafficLights(float dt, bool AIControlled)
         {
-            intersections[0].Update(dt);
-            intersections[1].Update(dt);
+            intersections[0].Update(dt, !AIControlled);
+            intersections[1].Update(dt, !AIControlled);
         }
 
         // private Vector3 vec2to3(Vector2 vIn) //!quick useful temp function to convert Simulation.Vector2 to UnityEngine.Vector3
@@ -228,10 +230,11 @@ namespace SimulationAPI
             return false;
         }
 
-        public List<float> GetState(int intersectionNumber, int maxQueueLength) {
+        public List<float> GetState(int intersectionNumber, int maxQueueLength)
+        {
             int[] queueLengths = intersections[intersectionNumber].GetQueueLenghts();
 
-            int queueListLength = maxQueueLength * queueLengths.Length ;
+            int queueListLength = maxQueueLength * queueLengths.Length;
             List<float> queueList = new List<float>(new float[queueListLength]);
             int currentIndex = 0;
             foreach (int queueLength in queueLengths)
@@ -257,6 +260,7 @@ namespace SimulationAPI
 
         public void RegisterCarPass(object sender, CarPassEventArgs e)
         {
+            intersections[e.intersection].carExitCount += 1;
             // UP COUNTER HERE, THIS IS CALLED EVERY TIME A CAR LEAVES AN INTERSECTION
             // Print((sender as Car).UUID.ToString());
         }
@@ -273,5 +277,11 @@ namespace SimulationAPI
                 return false;
             }
         }
+
+        public float CalculateRewards(int intersection)
+        {
+            return intersections[intersection].CalculateReward();
+        }
+
     }
 }

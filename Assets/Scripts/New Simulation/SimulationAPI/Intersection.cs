@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 
 namespace SimulationAPI
 {
@@ -25,6 +26,8 @@ namespace SimulationAPI
         private int currentPhase = 0;
         private int nextPhase = 0;
 
+        public int carStillCount = 0, carMoveCount = 0, carExitCount = 0;
+
         public Intersection(Simulator parent, Vector2 pos, Vector2[] lightPositions, float[] lightOrientations, bool isOn = false)
         {
             phases[0] = new int[] { 1, 5 };
@@ -45,33 +48,40 @@ namespace SimulationAPI
             timer = maxGreenTime;
         }
 
-        public void Update(float dt)
+        public void Update(float dt, bool updateLights)
         {
-            switch (state)
+            if (updateLights)
             {
-                case States.Green:
-                    {
-                        timer -= dt;
-                        if (timer <= 0 || phaseIsEmpty(currentPhase))
+                switch (state)
+                {
+                    case States.Green:
                         {
-                            NextPhase();
+                            timer -= dt;
+                            if (timer <= 0 || phaseIsEmpty(currentPhase))
+                            {
+                                NextPhase();
+                            }
+                            break;
                         }
-                        break;
-                    }
-                case States.Red:
-                    {
-                        break;
-                    }
-                case States.ClearingDelay:
-                    {
-                        timer -= dt;
-                        if (timer <= 0)
+                    case States.Red:
                         {
-                            setStateGreen(nextPhase);
+                            break;
                         }
-                        break;
-                    }
+                    case States.ClearingDelay:
+                        {
+                            timer -= dt;
+                            if (timer <= 0)
+                            {
+                                setStateGreen(nextPhase);
+                            }
+                            break;
+                        }
+                }
             }
+            int tmpWaitingCars, tmpDrivingCars;
+            (tmpWaitingCars, tmpDrivingCars) = getCarCounts(0);
+            carStillCount += tmpWaitingCars;
+            carMoveCount += tmpDrivingCars;
         }
 
         public void setStateGreen(int phase)
@@ -153,6 +163,8 @@ namespace SimulationAPI
                 int waitingCars = 0;
                 foreach (Car car in sim.cars)
                 {
+                    int drivingCars;
+                    (waitingCars, drivingCars) = laneQueueLength(i, maxSpeed);
                     if (car.velocity <= maxSpeed)
                     {
                         float distance = sim.GetDistanceToCar(this.lights[i].pos, this.lights[i].forward, car);
@@ -173,6 +185,44 @@ namespace SimulationAPI
             return queueLenghts;
         }
 
+        public (int, int) laneQueueLength(int light, float maxSpeed)
+        {
+            float maxQueueLength = 20;  //! this might have to be changed later
+            int waitingCars = 0;
+            int drivingCars = 0;
+            foreach (Car car in sim.cars)
+            {
+                float distance = sim.GetDistanceToCar(this.lights[light].pos, this.lights[light].forward, car);
+                if (distance < maxQueueLength)
+                {
+                    if (car.velocity <= maxSpeed)
+                    {
+                        waitingCars++;
+                    }
+                    else
+                    {
+                        drivingCars++;
+                    }
+                }
+            }
+            return (waitingCars, drivingCars);
+        }
+
+        public (int, int) getCarCounts(float maxSpeed = 0)
+        {
+            int waitingCars = 0;
+            int drivingCars = 0;
+            for (int i = 0; i < this.lights.Count; i++)
+            {
+                int tmpWaitingCars = 0;
+                int tmpDrivingCars = 0;
+                (tmpWaitingCars, tmpDrivingCars) = laneQueueLength(i, maxSpeed);
+                waitingCars += tmpWaitingCars;
+                drivingCars += tmpDrivingCars;
+            }
+            return (waitingCars, drivingCars);
+        }
+
         public List<float> GetTrafficState()
         {
             List<float> list = new List<float>();
@@ -182,6 +232,21 @@ namespace SimulationAPI
                 list.Add(this.lights[i].isOn ? 1.0f : 0.0f);
             }
             return list;
+        }
+
+        public float CalculateReward()
+        {
+            float carExitReward = 1.0f;
+            float carStillReward = -0.01f;
+            float carMoveReward = 0.02f;
+
+            float reward = carExitCount * carExitReward + carStillCount * carStillReward + carMoveCount * carMoveReward;
+
+            carExitCount = 0;
+            carStillCount = 0;
+            carMoveCount = 0;
+
+            return reward;
         }
 
     }
