@@ -35,7 +35,7 @@ public class SimulationController : MonoBehaviour
     private int maxIterations = 5000;
 
     private int currentAction;
-    private string SERVER_URL = "http://localhost:8006/";
+    private string SERVER_URL = "http://localhost:8000/";
 
     void Start()
     {

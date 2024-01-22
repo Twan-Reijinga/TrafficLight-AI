@@ -17,7 +17,6 @@ class DQN_Runner():
         self.scores, self.eps_history = [], []
         self.score = 0
         self.current_game = 0
-        self.state = None
         # n_games = 800
         
         # for i in range(n_games):
@@ -48,15 +47,12 @@ class DQN_Runner():
         # plot_learning_curve(x, scores, eps_history, filename)
         
     def getAction(self):
-        if not(self.state):
-            print('state is empty')
-            return -1
-        return self.agent.choose_action(self.state)
+        return self.agent.choose_action()
     
     def store_transition(self, state, action, reward, done):
         self.agent.store_transition(state, action, reward, done)
         self.score += reward
-        
+        print("score", self.score, "reward", reward)
         
         self.agent.learn()
         # self.next_state = next_state
@@ -88,14 +84,13 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
 
         try:
             data = json.loads(post_data)
-            print(data) 
             state = data['state']
             action = data['action']
             reward = data['reward']
             # next_state = data['nextState']
             
             done = data['done'] == 1 
-            print("values: ", state, action, reward, done)
+            # print("test: ", state, action, reward, done)
                 
             DQN_runner.store_transition(state, action, reward, done)
 
@@ -119,14 +114,14 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
 if __name__ == '__main__':
     # global DQN_runner
     DQN_runner = DQN_Runner(136)
-    PORT = 8006
+    PORT = 8000
     httpd = socketserver.TCPServer(("", PORT), RequestHandler)
     print(f"Serving on port {PORT}")
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
-        print("\nKeyboardInterrupt received. Shutting down gracefully.")
         httpd.shutdown()
+        print("\nKeyboardInterrupt received. Shutting down gracefully.")
     
     # env = gym.make('LunarLander-v2', render_mode="human")
     # agent = Agent(gamma=0.99, epsilon=1.0, batch_size=128, n_actions=4,
