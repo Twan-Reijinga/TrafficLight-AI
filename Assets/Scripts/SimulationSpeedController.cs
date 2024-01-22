@@ -23,10 +23,11 @@ public class SimulationSpeedController : MonoBehaviour
         {
             if (Time.timeScale == 0)
             {
-                Time.timeScale = 1;
+                Time.timeScale = simSpeed;
             }
             else
             {
+                simSpeed = Time.timeScale;
                 Time.timeScale = 0;
             }
         }

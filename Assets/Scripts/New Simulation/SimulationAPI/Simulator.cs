@@ -88,7 +88,6 @@ namespace SimulationAPI
             return;
         }
 
-        int test = 0;
         public void Step(float dt, bool AIenabled)
         {
             UpdateCarPositions(dt);

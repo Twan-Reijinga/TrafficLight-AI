@@ -243,7 +243,7 @@ namespace SimulationAPI
         public float CalculateReward()
         {
             float carExitReward = 1.0f;
-            float carStillReward = -0.005f;
+            float carStillReward = -0.01f; //per step so actually 0.01 * 20 = 0.2
 
             float reward = carExitCount * carExitReward + carStillCount * carStillReward;
 
