@@ -115,6 +115,7 @@ public class SimulationController : MonoBehaviour
     {
         visualiser.SetVisuals(simulator.GetGraphicSceneState());
         visualiser.timeBetweenVisualisations = timeBetweenVisualisations;
+        updateStepCounter();
     }
 
     void Step()
@@ -142,9 +143,6 @@ public class SimulationController : MonoBehaviour
                 // List<float> debugValues = qAgent.Step(simulator);
             }
             simulator.Step(this.timeStepSize, isAIControlled);
-            float dt = Time.time - lastframe;
-            lastframe = Time.time;
-            updateTPSCounter(dt);
         }
         if (runAtSetSpeed)
         {
@@ -156,11 +154,9 @@ public class SimulationController : MonoBehaviour
         }
     }
 
-    void updateTPSCounter(float dt)
+    void updateStepCounter()
     {
-        tpsCounter.text = "tps:  " + Mathf.Clamp(Mathf.Round(1 / dt), 0, this.runAtSetSpeed ? 1 / this.timeStepSize : 99999).ToString();
-        dt = Mathf.Round(dt * 10f) / 10f;
-        MSPTCounter.text = "mspt: " + (dt * 1000).ToString();
+        tpsCounter.text = "step:\n" + this.stepCount / 1000 + "k";
     }
 
     void VisualsUpdater()

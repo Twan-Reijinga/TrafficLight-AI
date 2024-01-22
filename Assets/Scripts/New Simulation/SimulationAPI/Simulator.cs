@@ -88,7 +88,6 @@ namespace SimulationAPI
             return;
         }
 
-        int test = 0;
         public void Step(float dt, bool AIenabled)
         {
             UpdateCarPositions(dt);
@@ -200,7 +199,7 @@ namespace SimulationAPI
 
             for (int i = lights.Count - 1; i >= 0; i--)
             {
-                if (Vector2.Distance(origin, lights[i].pos) > maxDist || lights[i].isOn)
+                if (Vector2.Distance(origin, lights[i].pos) > maxDist - 1 || lights[i].isOn)
                 {
                     lights.RemoveAt(i); //ignore all lights that are too far away or are turned on
                 }
