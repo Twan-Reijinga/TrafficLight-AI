@@ -29,10 +29,10 @@ public class SimulationController : MonoBehaviour
 
     private float lastframe;
 
-    private QLearnAgent qAgent;
+    // private QLearnAgent qAgent;
+    // private int[] networkNeuronCounts = { 4, 6, 4 }; // [3*(4*carLimit), ~, cycles]
     [SerializeField] private bool isAIControlled = true;
-    private int[] networkNeuronCounts = { 4, 6, 4 }; // [3*(4*carLimit), ~, cycles]
-    private int maxIterations = 1000;
+    private int maxIterations = 100;
 
     private int[] currentActions;
     private string SERVER_URL0 = "http://localhost:8000/";
@@ -40,19 +40,28 @@ public class SimulationController : MonoBehaviour
 
     void Start()
     {
-        currentActions = new int[2] { -2, -2};
         // isAIControlled = true; // TO DO: isAIControlled given as parameter of Start() //
-        if (isAIControlled)
-        {
-            qAgent = new QLearnAgent(networkNeuronCounts, maxIterations);
-        }
-        simulator = new Simulator(seed);
-        simulator.write += simulator_print;
-        simulator.TestPopulation();
+        // if (isAIControlled)
+        // {
+        //     qAgent = new QLearnAgent(networkNeuronCounts, maxIterations);
+        // }
+        Reset();
+        visualiser.SetSeed(seed);
+
         Step();
         VisualsUpdater();
         lastframe = Time.time;
-        visualiser.SetSeed(seed);
+    }
+
+    void Reset()
+    {
+        this.stepCount = 0;
+        this.currentActions = new int[2] { -2, -2};
+
+        simulator = new Simulator(seed);
+        simulator.write += simulator_print;
+        simulator.TestPopulation();
+        this.seed += 1;
     }
 
     IEnumerator Upload(string state, int action, float reward, bool done, string url)
@@ -140,6 +149,9 @@ public class SimulationController : MonoBehaviour
 
                     string jsonState = "[" + string.Join(", ", state) + "]";
                     StartCoroutine(Upload(jsonState, this.currentActions[i], reward, done, url));
+                }
+                if(done) {
+                    // Reset();
                 }
                 // List<float> debugValues = qAgent.Step(simulator);
             }
