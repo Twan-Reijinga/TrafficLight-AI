@@ -11,9 +11,9 @@ import json
 DQN_runner = None
 
 class DQN_Runner():
-    def __init__(self):
+    def __init__(self, number_of_inputs):
         self.agent = Agent(gamma=0.99, epsilon=1.0, batch_size=128, n_actions=4,
-                    eps_end=0.05, input_dims=[8], lr=0.001)
+                    eps_end=0.05, input_dims=[number_of_inputs], lr=0.001)
         self.scores, self.eps_history = [], []
         self.score = 0
         self.current_game = 0
@@ -118,8 +118,8 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
 
 if __name__ == '__main__':
     # global DQN_runner
-    DQN_runner = DQN_Runner()
-    PORT = 8000
+    DQN_runner = DQN_Runner(136)
+    PORT = 8001
     httpd = socketserver.TCPServer(("", PORT), RequestHandler)
     print(f"Serving on port {PORT}")
     try:
