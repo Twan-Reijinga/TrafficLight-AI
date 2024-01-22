@@ -28,6 +28,13 @@ namespace SimulationAPI
 
         public int carStillCount = 0, carMoveCount = 0, carExitCount = 0;
 
+        private float[,] phaseSwitches = new float[,]{
+            {0.0f, 12.0f, 9.0f,  6.0f},
+            {6.0f,  0.0f, 9.0f, 12.0f},
+            {9.0f,  6.0f, 0.0f, 12.0f},
+            {9.0f, 12.0f, 6.0f,  0.0f}
+        };
+
         public Intersection(Simulator parent, Vector2 pos, Vector2[] lightPositions, float[] lightOrientations, bool isOn = false)
         {
             phases[0] = new int[] { 1, 5 };
@@ -35,6 +42,7 @@ namespace SimulationAPI
             phases[2] = new int[] { 3, 7 };
             phases[3] = new int[] { 2, 6 };
             phases[4] = new int[] { };
+
             this.sim = parent;
             this.pos = pos;
             this.lights = new List<Light>();
@@ -128,7 +136,7 @@ namespace SimulationAPI
                 nextPhase = (nextPhase + 1) % 4;
                 if (!phaseIsEmpty(nextPhase))
                 {
-                    timer = 3;  //!temp length change to calculation
+                    timer = phaseSwitches[currentPhase, nextPhase] / 4;
                     return true;
                 }
             }
