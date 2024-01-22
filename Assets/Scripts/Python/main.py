@@ -118,7 +118,7 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
 if __name__ == '__main__':
     # global DQN_runner
     DQN_runner = DQN_Runner(136)
-    PORT = 8000
+    PORT = int(input("Enter port: "))
     httpd = socketserver.TCPServer(("", PORT), RequestHandler)
     print(f"Serving on port {PORT}")
     try:

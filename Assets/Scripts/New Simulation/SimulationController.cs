@@ -32,14 +32,15 @@ public class SimulationController : MonoBehaviour
     private QLearnAgent qAgent;
     [SerializeField] private bool isAIControlled = true;
     private int[] networkNeuronCounts = { 4, 6, 4 }; // [3*(4*carLimit), ~, cycles]
-    private int maxIterations = 100;
+    private int maxIterations = 1000;
 
-    private int currentAction;
-    private string SERVER_URL = "http://localhost:8000/";
+    private int[] currentActions;
+    private string SERVER_URL0 = "http://localhost:8000/";
+    private string SERVER_URL1 = "http://localhost:8001/";
 
     void Start()
     {
-        currentAction = -2;
+        currentActions = new int[2] { -2, -2};
         // isAIControlled = true; // TO DO: isAIControlled given as parameter of Start() //
         if (isAIControlled)
         {
@@ -54,7 +55,7 @@ public class SimulationController : MonoBehaviour
         visualiser.SetSeed(seed);
     }
 
-    IEnumerator Upload(string state, int action, float reward, bool done)
+    IEnumerator Upload(string state, int action, float reward, bool done, string url)
     {
         string data =
             "{ \"state\": " + state
@@ -62,7 +63,7 @@ public class SimulationController : MonoBehaviour
             + ", \"reward\": " + reward
             + ", \"done\": " + (done ? 1 : 0) + " }";
 
-        using (UnityWebRequest www = UnityWebRequest.Post(this.SERVER_URL, data, "application/json"))
+        using (UnityWebRequest www = UnityWebRequest.Post(url, data, "application/json"))
         {
             yield return www.SendWebRequest();
 
@@ -77,14 +78,14 @@ public class SimulationController : MonoBehaviour
         }
     }
 
-    IEnumerator GetRequest()
+    IEnumerator GetRequest(string url, int actionIndex)
     {
-        using (UnityWebRequest webRequest = UnityWebRequest.Get(this.SERVER_URL))
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
         {
             // Request and wait for the desired page.
             yield return webRequest.SendWebRequest();
 
-            string[] pages = this.SERVER_URL.Split('/');
+            string[] pages = url.Split('/');
             int page = pages.Length - 1;
 
             switch (webRequest.result)
@@ -99,7 +100,7 @@ public class SimulationController : MonoBehaviour
                 case UnityWebRequest.Result.Success:
                     ResponseData responseData = JsonUtility.FromJson<ResponseData>(webRequest.downloadHandler.text);
                     Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
-                    this.currentAction = responseData.action;
+                    this.currentActions[actionIndex] = responseData.action;
                     break;
             }
         }
@@ -125,21 +126,21 @@ public class SimulationController : MonoBehaviour
         {
             if (isAIControlled && this.stepCount % 20 == 0)
             {
-                bool done = false;
-                if((this.stepCount / 20) % this.maxIterations == 0) {
-                    done = true;
-                }
-                StartCoroutine(GetRequest());
-                if (this.currentAction >= 0)
-                {
-                    simulator.intersections[0].ChangeSignalFase(this.currentAction);
-                }
+                bool done = (this.stepCount / 20) % this.maxIterations == 0;
+                for(int i = 0; i < 2; i++) {
+                    string url = i == 1 ? this.SERVER_URL1 : this.SERVER_URL0;
+                    StartCoroutine(GetRequest(url, i));
+                    if (this.currentActions[i] >= 0)
+                    {
+                        simulator.intersections[i].ChangeSignalFase(this.currentActions[i]);
+                    }
 
-                List<float> state = simulator.GetState(0, 16);
-                float reward = simulator.intersections[0].CalculateReward();
+                    List<float> state = simulator.GetState(i, 16);
+                    float reward = simulator.intersections[i].CalculateReward();
 
-                string jsonState = "[" + string.Join(", ", state) + "]";
-                StartCoroutine(Upload(jsonState, this.currentAction, reward, done));
+                    string jsonState = "[" + string.Join(", ", state) + "]";
+                    StartCoroutine(Upload(jsonState, this.currentActions[i], reward, done, url));
+                }
                 // List<float> debugValues = qAgent.Step(simulator);
             }
             simulator.Step(this.timeStepSize, isAIControlled);
