@@ -260,6 +260,7 @@ namespace SimulationAPI
 
         public void RegisterCarPass(object sender, CarPassEventArgs e)
         {
+            intersections[e.intersection].carExitCount += 1;
             // UP COUNTER HERE, THIS IS CALLED EVERY TIME A CAR LEAVES AN INTERSECTION
             // Print((sender as Car).UUID.ToString());
         }
@@ -277,13 +278,9 @@ namespace SimulationAPI
             }
         }
 
-        public float CalculateReward()
+        public float CalculateRewards(int intersection)
         {
-            float carExitReward = 1.0f;
-            float carStillReward = -0.01f;
-            float carMoveReward = 0.02f;
-
-            return 0;
+            return intersections[intersection].CalculateReward();
         }
 
     }

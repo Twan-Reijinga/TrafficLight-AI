@@ -78,7 +78,10 @@ namespace SimulationAPI
                         }
                 }
             }
-
+            int tmpWaitingCars, tmpDrivingCars;
+            (tmpWaitingCars, tmpDrivingCars) = getCarCounts(0);
+            carStillCount += tmpWaitingCars;
+            carMoveCount += tmpDrivingCars;
         }
 
         public void setStateGreen(int phase)
@@ -229,6 +232,21 @@ namespace SimulationAPI
                 list.Add(this.lights[i].isOn ? 1.0f : 0.0f);
             }
             return list;
+        }
+
+        public float CalculateReward()
+        {
+            float carExitReward = 1.0f;
+            float carStillReward = -0.01f;
+            float carMoveReward = 0.02f;
+
+            float reward = carExitCount * carExitReward + carStillCount * carStillReward + carMoveCount * carMoveReward;
+
+            carExitCount = 0;
+            carStillCount = 0;
+            carMoveCount = 0;
+
+            return reward;
         }
 
     }
