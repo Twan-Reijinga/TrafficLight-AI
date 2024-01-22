@@ -39,7 +39,7 @@ public class SimulationController : MonoBehaviour
     private int maxIterations = 5000;
 
     private int currentAction;
-    private string SERVER_URL = "http://localhost:8000/";
+    private string SERVER_URL = "http://localhost:8001/";
 
     void Start()
     {
@@ -58,7 +58,7 @@ public class SimulationController : MonoBehaviour
         visualiser.SetSeed(seed);
     }
 
-    IEnumerator Upload(int state, int action, int reward, int nextState, int done)
+    IEnumerator Upload(string state, int action, int reward, int nextState, int done)
     {
         string data =
             "{ \"state\": " + state
@@ -138,7 +138,7 @@ public class SimulationController : MonoBehaviour
                 List<float> state = simulator.GetState(0, 16);
 
                 string jsonState = "[" + string.Join(", ", state) + "]";
-                StartCoroutine(Upload(2, this.currentAction, 3, 3, done));
+                StartCoroutine(Upload(jsonState, this.currentAction, 3, 3, done));
                 // List<float> debugValues = qAgent.Step(simulator);
             }
             simulator.Step(this.timeStepSize);
