@@ -17,7 +17,6 @@ class DQN_Runner():
         self.scores, self.eps_history = [], []
         self.score = 0
         self.current_game = 0
-        self.state = None
         # n_games = 800
         
         # for i in range(n_games):
@@ -48,20 +47,20 @@ class DQN_Runner():
         # plot_learning_curve(x, scores, eps_history, filename)
         
     def getAction(self):
-        if not(self.state):
-            print('state is empty')
-            return -1
-        return self.agent.choose_action(self.state)
+        return self.agent.choose_action()
     
-    def store_transition(self, state, action, reward, next_state, done):
-        self.agent.store_transition(state, action, reward, next_state, done)
+    def store_transition(self, state, action, reward, done):
+        self.agent.store_transition(state, action, reward, done)
         self.score += reward
-        self.next_state = next_state
+        print("score", self.score, "reward", reward)
+        
         self.agent.learn()
-        self.state = self.next_state
+        # self.next_state = next_state
+        # self.state = self.next_state
         if(done):
             self.current_game += 1
             self.scores.append(self.score)
+            self.score = 0
             self.eps_history.append(self.agent.epsilon)
             self.avg_score = np.mean(self.scores[-100:])
             print('episode ', self.current_game, 'score %.2f' % self.score,
@@ -71,6 +70,9 @@ class DQN_Runner():
 
 
 class RequestHandler(http.server.SimpleHTTPRequestHandler):
+    def log_message(self, format, *args):
+        pass
+
     def do_GET(self):
         self.send_response(200)
         self.send_header('Content-type', 'application/json')
@@ -86,18 +88,15 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
 
         try:
             data = json.loads(post_data)
-            print(data) 
             state = data['state']
             action = data['action']
             reward = data['reward']
-            next_state = data['nextState']
+            # next_state = data['nextState']
             
-            done = False
-            if data['done'] == 1: 
-                done = True 
-            print(state, action, reward, next_state, done)
+            done = data['done'] == 1 
+            # print("test: ", state, action, reward, done)
                 
-            DQN_runner.store_transition(state, action, reward, next_state, done)
+            DQN_runner.store_transition(state, action, reward, done)
 
             # replay_memory.push(state, action, reward, next_state)
 
@@ -119,14 +118,14 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
 if __name__ == '__main__':
     # global DQN_runner
     DQN_runner = DQN_Runner(136)
-    PORT = 8001
+    PORT = int(input("Enter port: "))
     httpd = socketserver.TCPServer(("", PORT), RequestHandler)
     print(f"Serving on port {PORT}")
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
-        print("\nKeyboardInterrupt received. Shutting down gracefully.")
         httpd.shutdown()
+        print("\nKeyboardInterrupt received. Shutting down gracefully.")
     
     # env = gym.make('LunarLander-v2', render_mode="human")
     # agent = Agent(gamma=0.99, epsilon=1.0, batch_size=128, n_actions=4,

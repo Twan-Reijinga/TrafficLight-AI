@@ -48,6 +48,9 @@ class Agent():
                                    fc2_dims=256, n_actions=n_actions)
         self.Q_next = DeepQNetwork(lr, input_dims=input_dims, fc1_dims=256, 
                                    fc2_dims=256, n_actions=n_actions)
+        
+        self.episode_state_memory = np.zeros((self.mem_size, *input_dims), dtype=np.float32)
+        self.episode_state_index = 0
 
         self.state_memory = np.zeros((self.mem_size, *input_dims), dtype=np.float32)
         self.next_state_memory = np.zeros((self.mem_size, *input_dims), dtype=np.float32)
@@ -56,21 +59,30 @@ class Agent():
         self.reward_memory = np.zeros(self.mem_size, dtype=np.float32)
         self.terminal_memory = np.zeros(self.mem_size, dtype=np.bool)
 
-    def store_transition(self, state, action, reward, next_state, done):
+    def store_transition(self, state, action, reward, done):
         index = self.mem_counter % self.mem_size
         
-        
-        self.state_memory[index] = state 
-        self.next_state_memory[index] = next_state
+        if(done):
+            episode_state_index = 0
+
+        if(index - 2 > self.episode_state_index):
+            self.episode_state_memory[self.episode_state_index] = state
+            self.episode_state_index += 1
+
+            self.state_memory[index] = self.episode_state_memory[index - 1]
+            self.next_state_memory[index] = self.episode_state_memory[index]
+        # self.state_memory[index] = state 
+        # self.next_state_memory[index] = next_state
         self.action_memory[index] = action
         self.reward_memory[index] = reward
         self.terminal_memory[index] = done
         
         self.mem_counter += 1
     
-    def choose_action(self, state):
+    def choose_action(self):
+        index = self.mem_counter % self.mem_size
         if np.random.random() > self.epsilon:
-            state = T.tensor(state).to(self.Q_eval.device)
+            state = T.tensor(self.next_state_memory[index]).to(self.Q_eval.device)
             actions = self.Q_eval.forward(state)
             action = T.argmax(actions).item()
         else:

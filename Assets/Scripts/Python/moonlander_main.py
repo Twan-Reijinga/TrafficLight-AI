@@ -4,7 +4,12 @@ from utils import plot_learning_curve
 import numpy as np
 
 if __name__ == '__main__':
+    # is_AI = input("Do you want to use AI? (y/n): ")
+    # env = None
+    # if(is_AI == "y" or is_AI == "Y"):
     env = gym.make('LunarLander-v2', render_mode="human")
+    # else:
+        # env = gym.make('LunarLander-v2')
     agent = Agent(gamma=0.99, epsilon=1.0, batch_size=64, n_actions=4,
                   eps_end=0.05, input_dims=[8], lr=0.001)
     scores, eps_history = [], []
