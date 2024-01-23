@@ -48,32 +48,11 @@ public class SimulationController : MonoBehaviour
         }
         instance = this;
 
-        currentAction = -2;
-        // isAIControlled = true; // TO DO: isAIControlled given as parameter of Start() //
-        // if (isAIControlled)
-        // {
-        //     qAgent = new QLearnAgent(networkNeuronCounts, maxIterations);
-        // }
-        Reset();
-        visualiser.SetSeed(seed);
+        ResetSimulation(seed);
 
         Step();
         VisualsUpdater();
         lastframe = Time.time;
-    }
-
-    void Reset()
-    {
-        this.stepCount = 0;
-        this.currentActions = new int[2] { -2, -2 };
-
-        simulator = new Simulator(seed);
-        simulator.write += simulator_print;
-        simulator.TestPopulation();
-        Step();
-        VisualsUpdater();
-        visualiser.SetSeed(seed);
-        this.seed += 1;
     }
 
     IEnumerator Upload(string state, int action, float reward, bool done, string url)
@@ -194,6 +173,9 @@ public class SimulationController : MonoBehaviour
 
     public void ResetSimulation(int newSeed)
     {
+        this.stepCount = 0;
+        this.currentActions = new int[2] { -2, -2 };
+
         for (int i = visualiser.transform.childCount - 1; i >= 0; i--)  // clear children of visualizer;
         {
             Destroy(visualiser.transform.GetChild(i).gameObject);
