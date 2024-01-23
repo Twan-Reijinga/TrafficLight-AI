@@ -8,16 +8,15 @@ public class InfoCommand : ConsoleCommand
 {
     public override bool Execute(string[] args)
     {
-        GameObject obj = GameObject.Find("CarInfoHolder"); // use find camera instead
+        CarInfoVisualizer info = GameObject.Find("Main Camera").GetComponent<CarInfoVisualizer>(); // use find camera instead
 
-        Debug.Log("a");
-        if (obj == null)
+        if (info == null)
         {
             return false;
         }
-        Debug.Log("a");
 
-        obj.SetActive(!obj.activeSelf);
+        info.enabled = !info.enabled;
+        info.infoParent.gameObject.SetActive(info.enabled);
 
         return true;
     }
