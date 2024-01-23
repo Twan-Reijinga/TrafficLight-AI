@@ -4,6 +4,7 @@ using UnityEngine;
 using SimulationAPI;
 using TMPro;
 using UnityEngine.Networking;
+using System;
 
 
 public class ResponseData
@@ -13,6 +14,7 @@ public class ResponseData
 
 public class SimulationController : MonoBehaviour
 {
+    public static SimulationController instance;
     //DIT WORDT DE INTERFACE MET DE SIMULATOR, SIMULATOR IS GEWOON EEN AANTAL FUNCTIES, DIT GAAT DEZE FUNCTIES AANROEPEN EN NAAR DE AI STUREN
     public int stepCount;
     public float timeStepSize = 0.05f;
@@ -27,8 +29,6 @@ public class SimulationController : MonoBehaviour
 
     public TextMeshProUGUI tpsCounter, MSPTCounter;
 
-    private float lastframe;
-
     private QLearnAgent qAgent;
     [SerializeField] private bool isAIControlled = true;
     private int[] networkNeuronCounts = { 4, 6, 4 }; // [3*(4*carLimit), ~, cycles]
@@ -39,6 +39,12 @@ public class SimulationController : MonoBehaviour
 
     void Start()
     {
+        if (instance != null)
+        {
+            throw new Exception("SimulationController already exists!");
+        }
+        instance = this;
+
         currentAction = -2;
         // isAIControlled = true; // TO DO: isAIControlled given as parameter of Start() //
         if (isAIControlled)
@@ -50,7 +56,6 @@ public class SimulationController : MonoBehaviour
         simulator.TestPopulation();
         Step();
         VisualsUpdater();
-        lastframe = Time.time;
         visualiser.SetSeed(seed);
     }
 
@@ -162,4 +167,27 @@ public class SimulationController : MonoBehaviour
         Invoke(nameof(VisualsUpdater), timeBetweenVisualisations);
     }
 
+    public void ResetSimulation(int newSeed)
+    {
+        for (int i = visualiser.transform.childCount - 1; i >= 0; i--)  // clear children of visualizer;
+        {
+            Destroy(visualiser.transform.GetChild(i).gameObject);
+        }
+        visualiser.idToCars = null;
+        visualiser.state1 = null;
+        visualiser.state2 = null;
+
+        CancelInvoke();
+        print("Simulation Reset with seed: " + newSeed);
+        seed = newSeed;
+        Simulator.instance = null; //remove old instance
+        simulator = new Simulator(seed);
+        simulator.write += simulator_print;
+
+
+
+        Step();
+        visualiser.SetSeed(seed);
+        VisualsUpdater();
+    }
 }

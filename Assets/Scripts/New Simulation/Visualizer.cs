@@ -8,7 +8,6 @@ using UnityEditor.SearchService;
 
 public class Visualizer : MonoBehaviour
 {
-    public GameObject Car;
     public List<GameObject> CarModels;
     public Transform CarParent;
     public Transform trafficLights;
