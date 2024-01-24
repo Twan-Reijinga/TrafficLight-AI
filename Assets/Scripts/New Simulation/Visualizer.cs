@@ -4,7 +4,6 @@ using UnityEngine;
 using SimulationAPI;
 using System.Linq;
 using System.Runtime.InteropServices;
-using UnityEditor.SearchService;
 
 public class Visualizer : MonoBehaviour
 {
