@@ -78,6 +78,22 @@ public class SimulationController : MonoBehaviour
         }
     }
 
+    private IEnumerator SaveLoadRequest(string name, string action, string url)
+    {
+        using (UnityWebRequest www = UnityWebRequest.Post(url + action, "{ \"name\": " + name + " }", "application/json"))
+        {
+            yield return www.SendWebRequest();
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.Log("Error while saving: " + www.error);
+            }
+            else
+            {
+                Debug.Log("Successfully " + ((action == "save") ? "saved " : "loaded ") + name);
+            }
+        }
+    }
+
     IEnumerator GetRequest(string url, int actionIndex)
     {
         using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
@@ -197,4 +213,22 @@ public class SimulationController : MonoBehaviour
         visualiser.SetSeed(seed);
         VisualsUpdater();
     }
+
+    public void SaveNN(string name)
+    {
+        //TODO: IMPLEMENT SAVING HERE
+        StartCoroutine(SaveLoadRequest(name + "s_0", "save", SERVER_URL0));
+        StartCoroutine(SaveLoadRequest(name + "s_1", "save", SERVER_URL1));
+        Debug.Log(name);
+    }
+
+    public void LoadNN(string name, int seed = 0)
+    {
+        //TODO: IMPLEMENT LOADING
+        Debug.Log(name);
+        StartCoroutine(SaveLoadRequest(name + "s_0", "load", SERVER_URL0));
+        StartCoroutine(SaveLoadRequest(name + "s_1", "load", SERVER_URL1));
+        ResetSimulation(seed);
+    }
 }
+

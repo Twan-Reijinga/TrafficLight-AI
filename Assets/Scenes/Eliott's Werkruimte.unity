@@ -775,6 +775,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5dfca7fd24d527d48a0ce188c0c1e1fc, type: 2}
   - {fileID: 11400000, guid: 638d8211225e00a4da6f9abe0e259e09, type: 2}
   - {fileID: 11400000, guid: 62a94f8d53e985443bd4705cf02f46d7, type: 2}
+  - {fileID: 11400000, guid: 103c8112ffb12214bb695a0830357391, type: 2}
+  - {fileID: 11400000, guid: 20127ba7a816422428aa63ea0e50fd7b, type: 2}
   uiCanvas: {fileID: 936766047}
   inputField: {fileID: 936766049}
 --- !u!1 &425937713
