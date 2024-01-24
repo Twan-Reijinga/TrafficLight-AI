@@ -8,7 +8,7 @@ public class InfoCommand : ConsoleCommand
 {
     public override bool Execute(string[] args)
     {
-        CarInfoVisualizer info = GameObject.Find("Main Camera").GetComponent<CarInfoVisualizer>(); // use find camera instead
+        CarInfoVisualizer info = GameObject.Find("Main Camera").GetComponent<CarInfoVisualizer>();
 
         if (info == null)
         {
