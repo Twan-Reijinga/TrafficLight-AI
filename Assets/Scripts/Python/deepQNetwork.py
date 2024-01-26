@@ -128,3 +128,10 @@ class Agent():
         if self.mem_counter % 1000 == 0:
             print("mem_counter: ", self.mem_counter)
             self.Q_next.load_state_dict(self.Q_eval.state_dict())
+    
+    def save(self, filename):
+        torch.save(self.Q_eval.state_dict(), filename)
+
+    def load(self, filename):
+        self.Q_eval.load_state_dict(torch.load(filename))
+        model.to(self.device)
