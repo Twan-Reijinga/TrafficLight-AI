@@ -78,18 +78,19 @@ public class SimulationController : MonoBehaviour
         }
     }
 
-    private IEnumerator SaveLoadRequest(string name, string action, string url)
+    private IEnumerator SaveLoadRequest(string name, string operation, string url)
     {
-        using (UnityWebRequest www = UnityWebRequest.Post(url + action, "{ \"name\": " + name + " }", "application/json"))
+
+        using (UnityWebRequest www = UnityWebRequest.Post(url + operation, "{ \"name\": " + name + " }", "application/json"))
         {
             yield return www.SendWebRequest();
             if (www.result != UnityWebRequest.Result.Success)
             {
-                Debug.Log("Error while saving: " + www.error);
+                Debug.Log("Error while saving/loading: " + www.error);
             }
             else
             {
-                Debug.Log("Successfully " + ((action == "save") ? "saved " : "loaded ") + name);
+                Debug.Log("Successfully " + ((operation == "save") ? "saved " : "loaded ") + name);
             }
         }
     }
