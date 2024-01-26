@@ -87,26 +87,35 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
         post_data = self.rfile.read(content_length).decode('utf-8')
 
         try:
-            data = json.loads(post_data)
-            state = data['state']
-            action = data['action']
-            reward = data['reward']
-            # next_state = data['nextState']
+            if self.path == '/save':
+                name = data['name']
+                DQN_runner.agent.save()
+                response_message = {'message': 'Saved succesfully.'}
+            if self.path == '/load':
+                name = data['name']
+                DQN_runner.agent.load()
+                response_message = {'message': 'Loaded succesfully.'}
+            else:
+                data = json.loads(post_data)
+                state = data['state']
+                action = data['action']
+                reward = data['reward']
+                # next_state = data['nextState']
             
-            done = data['done'] == 1 
-            # print("test: ", state, action, reward, done)
+                done = data['done'] == 1 
+                # print("test: ", state, action, reward, done)
                 
-            DQN_runner.store_transition(state, action, reward, done)
+                DQN_runner.store_transition(state, action, reward, done)
+                response_message = {'message': 'Replay memory received and updated.'}
 
-            # replay_memory.push(state, action, reward, next_state)
+                # replay_memory.push(state, action, reward, next_state)
 
-            # Perform a Q-learning update
-            # q_learning_update()
+                # Perform a Q-learning update
+                # q_learning_update()
 
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
             self.end_headers()
-            response_message = {'message': 'Replay memory received and updated.'}
             self.wfile.write(json.dumps(response_message).encode('utf-8'))
         except json.JSONDecodeError as e:
             self.send_response(400)
