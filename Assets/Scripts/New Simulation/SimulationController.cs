@@ -4,6 +4,7 @@ using UnityEngine;
 using SimulationAPI;
 using TMPro;
 using UnityEngine.Networking;
+using System;
 
 
 public class ResponseData
@@ -13,6 +14,7 @@ public class ResponseData
 
 public class SimulationController : MonoBehaviour
 {
+    public static SimulationController instance;
     //DIT WORDT DE INTERFACE MET DE SIMULATOR, SIMULATOR IS GEWOON EEN AANTAL FUNCTIES, DIT GAAT DEZE FUNCTIES AANROEPEN EN NAAR DE AI STUREN
     public int stepCount;
     public float timeStepSize = 0.05f;
@@ -40,28 +42,17 @@ public class SimulationController : MonoBehaviour
 
     void Start()
     {
-        // isAIControlled = true; // TO DO: isAIControlled given as parameter of Start() //
-        // if (isAIControlled)
-        // {
-        //     qAgent = new QLearnAgent(networkNeuronCounts, maxIterations);
-        // }
-        Reset();
-        visualiser.SetSeed(seed);
+        if (instance != null)
+        {
+            throw new Exception("SimulationController already exists!");
+        }
+        instance = this;
+
+        ResetSimulation(seed);
 
         Step();
         VisualsUpdater();
         lastframe = Time.time;
-    }
-
-    void Reset()
-    {
-        this.stepCount = 0;
-        this.currentActions = new int[2] { -2, -2};
-
-        simulator = new Simulator(seed);
-        simulator.write += simulator_print;
-        simulator.TestPopulation();
-        this.seed += 1;
     }
 
     IEnumerator Upload(string state, int action, float reward, bool done, string url)
@@ -83,6 +74,23 @@ public class SimulationController : MonoBehaviour
             else
             {
                 Debug.Log("Form upload complete!" + www.downloadHandler.text);
+            }
+        }
+    }
+
+    private IEnumerator SaveLoadRequest(string name, string operation, string url)
+    {
+
+        using (UnityWebRequest www = UnityWebRequest.Post(url + operation, "{ \"name\": " + name + " }", "application/json"))
+        {
+            yield return www.SendWebRequest();
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.Log("Error while saving/loading: " + www.error);
+            }
+            else
+            {
+                Debug.Log("Successfully " + ((operation == "save") ? "saved " : "loaded ") + name);
             }
         }
     }
@@ -136,7 +144,8 @@ public class SimulationController : MonoBehaviour
             if (isAIControlled && this.stepCount % 20 == 0)
             {
                 bool done = (this.stepCount / 20) % this.maxIterations == 0;
-                for(int i = 0; i < 2; i++) {
+                for (int i = 0; i < 2; i++)
+                {
                     string url = i == 1 ? this.SERVER_URL1 : this.SERVER_URL0;
                     StartCoroutine(GetRequest(url, i));
                     if (this.currentActions[i] >= 0)
@@ -150,7 +159,8 @@ public class SimulationController : MonoBehaviour
                     string jsonState = "[" + string.Join(", ", state) + "]";
                     StartCoroutine(Upload(jsonState, this.currentActions[i], reward, done, url));
                 }
-                if(done) {
+                if (done)
+                {
                     // Reset();
                 }
                 // List<float> debugValues = qAgent.Step(simulator);
@@ -178,4 +188,48 @@ public class SimulationController : MonoBehaviour
         Invoke(nameof(VisualsUpdater), timeBetweenVisualisations);
     }
 
+    public void ResetSimulation(int newSeed)
+    {
+        this.stepCount = 0;
+        this.currentActions = new int[2] { -2, -2 };
+
+        for (int i = visualiser.transform.childCount - 1; i >= 0; i--)  // clear children of visualizer;
+        {
+            Destroy(visualiser.transform.GetChild(i).gameObject);
+        }
+        visualiser.idToCars = null;
+        visualiser.state1 = null;
+        visualiser.state2 = null;
+
+        CancelInvoke();
+        print("Simulation Reset with seed: " + newSeed);
+        seed = newSeed;
+        Simulator.instance = null; //remove old instance
+        simulator = new Simulator(seed);
+        simulator.write += simulator_print;
+
+
+
+        Step();
+        visualiser.SetSeed(seed);
+        VisualsUpdater();
+    }
+
+    public void SaveNN(string name)
+    {
+        //TODO: IMPLEMENT SAVING HERE
+        StartCoroutine(SaveLoadRequest(name + "s_0", "save", SERVER_URL0));
+        StartCoroutine(SaveLoadRequest(name + "s_1", "save", SERVER_URL1));
+        Debug.Log(name);
+    }
+
+    public void LoadNN(string name, int seed = 0)
+    {
+        //TODO: IMPLEMENT LOADING
+        Debug.Log(name);
+        StartCoroutine(SaveLoadRequest(name + "s_0", "load", SERVER_URL0));
+        StartCoroutine(SaveLoadRequest(name + "s_1", "load", SERVER_URL1));
+        ResetSimulation(seed);
+    }
 }
+

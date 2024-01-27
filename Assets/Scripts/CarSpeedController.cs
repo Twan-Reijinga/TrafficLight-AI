@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 
 public class CarSpeedController : MonoBehaviour
 {
@@ -26,19 +25,6 @@ public class CarSpeedController : MonoBehaviour
 
         bool rayR = Physics.Raycast(transform.position + transform.right * 0.5f, transform.forward, out hitR, 5f, ~(ignoreOnRayCast));
         bool rayL = Physics.Raycast(transform.position - transform.right * 0.5f, transform.forward, out hitL, 5f, ~(ignoreOnRayCast));
-
-        if (Selection.activeGameObject == transform.gameObject)
-        {
-            if (rayR)
-            {
-                print("R: " + hitR.transform.name);
-
-            }
-            if (rayL)
-            {
-                print("L: " + hitL.transform.name);
-            }
-        }
 
         Debug.DrawRay(transform.position + transform.right * 0.5f, transform.forward * 5f, Color.green);
         Debug.DrawRay(transform.position - transform.right * 0.5f, transform.forward * 5f, Color.green);

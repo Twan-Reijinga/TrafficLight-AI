@@ -773,6 +773,10 @@ MonoBehaviour:
   commands:
   - {fileID: 11400000, guid: 0823adce780c05f488baa4b6210cabdc, type: 2}
   - {fileID: 11400000, guid: 5dfca7fd24d527d48a0ce188c0c1e1fc, type: 2}
+  - {fileID: 11400000, guid: 638d8211225e00a4da6f9abe0e259e09, type: 2}
+  - {fileID: 11400000, guid: 62a94f8d53e985443bd4705cf02f46d7, type: 2}
+  - {fileID: 11400000, guid: 103c8112ffb12214bb695a0830357391, type: 2}
+  - {fileID: 11400000, guid: 20127ba7a816422428aa63ea0e50fd7b, type: 2}
   uiCanvas: {fileID: 936766047}
   inputField: {fileID: 936766049}
 --- !u!1 &425937713
@@ -1520,7 +1524,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 785623851}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 114245020ef0a4d4cbe047e96d66745b, type: 3}
   m_Name: 
@@ -2121,7 +2125,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bb7879c42f54044fb51a8b5fa44dd6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Car: {fileID: 919132149155446097, guid: a6c2b4deb3abe9da193357b2b97bcae4, type: 3}
   CarModels:
   - {fileID: 919132149155446097, guid: 701a5029fdd79e3848e5048470662753, type: 3}
   - {fileID: 919132149155446097, guid: ab72e1e3917736217a8dbe7eaa2d303e, type: 3}

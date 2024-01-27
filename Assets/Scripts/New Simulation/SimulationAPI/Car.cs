@@ -89,7 +89,7 @@ namespace SimulationAPI
         public void Move(float dt, Simulator super)
         {
             RayHit hit;
-            if (super.Raycast(pos, forward, 7, out hit, UUID))  //accelerate or decelerate
+            if (super.Raycast(pos + forward * size.y / 2, forward, 4, out hit, UUID))  //accelerate or decelerate
             {
                 Accelerate(dt, -hit.maxDist * 2 / hit.dist);
             }
