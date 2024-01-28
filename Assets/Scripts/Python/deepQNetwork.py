@@ -69,14 +69,13 @@ class Agent():
 
         self.episode_state_memory[self.episode_state_index] = state
         self.episode_state_index += 1
-        if(index > self.states_back - 1):
             
-            states = self.episode_state_memory[index - self.states_back: index - 1]
-            self.state_memory[index] = np.concatenate((states), axis=None)
+        state = self.episode_state_memory[index - 1]
+        self.state_memory[index] = state
 
 
-            next_states = self.episode_state_memory[index - self.states_back + 1: index]
-            self.next_state_memory[index] = np.concatenate((next_states), axis=None)
+        next_states = self.episode_state_memory[index]
+        self.next_state_memory[index] = next_states
         # self.state_memory[index] = state 
         # self.next_state_memory[index] = next_state
         self.action_memory[index] = action

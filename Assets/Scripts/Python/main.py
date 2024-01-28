@@ -13,7 +13,7 @@ DQN_runner = None
 class DQN_Runner():
     def __init__(self, number_of_inputs):
         self.agent = Agent(gamma=0.99, epsilon=1.0, batch_size=128, n_actions=4,
-                    eps_end=0.05, input_dims=[number_of_inputs], lr=0.001, states_back = 2)
+                    eps_end=0.05, input_dims=[number_of_inputs], lr=0.001, states_back = 1)
         self.scores, self.eps_history = [], []
         self.score = 0
         self.current_game = 0
