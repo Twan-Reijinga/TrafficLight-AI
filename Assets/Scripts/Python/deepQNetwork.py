@@ -4,6 +4,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 import numpy as np
 import itertools
+import os
 
 class DeepQNetwork(nn.Module):
     def __init__(self, lr, input_dims, fc1_dims, fc2_dims, n_actions):
@@ -135,8 +136,10 @@ class Agent():
             self.Q_next.load_state_dict(self.Q_eval.state_dict())
     
     def save(self, filename):
-        torch.save(self.Q_eval.state_dict(), filename)
+        save_path = os.path.join(os.path.dirname(__file__), filename)
+        T.save(self.Q_eval.state_dict(), save_path + ".pth")
 
     def load(self, filename):
-        self.Q_eval.load_state_dict(torch.load(filename))
-        model.to(self.device)
+        load_path = os.path.join(os.path.dirname(__file__), filename)
+        self.Q_eval.load_state_dict(T.load(load_path + ".pth"))
+        self.Q_eval.to(self.Q_eval.device)
