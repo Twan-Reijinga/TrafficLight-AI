@@ -85,6 +85,7 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length).decode('utf-8')
+        data = json.loads(post_data)
 
         try:
             if self.path == '/save':
@@ -96,7 +97,6 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
                 DQN_runner.agent.load()
                 response_message = {'message': 'Loaded succesfully.'}
             else:
-                data = json.loads(post_data)
                 state = data['state']
                 action = data['action']
                 reward = data['reward']
