@@ -120,6 +120,7 @@ public class SimulationController : MonoBehaviour
                     if (this.currentActions[intersectionIndex] != responseData.action)
                     {
                         Simulator.instance.scoreAddend[intersectionIndex] -= 0.5f;    //punishment for changing
+                        print("Yo");
                     }
                     this.currentActions[intersectionIndex] = responseData.action;
                     break;
@@ -142,9 +143,9 @@ public class SimulationController : MonoBehaviour
 
     void Step()
     {
-        this.stepCount++;
         if (!paused)
         {
+            this.stepCount++;
             if (isAIControlled && this.stepCount % 20 == 0 && this.stepCount > 6 * 20)
             {
                 bool done = ((this.stepCount) % (this.maxIterations * 20)) == 0;

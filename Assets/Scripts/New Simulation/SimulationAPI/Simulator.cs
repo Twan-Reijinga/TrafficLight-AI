@@ -232,7 +232,7 @@ namespace SimulationAPI
 
         public List<float> GetState(int intersectionNumber, int maxQueueLength)
         {
-            int[] queueLengths = intersections[intersectionNumber].GetQueueLenghts();
+            int[] queueLengths = intersections[intersectionNumber].GetQueueLenghts(100.0f);
 
             int queueListLength = maxQueueLength * queueLengths.Length;
             List<float> queueList = new List<float>(new float[queueListLength]);
