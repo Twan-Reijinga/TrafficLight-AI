@@ -304,10 +304,11 @@ MonoBehaviour:
   stepCount: 0
   timeStepSize: 0.05
   timeBetweenVisualisations: 0.05
-  seed: 1241971
+  seed: 5967259
   visualiser: {fileID: 973600591}
-  runAtSetSpeed: 1
+  runAtSetSpeed: 0
   paused: 0
+  doVisualize: 0
   tpsCounter: {fileID: 388478342}
   MSPTCounter: {fileID: 0}
   isAIControlled: 1

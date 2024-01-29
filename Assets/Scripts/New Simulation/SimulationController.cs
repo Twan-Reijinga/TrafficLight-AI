@@ -26,6 +26,7 @@ public class SimulationController : MonoBehaviour
 
     public bool runAtSetSpeed = true;
     public bool paused = false;
+    public bool doVisualize = true;
 
     public TextMeshProUGUI tpsCounter, MSPTCounter;
 
@@ -162,6 +163,7 @@ public class SimulationController : MonoBehaviour
                     float reward = simulator.intersections[i].CalculateReward();
 
                     string jsonState = "[" + string.Join(", ", state) + "]";
+                    print(jsonState);
                     StartCoroutine(Upload(jsonState, this.currentActions[i], reward, done, url));
                 }
                 if (done)
@@ -190,7 +192,10 @@ public class SimulationController : MonoBehaviour
 
     void VisualsUpdater()
     {
-        Visualize();
+        if (doVisualize)
+        {
+            Visualize();
+        }
         Invoke(nameof(VisualsUpdater), timeBetweenVisualisations);
     }
 
