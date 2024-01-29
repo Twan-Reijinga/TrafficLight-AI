@@ -44,7 +44,7 @@ class DQN_Runner():
                 
     
     def graph_learning_curve(self):
-        x = [i + 1 for i in range(self.max_games)]
+        x = [i + 1 for i in range(self.max_episodes)]
         filename = 'traficLearningCurve.png'
         plot_learning_curve(x, self.scores, self.eps_history, filename)
     
