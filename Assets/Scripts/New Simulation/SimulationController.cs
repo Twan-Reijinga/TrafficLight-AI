@@ -34,7 +34,7 @@ public class SimulationController : MonoBehaviour
     // private QLearnAgent qAgent;
     // private int[] networkNeuronCounts = { 4, 6, 4 }; // [3*(4*carLimit), ~, cycles]
     [SerializeField] private bool isAIControlled = true;
-    private int maxIterations = 1000;
+    private int maxIterations = 250;
 
     private int[] currentActions;
     private string SERVER_URL0 = "http://localhost:8000/";
@@ -147,7 +147,7 @@ public class SimulationController : MonoBehaviour
         {
             if (isAIControlled && this.stepCount % 20 == 0 && this.stepCount > 6 * 20)
             {
-                bool done = (this.stepCount / 20) % this.maxIterations == 0;
+                bool done = ((this.stepCount) % (this.maxIterations * 20)) == 0;
                 for (int i = 0; i < 2; i++)
                 {
                     string url = i == 1 ? this.SERVER_URL1 : this.SERVER_URL0;

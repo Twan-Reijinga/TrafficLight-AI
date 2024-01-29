@@ -310,7 +310,7 @@ MonoBehaviour:
   paused: 0
   tpsCounter: {fileID: 388478342}
   MSPTCounter: {fileID: 0}
-  isAIControlled: 0
+  isAIControlled: 1
 --- !u!4 &212740489
 Transform:
   m_ObjectHideFlags: 0
