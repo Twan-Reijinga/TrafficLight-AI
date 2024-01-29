@@ -119,12 +119,15 @@ public class SimulationController : MonoBehaviour
                 case UnityWebRequest.Result.Success:
                     ResponseData responseData = JsonUtility.FromJson<ResponseData>(webRequest.downloadHandler.text);
                     Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
-                    if (this.currentActions[intersectionIndex] == responseData.action)
-                    {
-                        Simulator.instance.scoreAddend[intersectionIndex] += 1.0f;    //punishment for changing
-                        print("YOOOOOOOOOOO!");
-                    }
+                    
                     this.previousActions[intersectionIndex].Add(this.currentActions[intersectionIndex]);
+                    if(this.previousActions[intersectionIndex].Count >= 8)
+                    for(int i = 0; i < 8; i++) {
+                        if (this.previousActions[intersectionIndex][i] == responseData.action)
+                        {
+                            Simulator.instance.scoreAddend[intersectionIndex] += 0.05f;
+                        }
+                    }
                     this.currentActions[intersectionIndex] = responseData.action;
                     break;
             }
