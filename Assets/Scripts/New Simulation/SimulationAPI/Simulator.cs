@@ -285,5 +285,19 @@ namespace SimulationAPI
             return reward;
         }
 
+        public void Crashed(Car car)
+        {
+            int intersectionIndex = car.pos.x > 0 ? 0 : 1;
+            intersections[intersectionIndex].crashCount += 1;
+            for (int i = 0; i < cars.Count; i++)
+            {
+                if (car.UUID == cars[i].UUID)
+                {
+                    cars.RemoveAt(i);
+                    i--;
+                }
+            }
+        }
+
     }
 }

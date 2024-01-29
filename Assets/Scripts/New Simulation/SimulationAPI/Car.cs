@@ -89,7 +89,9 @@ namespace SimulationAPI
 
         public void Move(float dt, Simulator super)
         {
+
             RayHit hit;
+            carSeeID = -1;
             if (super.Raycast(pos + forward * size.y / 2, forward, 4, out hit, UUID))  //accelerate or decelerate
             {
                 if (hit.car != null)
@@ -97,10 +99,13 @@ namespace SimulationAPI
                     carSeeID = hit.car.UUID;
                     if (hit.car.UUID == this.UUID)
                     {
-
+                        Crashed(super);
                     }
                 }
-                Accelerate(dt, -hit.maxDist * 2 / hit.dist);
+                if (Vector2.Dot(this.forward, hit.car.forward) < 0)
+                {
+                    Accelerate(dt, -hit.maxDist * 2 / hit.dist);
+                }
             }
             else
             {
@@ -268,6 +273,11 @@ namespace SimulationAPI
         private string DetectTraficLight()
         {
             return "Test";
+        }
+
+        private void Crashed(Simulator super)
+        {
+            super.Crashed(this);
         }
     }
 }

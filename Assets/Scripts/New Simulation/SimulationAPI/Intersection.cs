@@ -26,7 +26,7 @@ namespace SimulationAPI
         private int currentPhase = 0;
         private int nextPhase = 0;
 
-        public int carStillCount = 0, carMoveCount = 0, carExitCount = 0;
+        public int carStillCount = 0, carMoveCount = 0, carExitCount = 0, crashCount = 0;
 
         private float[,] phaseSwitches = new float[,]{
             {0.0f, 12.0f, 9.0f,  6.0f},
@@ -244,12 +244,14 @@ namespace SimulationAPI
         {
             float carExitReward = 1.0f;
             float carStillReward = -0.005f; //per step so actually 0.01 * 20 = 0.2
+            float carCrashReward = -10.0f;
 
-            float reward = carExitCount * carExitReward + carStillCount * carStillReward;
+            float reward = carExitCount * carExitReward + carStillCount * carStillReward + crashCount * carCrashReward;
 
             carExitCount = 0;
             carStillCount = 0;
             carMoveCount = 0;
+            crashCount = 0;
 
             return reward;
         }
