@@ -65,7 +65,7 @@ class Agent():
         index = self.mem_counter % self.mem_size
         
         if(done):
-            episode_state_index = 0
+            self.episode_state_index = 0
 
         self.episode_state_memory[self.episode_state_index] = state
         self.episode_state_index += 1
