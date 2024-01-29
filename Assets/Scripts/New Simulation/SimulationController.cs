@@ -75,7 +75,7 @@ public class SimulationController : MonoBehaviour
             }
             else
             {
-                Debug.Log("Form upload complete!" + www.downloadHandler.text);
+                // Debug.Log("Form upload complete!" + www.downloadHandler.text);
             }
         }
     }
@@ -92,7 +92,7 @@ public class SimulationController : MonoBehaviour
             }
             else
             {
-                Debug.Log("Successfully " + ((operation == "save") ? "saved " : "loaded ") + name);
+                // Debug.Log("Successfully " + ((operation == "save") ? "saved " : "loaded ") + name);
             }
         }
     }
@@ -118,16 +118,22 @@ public class SimulationController : MonoBehaviour
                     break;
                 case UnityWebRequest.Result.Success:
                     ResponseData responseData = JsonUtility.FromJson<ResponseData>(webRequest.downloadHandler.text);
-                    Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
+                    // Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
                     
                     this.previousActions[intersectionIndex].Add(this.currentActions[intersectionIndex]);
-                    if(this.previousActions[intersectionIndex].Count >= 8)
-                    for(int i = 0; i < 8; i++) {
-                        if (this.previousActions[intersectionIndex][i] == responseData.action)
-                        {
-                            Simulator.instance.scoreAddend[intersectionIndex] += 0.05f;
+
+                    List<int> prevActions = this.previousActions[intersectionIndex];
+                    if(prevActions.Count > 8) {
+                        for(int i = prevActions.Count - 1; i >= prevActions.Count - 8; i--) {
+                            if (prevActions[i] == responseData.action)
+                            {
+                                Simulator.instance.scoreAddend[intersectionIndex] += 0.05f;
+                            } else  {
+                                break;
+                            }
                         }
                     }
+                    
                     this.currentActions[intersectionIndex] = responseData.action;
                     break;
             }
@@ -170,7 +176,6 @@ public class SimulationController : MonoBehaviour
                     float reward = simulator.intersections[i].CalculateReward();
 
                     string jsonState = "[" + string.Join(", ", state) + "]";
-                    print(jsonState);
                     StartCoroutine(Upload(jsonState, this.currentActions[i], reward, done, url));
                 }
                 if (done)
