@@ -13,39 +13,11 @@ DQN_runner = None
 class DQN_Runner():
     def __init__(self, number_of_inputs):
         self.agent = Agent(gamma=0.99, epsilon=1.0, batch_size=128, n_actions=4,
-                    eps_end=0.05, input_dims=[number_of_inputs], lr=0.001)
+                    eps_end=0.05, input_dims=[number_of_inputs], lr=0.001, states_back = 1)
         self.scores, self.eps_history = [], []
         self.score = 0
         self.current_game = 0
-        # n_games = 800
-        
-        # for i in range(n_games):
-        #     self.score = 0
-        #     self.done = False
-        #     # state, _ = env.reset()
-        #     # while not self.done:
-        #         # action = agent.choose_action(state)
-        #         # next_state, reward, done, _, info = env.step(action)
-        #         # score += reward
-        #         # agent.store_transition(state, action, reward, next_state, done)
-        #         # if(self.ready):
-        #         #     self.agent.learn()
-        #         #     self.state = self.next_state
-        #         #     self.ready = False
-
-        #     self.scores.append(self.score)
-        #     self.eps_history.append(self.agent.epsilon)
-            
-        #     self.avg_score = np.mean(self.scores[-100:])
-            
-        #     print('episode ', i, 'score %.2f' % self.score,
-        #         'avg score %.2f' % self.avg_score,
-        #         'epsilon %.2f' % self.agent.epsilon)
-        
-        # x = [i + 1 for i in range(n_games)]
-        # filename = 'eps_history.png'
-        # plot_learning_curve(x, scores, eps_history, filename)
-        
+    
     def getAction(self):
         return self.agent.choose_action()
     
@@ -85,28 +57,37 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length).decode('utf-8')
+        data = json.loads(post_data)
 
         try:
-            data = json.loads(post_data)
-            state = data['state']
-            action = data['action']
-            reward = data['reward']
-            # next_state = data['nextState']
+            if self.path == '/save':
+                name = data['name']
+                DQN_runner.agent.save(name)
+                response_message = {'message': 'Saved succesfully.'}
+            elif self.path == '/load':
+                name = data['name']
+                DQN_runner.agent.load(name)
+                response_message = {'message': 'Loaded succesfully.'}
+            else:
+                state = data['state']
+                action = data['action']
+                reward = data['reward']
+                # next_state = data['nextState']
             
-            done = data['done'] == 1 
-            # print("test: ", state, action, reward, done)
+                done = data['done'] == 1 
+                # print("test: ", state, action, reward, done)
                 
-            DQN_runner.store_transition(state, action, reward, done)
+                DQN_runner.store_transition(state, action, reward, done)
+                response_message = {'message': 'Replay memory received and updated.'}
 
-            # replay_memory.push(state, action, reward, next_state)
+                # replay_memory.push(state, action, reward, next_state)
 
-            # Perform a Q-learning update
-            # q_learning_update()
+                # Perform a Q-learning update
+                # q_learning_update()
 
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
             self.end_headers()
-            response_message = {'message': 'Replay memory received and updated.'}
             self.wfile.write(json.dumps(response_message).encode('utf-8'))
         except json.JSONDecodeError as e:
             self.send_response(400)

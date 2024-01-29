@@ -4,6 +4,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 import numpy as np
 import itertools
+import os
 
 class DeepQNetwork(nn.Module):
     def __init__(self, lr, input_dims, fc1_dims, fc2_dims, n_actions):
@@ -31,29 +32,30 @@ class DeepQNetwork(nn.Module):
     
 class Agent():
     def __init__(self, gamma, epsilon, lr, input_dims, batch_size, n_actions, 
-                 max_mem_size=10000, eps_end=0.05, eps_decay=5e-5):
+                 max_mem_size=10000, eps_end=0.05, eps_decay=5e-5, states_back=2):
         self.gamma = gamma
         self.epsilon = epsilon
         self.lr = lr
-        self.input_dims = input_dims
+        self.input_dims = input_dims * states_back 
         self.batch_size = batch_size
         self.mem_size = max_mem_size
         self.eps_end = eps_end
         self.eps_decay = eps_decay
+        self.states_back = states_back
         
         self.mem_counter = 0
         self.action_space = [i for i in range(n_actions)]
 
-        self.Q_eval = DeepQNetwork(lr, input_dims=input_dims, fc1_dims=256, 
+        self.Q_eval = DeepQNetwork(lr, input_dims=input_dims*states_back, fc1_dims=256, 
                                    fc2_dims=256, n_actions=n_actions)
-        self.Q_next = DeepQNetwork(lr, input_dims=input_dims, fc1_dims=256, 
+        self.Q_next = DeepQNetwork(lr, input_dims=input_dims*states_back, fc1_dims=256, 
                                    fc2_dims=256, n_actions=n_actions)
         
         self.episode_state_memory = np.zeros((self.mem_size, *input_dims), dtype=np.float32)
         self.episode_state_index = 0
 
-        self.state_memory = np.zeros((self.mem_size, *input_dims), dtype=np.float32)
-        self.next_state_memory = np.zeros((self.mem_size, *input_dims), dtype=np.float32)
+        self.state_memory = np.zeros((self.mem_size, *input_dims*states_back), dtype=np.float32)
+        self.next_state_memory = np.zeros((self.mem_size, *input_dims*states_back), dtype=np.float32)
         
         self.action_memory = np.zeros(self.mem_size, dtype=np.int32)
         self.reward_memory = np.zeros(self.mem_size, dtype=np.float32)
@@ -65,12 +67,15 @@ class Agent():
         if(done):
             episode_state_index = 0
 
-        if(index - 2 > self.episode_state_index):
-            self.episode_state_memory[self.episode_state_index] = state
-            self.episode_state_index += 1
+        self.episode_state_memory[self.episode_state_index] = state
+        self.episode_state_index += 1
+            
+        state = self.episode_state_memory[index - 1]
+        self.state_memory[index] = state
 
-            self.state_memory[index] = self.episode_state_memory[index - 1]
-            self.next_state_memory[index] = self.episode_state_memory[index]
+
+        next_states = self.episode_state_memory[index]
+        self.next_state_memory[index] = next_states
         # self.state_memory[index] = state 
         # self.next_state_memory[index] = next_state
         self.action_memory[index] = action
@@ -128,3 +133,12 @@ class Agent():
         if self.mem_counter % 1000 == 0:
             print("mem_counter: ", self.mem_counter)
             self.Q_next.load_state_dict(self.Q_eval.state_dict())
+    
+    def save(self, filename):
+        save_path = os.path.join(os.path.dirname(__file__), filename)
+        T.save(self.Q_eval.state_dict(), save_path + ".pth")
+
+    def load(self, filename):
+        load_path = os.path.join(os.path.dirname(__file__), filename)
+        self.Q_eval.load_state_dict(T.load(load_path + ".pth"))
+        self.Q_eval.to(self.Q_eval.device)
