@@ -17,7 +17,7 @@ class DQN_Runner():
         self.scores, self.eps_history = [], []
         self.score = 0
         self.current_episode = 0
-        self.max_episodes = 100
+        self.max_episodes = 2
         
     def getAction(self):
         return self.agent.choose_action()
