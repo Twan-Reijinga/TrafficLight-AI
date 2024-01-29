@@ -42,6 +42,7 @@ namespace SimulationAPI
 
         public bool WaitingAtTraficlight;
         public int LastTraficLight;
+        public int carSeeID = -1;
 
         public Car(int id, Vector2 pos, float orientation, int exitIndex, CarMovement.Actions nextAction)
         {
@@ -88,10 +89,27 @@ namespace SimulationAPI
 
         public void Move(float dt, Simulator super)
         {
+
             RayHit hit;
+            carSeeID = -1;
             if (super.Raycast(pos + forward * size.y / 2, forward, 4, out hit, UUID))  //accelerate or decelerate
             {
-                Accelerate(dt, -hit.maxDist * 2 / hit.dist);
+                if (hit.car != null)
+                {
+                    carSeeID = hit.car.UUID;
+                    if (hit.car.UUID == this.UUID)
+                    {
+                        Crashed(super);
+                    }
+                }
+                if (Vector2.Dot(this.forward, hit.car.forward) < 0)
+                {
+                    Accelerate(dt, -hit.maxDist * 2 / hit.dist);
+                }
+                else
+                {
+                    Accelerate(dt);
+                }
             }
             else
             {
@@ -259,6 +277,11 @@ namespace SimulationAPI
         private string DetectTraficLight()
         {
             return "Test";
+        }
+
+        private void Crashed(Simulator super)
+        {
+            super.Crashed(this);
         }
     }
 }

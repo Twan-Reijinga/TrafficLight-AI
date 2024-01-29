@@ -55,6 +55,7 @@ namespace SimulationAPI
             }
         }
 
+
         public Vector2(float X, float Y)
         {
             x = X;
@@ -115,6 +116,10 @@ namespace SimulationAPI
         {
             Vector2 v = v2 - v1;
             return (float)Math.Sqrt(Math.Pow(v.x, 2) + Math.Pow(v.y, 2));
+        }
+        public static float Dot(Vector2 v1, Vector2 v2)
+        {
+            return v1.x * v2.x + v1.y * v2.y;
         }
 
         public static Vector2 positiveInfinity = new Vector2(float.PositiveInfinity, float.PositiveInfinity);

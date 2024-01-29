@@ -17,7 +17,7 @@ class DQN_Runner():
         self.scores, self.eps_history = [], []
         self.score = 0
         self.current_episode = 0
-        self.max_episodes = 2
+        self.max_episodes = 50
         
     def getAction(self):
         return self.agent.choose_action()
@@ -107,7 +107,7 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
 
 if __name__ == '__main__':
     # global DQN_runner
-    DQN_runner = DQN_Runner(136)
+    DQN_runner = DQN_Runner(16)
     PORT = int(input("Enter port: "))
     httpd = socketserver.TCPServer(("", PORT), RequestHandler)
     print(f"Serving on port {PORT}")

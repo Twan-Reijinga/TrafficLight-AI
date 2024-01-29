@@ -232,24 +232,24 @@ namespace SimulationAPI
 
         public List<float> GetState(int intersectionNumber, int maxQueueLength)
         {
-            int[] queueLengths = intersections[intersectionNumber].GetQueueLenghts(100.0f);
+            List<int> queueLengths = intersections[intersectionNumber].GetQueueLenghts(100.0f).ToList();
 
-            int queueListLength = maxQueueLength * queueLengths.Length;
-            List<float> queueList = new List<float>(new float[queueListLength]);
-            int currentIndex = 0;
-            foreach (int queueLength in queueLengths)
-            {
-                for (int i = 0; i < queueLength; i++)
-                {
-                    queueList[currentIndex++] = 1.0f;
-                }
+            // int queueListLength = queueLengths.Length;
+            // List<float> queueList = new List<float>(new float[queueListLength]);
+            // int currentIndex = 0;
+            // foreach (int queueLength in queueLengths)
+            // {
+            //     for (int i = 0; i < queueLength; i++)
+            //     {
+            //         queueList[currentIndex++] = 1.0f;
+            //     }
 
-                currentIndex += maxQueueLength - queueLength; // Skip remaining zeros
-            }
+            //     currentIndex += maxQueueLength - queueLength; // Skip remaining zeros
+            // }
 
             List<float> trafficState = intersections[intersectionNumber].GetTrafficState();
 
-            List<float> state = queueList.Concat(trafficState).ToList();
+            List<float> state = queueLengths.ConvertAll(x => (float)x).Concat(trafficState).ToList();
             return state;
         }
 
@@ -283,6 +283,20 @@ namespace SimulationAPI
             float reward = intersections[intersection].CalculateReward() + scoreAddend[intersection];
             scoreAddend[intersection] = 0;
             return reward;
+        }
+
+        public void Crashed(Car car)
+        {
+            int intersectionIndex = car.pos.x > 0 ? 0 : 1;
+            intersections[intersectionIndex].crashCount += 1;
+            for (int i = 0; i < cars.Count; i++)
+            {
+                if (car.UUID == cars[i].UUID)
+                {
+                    cars.RemoveAt(i);
+                    i--;
+                }
+            }
         }
 
     }
