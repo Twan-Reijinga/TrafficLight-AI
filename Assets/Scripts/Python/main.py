@@ -16,8 +16,9 @@ class DQN_Runner():
                     eps_end=0.05, input_dims=[number_of_inputs], lr=0.001, states_back = 1)
         self.scores, self.eps_history = [], []
         self.score = 0
-        self.current_game = 0
-    
+        self.current_episode = 0
+        self.max_episodes = 100
+        
     def getAction(self):
         return self.agent.choose_action()
     
@@ -30,14 +31,22 @@ class DQN_Runner():
         # self.next_state = next_state
         # self.state = self.next_state
         if(done):
-            self.current_game += 1
+            self.current_episode += 1
             self.scores.append(self.score)
-            self.score = 0
             self.eps_history.append(self.agent.epsilon)
             self.avg_score = np.mean(self.scores[-100:])
-            print('episode ', self.current_game, 'score %.2f' % self.score,
+            print('episode ', self.current_episode, 'score %.2f' % self.score,
                 'avg score %.2f' % self.avg_score,
                 'epsilon %.2f' % self.agent.epsilon)
+            self.score = 0
+            if(self.current_episode == self.max_episodes):
+                self.graph_learning_curve()
+                
+    
+    def graph_learning_curve(self):
+        x = [i + 1 for i in range(self.max_games)]
+        filename = 'traficLearningCurve.png'
+        plot_learning_curve(x, self.scores, self.eps_history, filename)
     
 
 
