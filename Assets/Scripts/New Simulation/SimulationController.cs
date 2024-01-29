@@ -34,7 +34,7 @@ public class SimulationController : MonoBehaviour
     // private QLearnAgent qAgent;
     // private int[] networkNeuronCounts = { 4, 6, 4 }; // [3*(4*carLimit), ~, cycles]
     [SerializeField] private bool isAIControlled = true;
-    private int maxIterations = 100;
+    private int maxIterations = 250;
 
     private int[] currentActions;
     private string SERVER_URL0 = "http://localhost:8000/";
@@ -80,8 +80,8 @@ public class SimulationController : MonoBehaviour
 
     private IEnumerator SaveLoadRequest(string name, string operation, string url)
     {
-
-        using (UnityWebRequest www = UnityWebRequest.Post(url + operation, "{ \"name\": " + name + " }", "application/json"))
+        string data = "{ \"name\": \"" + name + "\" }";
+        using (UnityWebRequest www = UnityWebRequest.Post(url + operation, data, "application/json"))
         {
             yield return www.SendWebRequest();
             if (www.result != UnityWebRequest.Result.Success)
@@ -95,7 +95,7 @@ public class SimulationController : MonoBehaviour
         }
     }
 
-    IEnumerator GetRequest(string url, int actionIndex)
+    IEnumerator GetRequest(string url, int intersectionIndex)
     {
         using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
         {
@@ -117,7 +117,11 @@ public class SimulationController : MonoBehaviour
                 case UnityWebRequest.Result.Success:
                     ResponseData responseData = JsonUtility.FromJson<ResponseData>(webRequest.downloadHandler.text);
                     Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
-                    this.currentActions[actionIndex] = responseData.action;
+                    if (this.currentActions[intersectionIndex] != responseData.action)
+                    {
+                        Simulator.instance.scoreAddend[intersectionIndex] -= 0.5f;    //punishment for changing
+                    }
+                    this.currentActions[intersectionIndex] = responseData.action;
                     break;
             }
         }
@@ -141,9 +145,9 @@ public class SimulationController : MonoBehaviour
         this.stepCount++;
         if (!paused)
         {
-            if (isAIControlled && this.stepCount % 20 == 0)
+            if (isAIControlled && this.stepCount % 20 == 0 && this.stepCount > 6 * 20)
             {
-                bool done = (this.stepCount / 20) % this.maxIterations == 0;
+                bool done = ((this.stepCount) % (this.maxIterations * 20)) == 0;
                 for (int i = 0; i < 2; i++)
                 {
                     string url = i == 1 ? this.SERVER_URL1 : this.SERVER_URL0;
@@ -161,7 +165,8 @@ public class SimulationController : MonoBehaviour
                 }
                 if (done)
                 {
-                    // Reset();
+                    print("NEXT GENERATION INCOMMING!");
+                    ResetSimulation(this.seed + 1);
                 }
                 // List<float> debugValues = qAgent.Step(simulator);
             }
@@ -218,8 +223,8 @@ public class SimulationController : MonoBehaviour
     public void SaveNN(string name)
     {
         //TODO: IMPLEMENT SAVING HERE
-        StartCoroutine(SaveLoadRequest(name + "s_0", "save", SERVER_URL0));
-        StartCoroutine(SaveLoadRequest(name + "s_1", "save", SERVER_URL1));
+        StartCoroutine(SaveLoadRequest(name + "0", "save", SERVER_URL0));
+        StartCoroutine(SaveLoadRequest(name + "1", "save", SERVER_URL1));
         Debug.Log(name);
     }
 
@@ -227,8 +232,8 @@ public class SimulationController : MonoBehaviour
     {
         //TODO: IMPLEMENT LOADING
         Debug.Log(name);
-        StartCoroutine(SaveLoadRequest(name + "s_0", "load", SERVER_URL0));
-        StartCoroutine(SaveLoadRequest(name + "s_1", "load", SERVER_URL1));
+        StartCoroutine(SaveLoadRequest(name + "0", "load", SERVER_URL0));
+        StartCoroutine(SaveLoadRequest(name + "1", "load", SERVER_URL1));
         ResetSimulation(seed);
     }
 }

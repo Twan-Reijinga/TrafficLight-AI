@@ -4,6 +4,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 import numpy as np
 import itertools
+import os
 
 class DeepQNetwork(nn.Module):
     def __init__(self, lr, input_dims, fc1_dims, fc2_dims, n_actions):
@@ -68,14 +69,13 @@ class Agent():
 
         self.episode_state_memory[self.episode_state_index] = state
         self.episode_state_index += 1
-        if(index > self.states_back - 1):
             
-            states = self.episode_state_memory[index - self.states_back: index - 1]
-            self.state_memory[index] = np.concatenate((states), axis=None)
+        state = self.episode_state_memory[index - 1]
+        self.state_memory[index] = state
 
 
-            next_states = self.episode_state_memory[index - self.states_back + 1: index]
-            self.next_state_memory[index] = np.concatenate((next_states), axis=None)
+        next_states = self.episode_state_memory[index]
+        self.next_state_memory[index] = next_states
         # self.state_memory[index] = state 
         # self.next_state_memory[index] = next_state
         self.action_memory[index] = action
@@ -135,8 +135,10 @@ class Agent():
             self.Q_next.load_state_dict(self.Q_eval.state_dict())
     
     def save(self, filename):
-        torch.save(self.Q_eval.state_dict(), filename)
+        save_path = os.path.join(os.path.dirname(__file__), filename)
+        T.save(self.Q_eval.state_dict(), save_path + ".pth")
 
     def load(self, filename):
-        self.Q_eval.load_state_dict(torch.load(filename))
-        model.to(self.device)
+        load_path = os.path.join(os.path.dirname(__file__), filename)
+        self.Q_eval.load_state_dict(T.load(load_path + ".pth"))
+        self.Q_eval.to(self.Q_eval.device)
