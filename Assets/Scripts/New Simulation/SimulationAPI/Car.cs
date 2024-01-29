@@ -42,6 +42,7 @@ namespace SimulationAPI
 
         public bool WaitingAtTraficlight;
         public int LastTraficLight;
+        public int carSeeID = -1;
 
         public Car(int id, Vector2 pos, float orientation, int exitIndex, CarMovement.Actions nextAction)
         {
@@ -91,6 +92,14 @@ namespace SimulationAPI
             RayHit hit;
             if (super.Raycast(pos + forward * size.y / 2, forward, 4, out hit, UUID))  //accelerate or decelerate
             {
+                if (hit.car != null)
+                {
+                    carSeeID = hit.car.UUID;
+                    if (hit.car.UUID == this.UUID)
+                    {
+
+                    }
+                }
                 Accelerate(dt, -hit.maxDist * 2 / hit.dist);
             }
             else
