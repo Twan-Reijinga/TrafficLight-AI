@@ -54,6 +54,7 @@ public class DevConsoleBehaviour : MonoBehaviour
         {
             Time.timeScale = pausedTimeScale;
             uiCanvas.SetActive(false);
+            SimulationController.instance.paused = false;
             simulationSpeedController.enabled = true;
             freeFlyCamera.enabled = true;
         }
@@ -61,6 +62,7 @@ public class DevConsoleBehaviour : MonoBehaviour
         {
             pausedTimeScale = Time.timeScale;
             Time.timeScale = 0;
+            SimulationController.instance.paused = true;
             uiCanvas.SetActive(true);
             inputField.ActivateInputField();
             simulationSpeedController.enabled = false;

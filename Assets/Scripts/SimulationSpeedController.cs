@@ -24,11 +24,13 @@ public class SimulationSpeedController : MonoBehaviour
             if (Time.timeScale == 0)
             {
                 Time.timeScale = simSpeed;
+                SimulationController.instance.paused = false;
             }
             else
             {
                 simSpeed = Time.timeScale;
                 Time.timeScale = 0;
+                SimulationController.instance.paused = true;
             }
         }
 
