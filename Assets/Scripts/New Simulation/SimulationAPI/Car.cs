@@ -94,16 +94,13 @@ namespace SimulationAPI
             carSeeID = -1;
             if (super.Raycast(pos + forward * size.y / 2, forward, 4, out hit, UUID))  //accelerate or decelerate
             {
-                if (hit.car != null)
+                if (hit.car != null && !(Vector2.Dot(this.forward, hit.car.forward) < 0))
                 {
                     carSeeID = hit.car.UUID;
                     if (hit.car.UUID == this.UUID)
                     {
                         Crashed(super);
                     }
-                }
-                if (Vector2.Dot(this.forward, hit.car.forward) < 0)
-                {
                     Accelerate(dt, -hit.maxDist * 2 / hit.dist);
                 }
                 else

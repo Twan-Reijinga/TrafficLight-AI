@@ -17,7 +17,8 @@ class DQN_Runner():
         self.scores, self.eps_history = [], []
         self.score = 0
         self.current_episode = 0
-        self.max_episodes = 50
+        self.current_episode_batch = 0
+        self.max_episodes = 3
         
     def getAction(self):
         return self.agent.choose_action()
@@ -39,13 +40,16 @@ class DQN_Runner():
                 'avg score %.2f' % self.avg_score,
                 'epsilon %.2f' % self.agent.epsilon)
             self.score = 0
-            if(self.current_episode == self.max_episodes):
+            if((self.current_episode % self.max_episodes) == 0):
                 self.graph_learning_curve()
                 
     
     def graph_learning_curve(self):
+        self.current_episode_batch += 1
+        start = (self.current_episode_batch - 1) * self.max_episodes
+        end = start + self.max_episodes
         x = [i + 1 for i in range(self.max_episodes)]
-        filename = 'traficLearningCurve.png'
+        filename = 'traficLearningCurve' + start + '-' + end +  '.png'
         plot_learning_curve(x, self.scores, self.eps_history, filename)
     
 
