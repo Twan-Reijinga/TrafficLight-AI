@@ -230,7 +230,7 @@ namespace SimulationAPI
             return false;
         }
 
-        public List<float> GetState(int intersectionNumber, int maxQueueLength, int lastActions)
+        public List<float> GetState(int intersectionNumber, int maxQueueLength, List<int> lastActions)
         {
             List<int> queueLengths = intersections[intersectionNumber].GetQueueLenghts(100.0f).ToList();
 
