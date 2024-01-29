@@ -36,7 +36,8 @@ public class SimulationController : MonoBehaviour
     [SerializeField] private bool isAIControlled = true;
     private int maxIterations = 250;
 
-    private int[] currentActions;
+    private List<int> currentActions; // [trafficLight, action]
+    private List<List<int>> previousActions = new List<List<int>> { new List<int>(), new List<int>() }; // [traficLight, ...allActions]
     private string SERVER_URL0 = "http://localhost:8000/";
     private string SERVER_URL1 = "http://localhost:8001/";
 
@@ -122,6 +123,7 @@ public class SimulationController : MonoBehaviour
                         Simulator.instance.scoreAddend[intersectionIndex] += 1.0f;    //punishment for changing
                         print("YOOOOOOOOOOO!");
                     }
+                    this.previousActions[intersectionIndex].Add(this.currentActions[intersectionIndex]);
                     this.currentActions[intersectionIndex] = responseData.action;
                     break;
             }
@@ -157,8 +159,11 @@ public class SimulationController : MonoBehaviour
                     {
                         simulator.intersections[i].ChangeSignalFase(this.currentActions[i]);
                     }
-
+                    
+                    List<int> lastActions = GetLastActions(i, 5);
+                    print(string.Join(", ", lastActions));
                     List<float> state = simulator.GetState(i, 16);
+
                     float reward = simulator.intersections[i].CalculateReward();
 
                     string jsonState = "[" + string.Join(", ", state) + "]";
@@ -197,7 +202,7 @@ public class SimulationController : MonoBehaviour
     public void ResetSimulation(int newSeed)
     {
         this.stepCount = 0;
-        this.currentActions = new int[2] { -2, -2 };
+        this.currentActions = new List<int> { -2, -2 };
 
         for (int i = visualiser.transform.childCount - 1; i >= 0; i--)  // clear children of visualizer;
         {
@@ -219,6 +224,22 @@ public class SimulationController : MonoBehaviour
         Step();
         visualiser.SetSeed(seed);
         VisualsUpdater();
+    }
+
+    public List<int> GetLastActions(int intersectionIndex, int numberOfActions) 
+    {
+        List<int> lastActions = new List<int>();
+        int paddingCount = Math.Max(0, numberOfActions - this.previousActions[intersectionIndex].Count);
+
+        for (int i = 0; i < paddingCount; i++) 
+        {
+            lastActions.Add(0);
+        }
+         for (int i = Math.Max(0, this.previousActions[intersectionIndex].Count - numberOfActions); i < this.previousActions[intersectionIndex].Count; i++)
+        {
+            lastActions.Add(this.previousActions[intersectionIndex][i]);
+        }
+        return lastActions;
     }
 
     public void SaveNN(string name)
