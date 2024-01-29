@@ -18,6 +18,7 @@ namespace SimulationAPI
         CarGeneration carGenerator;
         public Physics physics;
         List<int> deletedCars = new List<int>();
+        public float[] scoreAddend = new float[2];
 
         private Vector2[] lightPositions = {
             new Vector2( 7.5f,  3.0f),
@@ -199,9 +200,9 @@ namespace SimulationAPI
 
             for (int i = lights.Count - 1; i >= 0; i--)
             {
-                if (Vector2.Distance(origin, lights[i].pos) > maxDist - 1 || lights[i].isOn)
+                if (Vector2.Distance(origin, lights[i].pos) > maxDist - 1 || Vector2.Distance(origin, lights[i].pos) < 1.0f || lights[i].isOn)
                 {
-                    lights.RemoveAt(i); //ignore all lights that are too far away or are turned on
+                    lights.RemoveAt(i); //ignore all lights that are too far away, too close or are green
                 }
             }
 
@@ -279,7 +280,9 @@ namespace SimulationAPI
 
         public float CalculateRewards(int intersection)
         {
-            return intersections[intersection].CalculateReward();
+            float reward = intersections[intersection].CalculateReward() + scoreAddend[intersection];
+            scoreAddend[intersection] = 0;
+            return reward;
         }
 
     }

@@ -95,7 +95,7 @@ public class SimulationController : MonoBehaviour
         }
     }
 
-    IEnumerator GetRequest(string url, int actionIndex)
+    IEnumerator GetRequest(string url, int intersectionIndex)
     {
         using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
         {
@@ -117,7 +117,11 @@ public class SimulationController : MonoBehaviour
                 case UnityWebRequest.Result.Success:
                     ResponseData responseData = JsonUtility.FromJson<ResponseData>(webRequest.downloadHandler.text);
                     Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
-                    this.currentActions[actionIndex] = responseData.action;
+                    if (this.currentActions[intersectionIndex] != responseData.action)
+                    {
+                        Simulator.instance.scoreAddend[intersectionIndex] -= 0.5f;    //punishment for changing
+                    }
+                    this.currentActions[intersectionIndex] = responseData.action;
                     break;
             }
         }
@@ -141,7 +145,7 @@ public class SimulationController : MonoBehaviour
         this.stepCount++;
         if (!paused)
         {
-            if (isAIControlled && this.stepCount % 20 == 0 && this.stepCount > 6*20)
+            if (isAIControlled && this.stepCount % 20 == 0 && this.stepCount > 6 * 20)
             {
                 bool done = (this.stepCount / 20) % this.maxIterations == 0;
                 for (int i = 0; i < 2; i++)
