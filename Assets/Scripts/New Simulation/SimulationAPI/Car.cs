@@ -106,6 +106,10 @@ namespace SimulationAPI
                 {
                     Accelerate(dt, -hit.maxDist * 2 / hit.dist);
                 }
+                else
+                {
+                    Accelerate(dt);
+                }
             }
             else
             {
