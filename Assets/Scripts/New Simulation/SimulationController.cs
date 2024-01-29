@@ -118,10 +118,10 @@ public class SimulationController : MonoBehaviour
                 case UnityWebRequest.Result.Success:
                     ResponseData responseData = JsonUtility.FromJson<ResponseData>(webRequest.downloadHandler.text);
                     Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
-                    if (this.currentActions[intersectionIndex] != responseData.action)
+                    if (this.currentActions[intersectionIndex] == responseData.action)
                     {
-                        Simulator.instance.scoreAddend[intersectionIndex] -= 0.5f;    //punishment for changing
-                        print("Yo");
+                        Simulator.instance.scoreAddend[intersectionIndex] += 1.0f;    //punishment for changing
+                        print("YOOOOOOOOOOO!");
                     }
                     this.currentActions[intersectionIndex] = responseData.action;
                     break;
