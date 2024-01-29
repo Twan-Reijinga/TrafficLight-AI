@@ -49,7 +49,7 @@ class DQN_Runner():
         start = (self.current_episode_batch - 1) * self.max_episodes
         end = start + self.max_episodes
         x = [i + 1 for i in range(self.max_episodes)]
-        filename = 'traficLearningCurve' + start + '-' + end +  '.png'
+        filename = 'traficLearningCurve' + str(start) + '-' + str(end) +  '.png'
         plot_learning_curve(x, self.scores, self.eps_history, filename)
     
 
