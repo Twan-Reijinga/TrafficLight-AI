@@ -32,7 +32,7 @@ class DeepQNetwork(nn.Module):
     
 class Agent():
     def __init__(self, gamma, epsilon, lr, input_dims, batch_size, n_actions, 
-                 max_mem_size=10000, eps_end=0.05, eps_decay=5e-5, states_back=2):
+                 max_mem_size=10000, eps_end=0.05, eps_decay=5e-4, states_back=2):
         self.gamma = gamma
         self.epsilon = epsilon
         self.lr = lr
@@ -48,8 +48,8 @@ class Agent():
 
         self.Q_eval = DeepQNetwork(lr, input_dims=input_dims*states_back, fc1_dims=256, 
                                    fc2_dims=256, n_actions=n_actions)
-        self.Q_next = DeepQNetwork(lr, input_dims=input_dims*states_back, fc1_dims=256, 
-                                   fc2_dims=256, n_actions=n_actions)
+        # self.Q_next = DeepQNetwork(lr, input_dims=input_dims*states_back, fc1_dims=256, 
+        #                            fc2_dims=256, n_actions=n_actions)
         
         self.episode_state_memory = np.zeros((self.mem_size, *input_dims), dtype=np.float32)
         self.episode_state_index = 0
@@ -65,7 +65,7 @@ class Agent():
         index = self.mem_counter % self.mem_size
         
         if(done):
-            episode_state_index = 0
+            self.episode_state_index = 0
 
         self.episode_state_memory[self.episode_state_index] = state
         self.episode_state_index += 1
@@ -116,12 +116,14 @@ class Agent():
         Q_next = self.Q_eval.forward(next_state_batch)
         Q_next[terminal_batch] = 0.0
 
-        Q_target_next = self.Q_next.forward(next_state_batch).detach()
-        Q_target = reward_batch + self.gamma * T.max(Q_target_next, dim=1)[0]
+        Q_target = reward_batch + self.gamma * T.max(Q_next, dim=1)[0]
 
-        self.Q_eval.optimizer.zero_grad()
+        # Q_target_next = self.Q_next.forward(next_state_batch).detach()
+        # Q_target = reward_batch + self.gamma * T.max(Q_target_next, dim=1)[0]
 
-        Q_eval = self.Q_eval.forward(state_batch)[batch_index, action_batch]
+        # self.Q_eval.optimizer.zero_grad()
+
+        # Q_eval = self.Q_eval.forward(state_batch)[batch_index, action_batch]
         
         loss = self.Q_eval.loss(Q_target, Q_eval).to(self.Q_eval.device)
         
@@ -130,9 +132,9 @@ class Agent():
         
         self.epsilon = self.epsilon - self.eps_decay if self.epsilon > self.eps_end else self.eps_end
 
-        if self.mem_counter % 1000 == 0:
-            print("mem_counter: ", self.mem_counter)
-            self.Q_next.load_state_dict(self.Q_eval.state_dict())
+        # if self.mem_counter % 1000 == 0:
+        #     print("mem_counter: ", self.mem_counter)
+        #     self.Q_next.load_state_dict(self.Q_eval.state_dict())
     
     def save(self, filename):
         save_path = os.path.join(os.path.dirname(__file__), filename)
