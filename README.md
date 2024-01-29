@@ -21,7 +21,7 @@ conda create -n trafficAI python=3.7.13 anaconda
 
 conda activate trafficAI
 
-pip install gym numpy socketserver
+pip install gym numpy torch
 ```
 
 ### Step 4
