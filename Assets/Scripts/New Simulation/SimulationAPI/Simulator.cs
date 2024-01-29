@@ -230,7 +230,7 @@ namespace SimulationAPI
             return false;
         }
 
-        public List<float> GetState(int intersectionNumber, int maxQueueLength)
+        public List<float> GetState(int intersectionNumber, int maxQueueLength, int lastActions)
         {
             List<int> queueLengths = intersections[intersectionNumber].GetQueueLenghts(100.0f).ToList();
 
@@ -250,6 +250,7 @@ namespace SimulationAPI
             List<float> trafficState = intersections[intersectionNumber].GetTrafficState();
 
             List<float> state = queueLengths.ConvertAll(x => (float)x).Concat(trafficState).ToList();
+            state = lastActions.ConvertAll(x => (float)x).Concat(state).ToList();
             return state;
         }
 

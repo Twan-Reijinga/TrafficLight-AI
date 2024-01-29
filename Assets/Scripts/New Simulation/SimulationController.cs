@@ -161,9 +161,8 @@ public class SimulationController : MonoBehaviour
                         simulator.intersections[i].ChangeSignalFase(this.currentActions[i]);
                     }
                     
-                    List<int> lastActions = GetLastActions(i, 5);
-                    print(string.Join(", ", lastActions));
-                    List<float> state = simulator.GetState(i, 16);
+                    List<int> lastActions = GetLastActions(i, 8);
+                    List<float> state = simulator.GetState(i, 16, lastActions);
 
                     float reward = simulator.intersections[i].CalculateReward();
 
