@@ -123,13 +123,20 @@ public class SimulationController : MonoBehaviour
                     this.previousActions[intersectionIndex].Add(this.currentActions[intersectionIndex]);
 
                     List<int> prevActions = this.previousActions[intersectionIndex];
-                    if (prevActions.Count > 8)
+                    if (prevActions.Count > 9)
                     {
                         for (int i = prevActions.Count - 1; i >= prevActions.Count - 8; i--)
                         {
                             if (prevActions[i] == responseData.action)
                             {
-                                Simulator.instance.scoreAddend[intersectionIndex] += 0.1f;
+                                if (i <= (prevActions.Count - 4))
+                                {
+                                    Simulator.instance.scoreAddend[intersectionIndex] -= 0.5f;
+                                }
+                                else
+                                {
+                                    Simulator.instance.scoreAddend[intersectionIndex] += 0.05f;
+                                }
                             }
                             else
                             {

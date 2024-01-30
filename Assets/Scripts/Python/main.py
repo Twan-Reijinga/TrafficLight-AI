@@ -27,7 +27,7 @@ class DQN_Runner():
     def store_transition(self, state, action, reward, done):
         self.agent.store_transition(state, action, reward, done)
         self.score += reward
-        print("score", self.score, "reward", reward)
+        # print("score", self.score, "reward", reward) #!turn this on to see all score i guess
         
         self.agent.learn()
         # self.next_state = next_state

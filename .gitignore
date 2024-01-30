@@ -52,6 +52,7 @@ ExportedObj/
 *.pidb.meta
 *.pdb.meta
 *.mdb.meta
+*.meta
 
 # Unity3D generated file on crash reports
 sysinfo.txt
@@ -74,5 +75,6 @@ crashlytics-build.properties
 
 *.blob
 
-# pycache files
-*.pyc
+# pycache files 
+/Assets/Scripts/Python/__pycache__/
+*.cpython-37.pyc
