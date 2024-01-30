@@ -129,7 +129,7 @@ public class SimulationController : MonoBehaviour
                         {
                             if (prevActions[i] == responseData.action)
                             {
-                                Simulator.instance.scoreAddend[intersectionIndex] -= 0.001f;
+                                Simulator.instance.scoreAddend[intersectionIndex] += 0.1f;
                             }
                             else
                             {
