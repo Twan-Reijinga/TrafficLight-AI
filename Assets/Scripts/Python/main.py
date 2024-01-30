@@ -11,14 +11,15 @@ import json
 DQN_runner = None
 
 class DQN_Runner():
-    def __init__(self, number_of_inputs):
+    def __init__(self, number_of_inputs, PORTstr):
+        self.port = PORTstr
         self.agent = Agent(gamma=0.99, epsilon=1.0, batch_size=128, n_actions=4,
                     eps_end=0.05, input_dims=[number_of_inputs], lr=0.001, states_back = 1)
         self.scores, self.eps_history = [], []
         self.score = 0
         self.current_episode = 0
         self.current_episode_batch = 0
-        self.max_episodes = 3
+        self.max_episodes = 100
         
     def getAction(self):
         return self.agent.choose_action()
@@ -48,7 +49,7 @@ class DQN_Runner():
         self.current_episode_batch += 1
         
         end = (self.current_episode_batch) * self.max_episodes
-        filename = 'traficLearningCurve1-' + str(end) +  '.png'
+        filename = self.port + 'traficLearningCurve1-' + str(end) +  '.png'
 
         x = [i + 1 for i in range(end)]
         plot_learning_curve(x, self.scores, self.eps_history, filename)
@@ -112,8 +113,8 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
 
 if __name__ == '__main__':
     # global DQN_runner
-    DQN_runner = DQN_Runner(24)
     PORT = int(input("Enter port: "))
+    DQN_runner = DQN_Runner(24, str(PORT))
     httpd = socketserver.TCPServer(("", PORT), RequestHandler)
     print(f"Serving on port {PORT}")
     try:

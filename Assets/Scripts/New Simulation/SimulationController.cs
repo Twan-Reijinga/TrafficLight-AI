@@ -119,21 +119,25 @@ public class SimulationController : MonoBehaviour
                 case UnityWebRequest.Result.Success:
                     ResponseData responseData = JsonUtility.FromJson<ResponseData>(webRequest.downloadHandler.text);
                     // Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
-                    
+
                     this.previousActions[intersectionIndex].Add(this.currentActions[intersectionIndex]);
 
                     List<int> prevActions = this.previousActions[intersectionIndex];
-                    if(prevActions.Count > 8) {
-                        for(int i = prevActions.Count - 1; i >= prevActions.Count - 8; i--) {
+                    if (prevActions.Count > 8)
+                    {
+                        for (int i = prevActions.Count - 1; i >= prevActions.Count - 8; i--)
+                        {
                             if (prevActions[i] == responseData.action)
                             {
-                                Simulator.instance.scoreAddend[intersectionIndex] += 0.05f;
-                            } else  {
+                                Simulator.instance.scoreAddend[intersectionIndex] -= 0.001f;
+                            }
+                            else
+                            {
                                 break;
                             }
                         }
                     }
-                    
+
                     this.currentActions[intersectionIndex] = responseData.action;
                     break;
             }
@@ -169,7 +173,7 @@ public class SimulationController : MonoBehaviour
                     {
                         simulator.intersections[i].ChangeSignalFase(this.currentActions[i]);
                     }
-                    
+
                     List<int> lastActions = GetLastActions(i, 8);
                     List<float> state = simulator.GetState(i, 16, lastActions);
 
@@ -238,16 +242,16 @@ public class SimulationController : MonoBehaviour
         VisualsUpdater();
     }
 
-    public List<int> GetLastActions(int intersectionIndex, int numberOfActions) 
+    public List<int> GetLastActions(int intersectionIndex, int numberOfActions)
     {
         List<int> lastActions = new List<int>();
         int paddingCount = Math.Max(0, numberOfActions - this.previousActions[intersectionIndex].Count);
 
-        for (int i = 0; i < paddingCount; i++) 
+        for (int i = 0; i < paddingCount; i++)
         {
             lastActions.Add(0);
         }
-         for (int i = Math.Max(0, this.previousActions[intersectionIndex].Count - numberOfActions); i < this.previousActions[intersectionIndex].Count; i++)
+        for (int i = Math.Max(0, this.previousActions[intersectionIndex].Count - numberOfActions); i < this.previousActions[intersectionIndex].Count; i++)
         {
             lastActions.Add(this.previousActions[intersectionIndex][i]);
         }

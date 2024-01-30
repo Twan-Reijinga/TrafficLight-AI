@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 
 namespace SimulationAPI
 {
@@ -55,9 +56,9 @@ namespace SimulationAPI
             rand = new System.Random(seed);
             carGenerator = new CarGeneration(this);
             intersections[0] = new Intersection(this, intersectionPositions[0], lightPositions, lightOrientations, false);
-            intersections[0].setStateGreen(0);
+            // intersections[0].setStateGreen(0);
             intersections[1] = new Intersection(this, intersectionPositions[1], lightPositions, lightOrientations, false);
-            intersections[1].setStateGreen(0);
+            // intersections[1].setStateGreen(0);
             physics = new Physics(this);
         }
 
@@ -120,6 +121,14 @@ namespace SimulationAPI
                 {
                     // Print("BOOOOOOM: car " + cars[i].UUID + " destroyed!");
                     deletedCars.Add(cars[i].UUID);
+                    cars.RemoveAt(i);
+                }
+                else if (cars[i].isCrashed)
+                {
+                    Print("CRASHED: " + cars[i].UUID.ToString());
+                    int intersectionIndex = cars[i].pos.x > 0 ? 0 : 1;
+                    intersections[intersectionIndex].crashCount += 1;
+
                     cars.RemoveAt(i);
                 }
             }
@@ -285,20 +294,5 @@ namespace SimulationAPI
             scoreAddend[intersection] = 0;
             return reward;
         }
-
-        public void Crashed(Car car)
-        {
-            int intersectionIndex = car.pos.x > 0 ? 0 : 1;
-            intersections[intersectionIndex].crashCount += 1;
-            for (int i = 0; i < cars.Count; i++)
-            {
-                if (car.UUID == cars[i].UUID)
-                {
-                    cars.RemoveAt(i);
-                    i--;
-                }
-            }
-        }
-
     }
 }
