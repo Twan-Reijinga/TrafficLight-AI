@@ -127,12 +127,15 @@ public class SimulationController : MonoBehaviour
                         for(int i = prevActions.Count - 1; i >= prevActions.Count - 8; i--) {
                             if (prevActions[i] == responseData.action)
                             {
-                                Simulator.instance.scoreAddend[intersectionIndex] += 0.1f;
+                                Simulator.instance.scoreAddend[intersectionIndex] += 0.025f;
                             } else  {
                                 break;
                             }
                         }
                     }
+                    // if(this.currentActions[intersectionIndex] == responseData.action) {
+                    //     Simulator.instance.scoreAddend[intersectionIndex] += 0.18f;
+                    // }
                     
                     this.currentActions[intersectionIndex] = responseData.action;
                     break;
