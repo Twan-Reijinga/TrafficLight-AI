@@ -146,8 +146,6 @@ namespace SimulationAPI
 
         public void ChangeSignalFase(int phase)
         {
-
-
             if (phase != -1)
             {
                 for (int i = 0; i < 8; i++)

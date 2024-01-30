@@ -32,6 +32,7 @@ namespace SimulationAPI
         public CarMovement.Actions nextAction;
         public CarMovement.Actions currentAction = CarMovement.Actions.FORWARD;
         public bool isDestroyed = false;
+        public bool isCrashed = false;
 
         private ActionLine lastLine = null;
 
@@ -97,11 +98,11 @@ namespace SimulationAPI
                 if (hit.car != null)
                 {
                     carSeeID = hit.car.UUID;
-                    if (hit.car.UUID == this.UUID)
+                    if (hit.car.carSeeID == this.UUID)
                     {
-                        Crashed(super);
+                        this.isCrashed = true;
                     }
-                    if (Vector2.Dot(this.forward, hit.car.forward) > 0)
+                    if (Vector2.Dot(this.forward, hit.car.forward) > -0.6f)
                     {
 
                         Accelerate(dt, -hit.maxDist * 2 / hit.dist);
@@ -282,11 +283,6 @@ namespace SimulationAPI
         private string DetectTraficLight()
         {
             return "Test";
-        }
-
-        private void Crashed(Simulator super)
-        {
-            super.Crashed(this);
         }
     }
 }
