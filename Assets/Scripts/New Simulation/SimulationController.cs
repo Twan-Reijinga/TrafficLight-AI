@@ -145,6 +145,10 @@ public class SimulationController : MonoBehaviour
                             }
                         }
                     }
+                    // if(this.currentActions[intersectionIndex] == responseData.action) {
+                    //     Simulator.instance.scoreAddend[intersectionIndex] += 0.18f;
+                    // }
+                    
 
                     this.currentActions[intersectionIndex] = responseData.action;
                     break;
