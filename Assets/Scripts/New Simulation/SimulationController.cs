@@ -25,7 +25,7 @@ public class SimulationController : MonoBehaviour
     SimulationAPI.Simulator simulator;
 
     public bool runAtSetSpeed = true;
-    public bool paused = false;
+    [HideInInspector] public bool paused = false;
     public bool doVisualize = true;
 
     public TextMeshProUGUI tpsCounter, MSPTCounter;
@@ -41,6 +41,7 @@ public class SimulationController : MonoBehaviour
     private List<List<int>> previousActions = new List<List<int>> { new List<int>(), new List<int>() }; // [traficLight, ...allActions]
     private string SERVER_URL0 = "http://localhost:8000/";
     private string SERVER_URL1 = "http://localhost:8001/";
+    private float totalScore = 0.0f;
 
     void Start()
     {
@@ -199,6 +200,12 @@ public class SimulationController : MonoBehaviour
                     ResetSimulation(this.seed + 1);
                 }
                 // List<float> debugValues = qAgent.Step(simulator);
+            }
+            if (!isAIControlled && this.stepCount % 20 == 0)
+            {
+                float currentScore = (simulator.intersections[0].CalculateReward() + simulator.intersections[1].CalculateReward()) / 2;
+                totalScore += currentScore;
+                print("current Score: " + currentScore.ToString() + " Total: " + totalScore.ToString());
             }
             simulator.Step(this.timeStepSize, isAIControlled);
         }
