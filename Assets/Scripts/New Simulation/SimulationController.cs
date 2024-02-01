@@ -5,6 +5,7 @@ using SimulationAPI;
 using TMPro;
 using UnityEngine.Networking;
 using System;
+using System.Linq;
 
 
 public class ResponseData
@@ -28,6 +29,8 @@ public class SimulationController : MonoBehaviour
     [HideInInspector] public bool paused = false;
     public bool doVisualize = true;
 
+    public bool showNLAverage = false;
+
     public TextMeshProUGUI tpsCounter, MSPTCounter;
 
     private float lastframe;
@@ -41,7 +44,7 @@ public class SimulationController : MonoBehaviour
     private List<List<int>> previousActions = new List<List<int>> { new List<int>(), new List<int>() }; // [traficLight, ...allActions]
     private string SERVER_URL0 = "http://localhost:8000/";
     private string SERVER_URL1 = "http://localhost:8001/";
-    private float totalScore = 0.0f;
+    private List<float> Scores = new List<float>();
 
     void Start()
     {
@@ -148,7 +151,7 @@ public class SimulationController : MonoBehaviour
                     // if(this.currentActions[intersectionIndex] == responseData.action) {
                     //     Simulator.instance.scoreAddend[intersectionIndex] += 0.18f;
                     // }
-                    
+
 
                     this.currentActions[intersectionIndex] = responseData.action;
                     break;
@@ -201,13 +204,16 @@ public class SimulationController : MonoBehaviour
                 }
                 // List<float> debugValues = qAgent.Step(simulator);
             }
-            if (!isAIControlled && this.stepCount % 20 == 0)
+            if (!isAIControlled && this.stepCount == 5000 && showNLAverage)
             {
+
                 float currentScore = (simulator.intersections[0].CalculateReward() + simulator.intersections[1].CalculateReward()) / 2;
-                totalScore += currentScore;
-                print("current Score: " + currentScore.ToString() + " Total: " + totalScore.ToString());
+                Scores.Add(currentScore);
+                print("current Score: " + currentScore.ToString() + " Average: " + Scores.Average() + " Min: " + Scores.Min() + " Max: " + Scores.Max());
+                ResetSimulation(seed + 1);
             }
             simulator.Step(this.timeStepSize, isAIControlled);
+
         }
         if (runAtSetSpeed)
         {
@@ -247,7 +253,7 @@ public class SimulationController : MonoBehaviour
         visualiser.state2 = null;
 
         CancelInvoke();
-        print("Simulation Reset with seed: " + newSeed);
+        // print("Simulation Reset with seed: " + newSeed);
         seed = newSeed;
         Simulator.instance = null; //remove old instance
         simulator = new Simulator(seed);
