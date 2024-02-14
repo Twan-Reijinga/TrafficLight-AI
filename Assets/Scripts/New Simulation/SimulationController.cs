@@ -284,7 +284,6 @@ public class SimulationController : MonoBehaviour
 
     public void SaveNN(string name)
     {
-        //TODO: IMPLEMENT SAVING HERE
         StartCoroutine(SaveLoadRequest(name + "0", "save", SERVER_URL0));
         StartCoroutine(SaveLoadRequest(name + "1", "save", SERVER_URL1));
         Debug.Log(name);
@@ -292,7 +291,6 @@ public class SimulationController : MonoBehaviour
 
     public void LoadNN(string name, int seed = 0)
     {
-        //TODO: IMPLEMENT LOADING
         Debug.Log(name);
         StartCoroutine(SaveLoadRequest(name + "0", "load", SERVER_URL0));
         StartCoroutine(SaveLoadRequest(name + "1", "load", SERVER_URL1));
