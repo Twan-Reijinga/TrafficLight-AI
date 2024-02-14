@@ -37,7 +37,7 @@ public class SimulationController : MonoBehaviour
 
     // private QLearnAgent qAgent;
     // private int[] networkNeuronCounts = { 4, 6, 4 }; // [3*(4*carLimit), ~, cycles]
-    [SerializeField] private bool isAIControlled = true;
+    public bool isAIControlled = true;
     private int maxIterations = 250;
 
     private List<int> currentActions; // [trafficLight, action]
