@@ -1,5 +1,8 @@
 # TrafficLightsAI
-README is unfinished!
+#About Our PWS
+Ons onderzoek is gericht op het optimaliseren van het verkeerslichtsysteem met kunstmatige intelligentie. We hebben hiervoor een verkeerssimulatie gebouwd en aangestuurd met een reinforcement learning-algoritme. Verkeerslichten zijn essentieel in onze maatschappij wereldwijd. Met het toenemende aantal weggebruikers wordt de optimalisatie van verkeerslichten een steeds urgenter vraagstuk. Grote vooruitgangen in technologie en kunstmatige intelligentie bieden mogelijkheden om dit vraagstuk aan te pakken. 
+
+Achter onze huidige verkeerslichten schuilen al ingewikkelde algoritmes die voortdurend berekeningen maken om iedereen zo vlot mogelijk van A naar B te leiden. Maar hoe werken deze algoritmes? Hoe kan kunstmatige intelligentie dit verbeteren? Welke algoritmes zijn het meest geschikt? En welke data heeft kunstmatige intelligentie nodig voor efficiënte doorstroom? Deze vragen vormen de kern van ons uitgebreide onderzoek.
 
 # Installation
 ### Step 1
